@@ -1,123 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Small Talk Café</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
-/* Layout: one narrow column like a phone at the counter; chat in the middle, receipt at the end */
+/* Mobile Kit design tokens (colors) */
+/* Values from Figma › Styles › Color (node 261:8659) + component usage */
 :root{
-  --bg:#f7f6f3; --surface:#ffffff; --ink:#24201b; --muted:#6f675d; --line:#e4dfd7;
-  --accent:#a8641e; --accent-soft:#f3e6d6; --me:#24201b; --me-ink:#fbf8f3;
-  --t10:#8c857b; --t30:#3f6fa3; --t60:#2f8a5f; --t100:#b57a10;
-  --display:"Bricolage Grotesque", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-  --body:system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
-  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Highlight (blue) — Darkest → Lightest */
+  --highlight-darkest:#006FFD;--highlight-dark:#2897FF;--highlight-medium:#6FBAFF;--highlight-light:#B4DBFF;--highlight-lightest:#EAF2FF;
+  /* Neutral · Light — Darkest → Lightest */
+  --neutral-light-darkest:#C5C6CC;--neutral-light-dark:#D4D6DD;--neutral-light-medium:#E8E9F1;--neutral-light-light:#F8F9FE;--neutral-light-lightest:#FFFFFF;
+  /* Neutral · Dark — Darkest → Lightest */
+  --neutral-dark-darkest:#1F2024;--neutral-dark-dark:#2F3036;--neutral-dark-medium:#494A50;--neutral-dark-light:#71727A;--neutral-dark-lightest:#8F9098;
+  /* Support */
+  --success-dark:#298267;--success-medium:#3AC0A0;--success-light:#E7F4E8;
+  --warning-dark:#E86339;--warning-medium:#FFB37C;--warning-light:#FFF4E4;
+  --error-dark:#ED3241;--error-medium:#FF616D;--error-light:#FFE2E5;
+  /* Component accent — the pink used by Button Primary, Toggle, Checkbox, Slider, Progress */
+  --accent:#F53178;
+  /* Component greys (raw values used throughout the component sheet) */
+  --grey-ink:#1F1F1F;--grey-900:#313131;--grey-700:#717171;--grey-500:#8F8F8F;--grey-400:#ACACAC;--grey-300:#C8C8C8;--grey-200:#DADADA;--grey-100:#F5F5F5;--grey-50:#F8F8F8;--grey-0:#FFFFFF;
+  --surface-page-header:#F5F6FA;
+  /* Semantic aliases */
+  --surface-base:var(--neutral-light-lightest);
+  --surface-subtle:var(--neutral-light-light);
+  --surface-muted:var(--surface-page-header);
+  --surface-selected:var(--highlight-lightest);
+  --text-primary:var(--neutral-dark-darkest);
+  --text-secondary:var(--neutral-dark-light);
+  --text-tertiary:var(--neutral-dark-lightest);
+  --text-on-accent:#F8F8F8;
+  --text-link:var(--highlight-darkest);
+  --border-default:var(--neutral-light-darkest);
+  --border-subtle:var(--neutral-light-medium);
+  --border-focus:var(--highlight-darkest);
+  --action-primary:var(--accent);
+  --action-highlight:var(--highlight-darkest);
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#171512; --surface:#211e1a; --ink:#efe9e1; --muted:#a59c90; --line:#35302a;
-  --accent:#e0a458; --accent-soft:#3a2d1f; --me:#efe9e1; --me-ink:#1b1814;
-  --t10:#9d958a; --t30:#7fa8d6; --t60:#6cc49a; --t100:#e8b44a; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#171512; --surface:#211e1a; --ink:#efe9e1; --muted:#a59c90; --line:#35302a;
-  --accent:#e0a458; --accent-soft:#3a2d1f; --me:#efe9e1; --me-ink:#1b1814;
-  --t10:#9d958a; --t30:#7fa8d6; --t60:#6cc49a; --t100:#e8b44a; color-scheme:dark}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
-.wrap{max-width:640px;margin:0 auto;padding-block:20px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
-h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
-h1{font-size:2rem;font-weight:700;letter-spacing:-.01em}
-h2{font-size:1.25rem;font-weight:700}
-p{margin:0}
-.muted{color:var(--muted)}
-.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-button{font:inherit;color:inherit;cursor:pointer}
+
+:root{--bg:var(--surface-muted);--surface:#fff;--ink:var(--neutral-dark-darkest);--muted:var(--neutral-dark-light);--line:var(--neutral-light-medium);--ring:#C5C6CC;--accent:var(--highlight-darkest);--accent-soft:var(--highlight-lightest);--me:var(--highlight-darkest);--me-ink:#fff;--display:'Nunito','Noto Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;--body:var(--display);--mono:var(--display);--t10:#8F9098;--t30:#2897FF;--t60:#006FFD;--t100:#0050B3;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;min-height:100vh;margin:0 auto;background:var(--surface);padding-block:24px 32px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:1.75rem;font-weight:800}h2{font-size:1.25rem;font-weight:800}h3{font-size:1rem;font-weight:800}
+p{margin:0}.muted{color:var(--muted)}
+.eyebrow{font-family:var(--display);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer;transition:transform .12s var(--ease),box-shadow .2s,background-color .2s,opacity .2s}
+button:active:not(:disabled){transform:scale(.96)}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+.btn{border:0;background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:10px 16px;font-weight:700}
+.btn:hover{background:var(--highlight-light)}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:none}.btn.primary:hover{background:var(--highlight-dark);color:#fff}
+.btn:disabled{opacity:.4;cursor:default}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.seg button{border:0;background:transparent;padding:6px 12px;font-size:.9rem}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-
-/* start */
-.personas{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.pcard{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
-.pcard:hover{border-color:var(--accent)}
-.pcard .nm{font-family:var(--display);font-weight:700;font-size:1.15rem}
-.pcard .role{font-family:var(--mono);font-size:.75rem;color:var(--accent)}
+.seg{display:inline-flex;gap:6px}
+.seg button{border:0;background:var(--accent-soft);color:var(--accent);padding:6px 14px;border-radius:200px;font-size:.8rem;font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.personas{display:grid;grid-template-columns:1fr;gap:12px}
+.pcard{text-align:left;border:0;background:var(--neutral-light-light);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.pcard:hover{box-shadow:inset 0 0 0 1.5px var(--accent);transform:translateY(-2px)}
+.pcard .nm{font-family:var(--display);font-weight:800;font-size:1.1rem}
+.pcard .role{font-size:.75rem;font-weight:700;color:var(--accent)}
 .pcard .ds{font-size:.88rem;color:var(--muted)}
-.pcard .say{font-size:.85rem;font-style:italic;border-top:1px dashed var(--line);padding-top:6px}
-.panel{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
-.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
-.list li{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}
-.list .en{font-weight:600}
-.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-
-/* chat */
+.pcard .say{font-size:.82rem;font-style:italic;color:var(--muted);box-shadow:0 -1px 0 var(--line);padding-top:8px;margin-top:2px}
+.panel{background:var(--neutral-light-light);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.list li{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}.list .en{font-weight:700}
+.num{font-weight:700;font-variant-numeric:tabular-nums}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .who{display:flex;flex-direction:column}
-.steps{display:flex;gap:4px;flex-wrap:wrap}
-.steps span{font-family:var(--mono);font-size:.7rem;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-.steps span.on{border-color:var(--accent);color:var(--accent);font-weight:600}
-.steps span.done{background:var(--accent-soft);border-color:transparent;color:var(--ink)}
+.prog{display:flex;flex-direction:column;gap:6px}.pl{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--accent)}.pb{height:6px;border-radius:200px;background:var(--neutral-light-medium);overflow:hidden}.pb i{display:block;height:100%;background:var(--accent);border-radius:200px;transition:width .6s var(--ease)}
+.steps span{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:200px;background:var(--neutral-light-medium);color:var(--muted);transition:background-color .3s,color .3s}
+.steps span.on{background:var(--accent);color:#fff;animation:pop .35s var(--ease)}
+.steps span.done{background:var(--accent-soft);color:var(--accent)}
 .log{display:flex;flex-direction:column;gap:10px;min-height:320px}
-.msg{max-width:85%;padding:10px 14px;border-radius:16px;line-height:1.45;min-width:0;overflow-wrap:anywhere}
-.msg.b{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
-.msg.u{align-self:flex-end;background:var(--me);color:var(--me-ink);border-bottom-right-radius:4px}
-.msg .spk{border:0;background:none;color:var(--muted);font-size:.75rem;padding:0;margin-left:8px;text-decoration:underline}
-.typing{align-self:flex-start;color:var(--muted);font-size:.85rem;font-family:var(--mono)}
-.composer{position:sticky;bottom:0;background:var(--bg);padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
+.msg{max-width:85%;padding:11px 16px;border-radius:20px;line-height:1.45;min-width:0;overflow-wrap:anywhere}.msg.new{animation:arrive .5s var(--ease) both}.msg.b{transform-origin:left bottom}.msg.u{transform-origin:right bottom}
+.msg.b{align-self:flex-start;background:var(--neutral-light-medium);border-bottom-left-radius:6px}
+.msg.u{align-self:flex-end;background:var(--me);color:var(--me-ink);border-bottom-right-radius:6px}.msg.u .gl{text-decoration:none}
+.msg .spk{border:0;background:none;color:var(--accent);font-size:.75rem;font-weight:700;padding:0;margin-left:8px}
+.typing{align-self:flex-start;color:var(--muted);font-size:.85rem;animation:arrive .35s var(--ease) both}
+.typing::after{content:"";display:inline-block;width:18px;height:6px;margin-left:6px;vertical-align:middle;background:radial-gradient(circle,var(--accent) 3px,transparent 3.5px) 0 0/6px 6px repeat-x;animation:blink 1s infinite}
+.composer{position:sticky;bottom:0;background:var(--surface);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;box-shadow:0 -1px 0 var(--line)}
 .composer form{display:flex;gap:8px}
-.composer input{flex:1;min-width:0;font:inherit;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
-.hints{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
-.hints .note{font-size:.85rem;color:var(--accent)}
-.chip{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;border-top:1px dashed var(--line);padding-top:8px}
-.chip:first-of-type{border-top:0;padding-top:0}
-.chip .t{min-width:0}
-.chip .t b{display:block}
-.chip .t small{color:var(--muted)}
+.composer input{flex:1;min-width:0;font:inherit;height:48px;padding:0 16px;border-radius:12px;border:0;box-shadow:inset 0 0 0 1px var(--ring);background:var(--surface);color:var(--ink);transition:box-shadow .2s}
+.composer input:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--accent)}
+.composer input::placeholder{color:var(--neutral-dark-lightest)}
+.hints{background:var(--accent-soft);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.hints .note{font-size:.85rem;font-weight:700;color:var(--accent)}
+.chip{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;box-shadow:0 -1px 0 rgba(0,111,253,.18);padding-top:10px}
+.chip:first-of-type{box-shadow:none;padding-top:0}
+.chip .t{min-width:0}.chip .t b{display:block}.chip .t small{color:var(--muted)}
 .chip .acts{display:flex;gap:6px;flex-shrink:0}
-.chip .acts button{font-size:.78rem;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:transparent}
-
-.gl{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-decoration-color:var(--muted);text-underline-offset:3px}
+.chip .acts button{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:200px;border:0;background:var(--surface);color:var(--accent)}
+.chip .acts button:hover{background:var(--accent);color:#fff}
+.gl{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-decoration-color:rgba(0,111,253,.3);text-decoration-thickness:1px;text-underline-offset:3px}
 .gl:hover{color:var(--accent)}
 [hidden]{display:none!important}
-.gl.w{text-decoration:none}
-.gl.w:hover,.gl.w.on{text-decoration:underline;text-decoration-color:var(--accent)}
-.glbox .sense{line-height:1.45}
-.glbox .sense i{color:var(--muted);font-style:normal;margin-right:4px}
-.glbox .ex{display:block;color:var(--muted);font-size:.8rem}
-.glbox .src{font-size:.72rem;color:var(--muted)}
-.glbox{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--accent-soft);font-size:.88rem;display:flex;flex-direction:column;gap:6px}
+.gl.w{text-decoration:none}.gl.w:hover,.gl.w.on{text-decoration:underline;text-decoration-color:var(--accent)}
+.glbox .sense{line-height:1.45}.glbox .sense i{color:var(--muted);font-style:normal;margin-right:4px}
+.glbox .ex{display:block;color:var(--muted);font-size:.8rem}.glbox .src{font-size:.72rem;color:var(--muted)}
+.glbox{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface);color:var(--ink);font-size:.88rem;display:flex;flex-direction:column;gap:6px;animation:rise .3s var(--ease) both}
 .glbox .row{font-size:.78rem}
-.glbox button{font-size:.78rem;padding:3px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
-.btnlink{font-size:.78rem;padding:4px 8px;border-radius:8px;border:1px solid var(--line);color:var(--ink);text-decoration:none;white-space:nowrap}
-/* receipt */
-.receipt{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 18px;font-family:var(--mono);font-size:.85rem;display:flex;flex-direction:column;gap:12px;
-  -webkit-mask:radial-gradient(circle 6px at 50% 0,#0000 98%,#000) 0 0/14px 100% repeat-x;mask:radial-gradient(circle 6px at 50% 0,#0000 98%,#000) 0 0/14px 100% repeat-x;padding-top:24px}
-.receipt .hd{text-align:center;display:flex;flex-direction:column;gap:2px}
-.receipt .hd b{font-size:1.05rem;letter-spacing:.1em}
-.dash{border-top:1px dashed var(--muted);opacity:.6}
-.line{display:flex;flex-direction:column;gap:4px}
-.line .top{display:flex;justify-content:space-between;gap:8px}
-.line .said{font-family:var(--body);font-size:.9rem;overflow-wrap:anywhere}
-.line .tip{font-family:var(--body);font-size:.82rem;color:var(--muted)}
-.line .model{font-family:var(--body);font-size:.82rem;border-left:2px solid var(--accent);padding-left:8px}
-.tier{font-weight:600;font-variant-numeric:tabular-nums}
+.glbox button{font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:200px;border:0;background:var(--accent-soft);color:var(--accent)}
+.btnlink{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:200px;background:var(--accent-soft);color:var(--accent);text-decoration:none;white-space:nowrap}
+.receipt{background:var(--neutral-light-light);border-radius:16px;padding:20px 18px;font-size:.88rem;display:flex;flex-direction:column;gap:12px}
+.receipt .hd{text-align:center;display:flex;flex-direction:column;gap:2px}.receipt .hd b{font-size:1.05rem;font-weight:800;letter-spacing:.1em}
+.dash{border-top:1px dashed var(--ring)}
+.line{display:flex;flex-direction:column;gap:4px;animation:rise .4s var(--ease) both}
+.line .top{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.line .said{font-size:.9rem;overflow-wrap:anywhere}.line .tip{font-size:.82rem;color:var(--muted)}
+.line .model{font-size:.82rem;box-shadow:inset 2px 0 0 var(--accent);padding-left:10px}
+.tier{font-weight:800;font-variant-numeric:tabular-nums}
 .tier.s0{color:var(--t10);opacity:.7}.tier.s10{color:var(--t10)}.tier.s30{color:var(--t30)}.tier.s60{color:var(--t60)}.tier.s100{color:var(--t100)}
-.total{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:600}
-.legend{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.8rem}
-@media (prefers-reduced-motion: no-preference){.msg{animation:pop .18s ease-out}@keyframes pop{from{transform:translateY(4px);opacity:.4}to{transform:none;opacity:1}}}
-.kofrom{display:block;margin-top:4px;font-size:12px;opacity:.8;line-height:1.4}
-</style>
+.total{display:flex;justify-content:space-between;font-size:1.25rem;font-weight:800}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:.82rem}
+.kofrom{display:block;margin-top:4px;font-size:12px;opacity:.85;line-height:1.4}
+.pcard{animation:rise .45s var(--ease) both}.pcard:nth-child(2){animation-delay:.06s}.pcard:nth-child(3){animation-delay:.12s}.pcard:nth-child(4){animation-delay:.18s}.pcard:nth-child(5){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes arrive{from{opacity:0;transform:translateY(26px) scale(.92)}60%{opacity:1}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
+
+/* ---------- dark mode: phone setting by default, or the button on the home screen ---------- */
+.themebtn{flex:none;padding:6px 12px;font-size:.78rem;border-radius:200px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--surface-muted:#0F1115;--surface:#181A20;--neutral-light-light:#20232B;--neutral-light-medium:#2C2F39;--neutral-light-darkest:#3B3E49;--ring:#3B3E49;
+--neutral-dark-darkest:#ECEDF2;--neutral-dark-light:#A5A7B0;--neutral-dark-lightest:#80838D;
+--highlight-lightest:#18294A;--highlight-light:#21396A;--highlight-dark:#2E73E6;--highlight-darkest:#5A9CFF;--me:#2266D9;--t10:#8F9098;--t30:#6FB0FF;--t60:#5A9CFF;--t100:#9CC6FF;color-scheme:dark}
+:root:not([data-theme="light"]) .btn.primary,:root:not([data-theme="light"]) .seg button[aria-pressed="true"],:root:not([data-theme="light"]) .chip .acts button:hover{background:var(--me)}
+:root:not([data-theme="light"]) .btn.primary:hover{background:var(--highlight-dark)}}
+:root[data-theme="dark"]{--surface-muted:#0F1115;--surface:#181A20;--neutral-light-light:#20232B;--neutral-light-medium:#2C2F39;--neutral-light-darkest:#3B3E49;--ring:#3B3E49;
+--neutral-dark-darkest:#ECEDF2;--neutral-dark-light:#A5A7B0;--neutral-dark-lightest:#80838D;
+--highlight-lightest:#18294A;--highlight-light:#21396A;--highlight-dark:#2E73E6;--highlight-darkest:#5A9CFF;--me:#2266D9;--t10:#8F9098;--t30:#6FB0FF;--t60:#5A9CFF;--t100:#9CC6FF;color-scheme:dark}
+:root[data-theme="dark"] .btn.primary,:root[data-theme="dark"] .seg button[aria-pressed="true"],:root[data-theme="dark"] .chip .acts button:hover{background:var(--me)}
+:root[data-theme="dark"] .btn.primary:hover{background:var(--highlight-dark)}
+</style>
+</head>
+<body>
 <div class="wrap" id="app"></div>
 
 <script>
 /* ---------- storage helpers ---------- */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let LANG=store.get('stc.lang','ko');
+/* ---------- theme: follows the phone setting until the user picks one ---------- */
+const DARKQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+function isDark(){const t=document.documentElement.dataset.theme;return t?t==='dark':DARKQ.matches}
+function setTheme(t){document.documentElement.dataset.theme=t;store.set('stc.theme',t)}
+{const t=store.get('stc.theme',null);if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}
 
 /* ---------- personas ---------- */
 const P={
@@ -262,7 +300,7 @@ const GROUPS=PIDS.map(b=>Object.keys(P).filter(k=>(P[k].base||k)===b));
 function pidx(pid){return PIDS.indexOf((P[pid]&&P[pid].base)||pid)}
 const dayNum=(()=>{const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000)})();
 function todays(){return GROUPS.map((g,i)=>g[(dayNum+i)%g.length])}
-let SHOWALL=false;
+let SHOWALL=false;let INFO=false;
 
 
 /* ---------- intents: what the user might ask or say ---------- */
@@ -381,12 +419,12 @@ const STATEMENTS=[
 ];
 
 /* ---------- stages ---------- */
-const STAGES=['greet','order','size','name','chat1','chat2','close'];
-const STAGE_KO={greet:'인사',order:'주문',size:'사이즈',name:'이름',chat1:'잡담 1',chat2:'잡담 2',close:'마무리'};
-const STAGE_EN={greet:'Greeting',order:'Order',size:'Size',name:'Name',chat1:'Chat 1',chat2:'Chat 2',close:'Goodbye'};
+const STAGES=['greet','order','size','name','chat1','chat2','chat3','chat4','chat5','chat6','close'];
+const STAGE_KO={greet:'인사',order:'주문',size:'사이즈',name:'이름',chat1:'잡담 1',chat2:'잡담 2',chat3:'잡담 3',chat4:'잡담 4',chat5:'잡담 5',chat6:'잡담 6',close:'마무리'};
+const STAGE_EN={greet:'Greeting',order:'Order',size:'Size',name:'Name',chat1:'Chat 1',chat2:'Chat 2',chat3:'Chat 3',chat4:'Chat 4',chat5:'Chat 5',chat6:'Chat 6',close:'Goodbye'};
 const SHORT={greet:"how's your day?",order:"what can I get you?",size:"what size?",name:"what name should I put?"};
 const ALT_SHORT={greet:["how's your day?","how are you doing today?","how's it going so far?"],order:["what can I get you?","what are you in the mood for?","what sounds good today?","what'll it be?"],size:["what size?","small, medium, or large?","how big do you want it?"],name:["what name should I put?","what's your name?","who should I write on the cup?"]};
-const CHAT=new Set(['greet','chat1','chat2']);
+const CHAT=new Set(['greet','chat1','chat2','chat3','chat4','chat5','chat6']);
 const MODEL={greet:"Pretty good, thanks! I just finished my exams, so I'm finally relaxing. How about you?",order:"Can I get an iced vanilla latte, please? Actually, what do you recommend?",size:"A medium, please. Is it pretty sweet?",name:"It's Seyoung. S-E-Y-O-U-N-G. It's a Korean name.",close:"Thanks so much! You have a great day too. I'll come back next week!"};
 const DRINKS=['honey oat latte','caramel macchiato','vanilla cold brew','vanilla latte','chai latte','matcha latte','hot chocolate','cold brew','flat white','drip coffee','iced coffee','green tea','latte','americano','cappuccino','mocha','espresso','macchiato','frappuccino','chai','matcha','tea','lemonade','smoothie','coffee',
  'cafe latte','caffe latte','cafe au lait','cafe mocha','pumpkin spice latte','hazelnut latte','caramel latte','oat latte','oat milk latte','almond milk latte','soy latte','iced americano','iced latte','iced tea','iced mocha','cortado','bubble tea','milk tea','black tea','earl grey','herbal tea','peppermint tea','chamomile tea','jasmine tea','hot tea','orange juice','apple juice','juice','milk','water','sparkling water','cocoa','hot cocoa','milkshake','shake','frappe','soda','kombucha','decaf','vanilla','caramel','hazelnut','lungo','ristretto','red eye','affogato','yuzu tea','lemon tea','ginger tea','strawberry smoothie','mango smoothie','berry smoothie','banana smoothie','iced chocolate','chocolate milk','pour over','pour-over','oat latte','iced chai','iced matcha','dirty chai','london fog','ginger tea'].sort((a,b)=>b.length-a.length);
@@ -1426,8 +1464,8 @@ function stageMatch(st,n,raw,isQ){
   if(st==='order'){const q=qText(raw);if(q&&/recommend|suggest|what'?s good|your favorite|popular/.test(q))return false;const ok=segsOf(raw).filter(x=>!infoQ(x)).map(norm);if(S.offer&&ok.some(x=>YES.test(x)))return true;if(!findDrink(ok.join(' '))&&attrRec(ok.join(' ')||n))return false;return ok.some(x=>findDrink(x)!==null||ORDER_GENERIC.test(x)||FOOD.test(x))}
   if(st==='size'){if(/^(s|m|l)$/.test(n))return true;return segsOf(raw).filter(x=>!infoQ(x)).some(x=>SIZE.test(norm(x)))}
   if(st==='name')return !!extractName(n,raw);
-  if((st==='chat1'||st==='chat2')&&/^(yes|yeah|yep|no|nope|maybe|sometimes|not really|sure|kind of|sort of|i guess|probably|not much|a little|a bit|very|yes very|always|never|ok|okay|exactly|totally|of course|unfortunately|definitely|absolutely)[.!]?$/.test(n))return true;
-  if(st==='chat1'||st==='chat2')return p.expect[st].test(n.replace(/\?/g,''))&&!(isQ&&wc<=3)||(!isQ&&wc>=3);
+  if(/^chat\d$/.test(st)&&/^(yes|yeah|yep|no|nope|maybe|sometimes|not really|sure|kind of|sort of|i guess|probably|not much|a little|a bit|very|yes very|always|never|ok|okay|exactly|totally|of course|unfortunately|definitely|absolutely)[.!]?$/.test(n))return true;
+  if(/^chat\d$/.test(st))return p.expect[st].test(n.replace(/\?/g,''))&&!(isQ&&wc<=3)||(!isQ&&wc>=3);
   if(st==='close')return CLOSE.test(n)||!isQ||wc<=4;
 }
 const FLAVOR={pumpkin:'pumpkin spice latte',honey:'honey oat latte',strawberry:'strawberry smoothie',mango:'mango smoothie',chocolate:'mocha',mint:'peppermint tea',peppermint:'peppermint tea',lemon:'lemon tea',ginger:'ginger tea',coconut:'iced latte',cinnamon:'chai latte'};
@@ -1474,12 +1512,12 @@ async function advance(){
 async function finish(){
   S.done=true;S.ended=false;logSave();
   const total=STAGES.reduce((a,s)=>a+adj(s),0);
-  const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,at:Date.now()});store.set('stc.history',hist.slice(0,20));
+  const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,n:STAGES.length,at:Date.now()});store.set('stc.history',hist.slice(0,20));
   render();
 }
 async function reask(st,raw){
   const p=P[S.pid],pi=pidx(S.pid);
-  if(st==='chat1'||st==='chat2'){if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
+  if(/^chat\d$/.test(st)){if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
   if(st==='close'){await say(pick(["Anyway, enjoy your drink!","Oh, and your drink's getting cold!","Alright, enjoy!"]));if(!S.best.close)record('close',raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
   S.reasks[st]=(S.reasks[st]||0)+1;
   if(S.reasks[st]>=3){
@@ -1529,7 +1567,69 @@ const QEXPR=[
 {q:/excited|best thing|highlight|good week|happened to you/i,p:"The best part was ... / I'm excited about ...",m:"'제일 좋았던 건 ~ / ~가 기대돼요': I'm excited about the weekend.",ko:"이번 주말이 기대돼요",re:/best part|excited|looking forward/i},
 {q:/how are you|how's it going|how's your day|how was your|busy day|long day|brings you in|on your mind|exciting|happen today|highlight of your day/i,p:"It's been a ... day",m:"'~한 하루였어요': It's been a long day.",ko:"오늘은 피곤한 하루였어요",re:/been a|feeling|day/i}];
 const KO_BY_P={"I'm feeling ...": "오늘은 기분이 꽤 좋아요", "I just ...": "방금 수업이 끝났어요", "kind of": "조금 피곤해요", "It's been a ... day": "오늘은 피곤한 하루였어요", "How about you?": "저는 괜찮아요. 당신은요?", "Can I get ...?": "아이스 라떼 한 잔 주실 수 있나요?", "I'd like ...": "아이스티로 할게요", "with ... instead of ...": "일반 우유 대신 귀리 우유로 해 주세요", "Could you make it ...?": "덜 달게 만들어 주실 수 있나요?", "What's ... like?": "모카는 어떤 맛이에요?", "I'll have ...": "그걸로 할게요", "... is fine": "스몰이면 충분해요", "a bit ...": "조금 더 크게 해 주세요", "What's the difference between ... and ...?": "미디엄과 라지는 뭐가 달라요?", "I'll go with ...": "미디엄으로 할게요", "Which size do you recommend?": "어떤 사이즈가 좋을까요?", "The biggest one, please.": "제일 큰 걸로 주세요", "It's ...": "제 이름은 세영이에요", "You can call me ...": "편하게 세라고 불러 주세요", "It's spelled ...": "S-E-Y-O-U-N-G라고 써요", "It's pronounced like...": "'세영'처럼 발음해요", "be into ...": "요즘 베이킹에 푹 빠져 있어요", "a lot of ...": "오늘 숙제가 아주 많았어요", "I used to ...": "예전에 부산에 살았어요", "I've been ...ing": "요즘 기타를 배우고 있어요", "I'm planning to ...": "영화를 볼 계획이에요", "Actually, ...": "사실 한국에서 왔어요", "because ...": "왜냐하면 마음이 편해지거든요", "It reminds me of ...": "고향이 생각나요", "That reminds me of...": "고향이 생각나요", "Me too!": "저도요!", "Honestly, I'm not sure.": "솔직히 잘 모르겠어요", "It was nice ...ing": "얘기해서 즐거웠어요", "Hope you ...": "좋은 하루 보내세요", "See you ...": "다음 주에 또 봐요", "Thanks for ...": "추천해 줘서 고마워요", "It was nice talking to you!": "얘기해서 즐거웠어요!", "See you around!": "또 봐요!", "I'm curious about ...": "이 동네가 궁금해요", "What do you usually ...?": "주말에는 보통 뭐 하세요?", "It depends on ...": "그날 기분에 따라 달라요", "I can't wait to ...": "빨리 집에 가고 싶어요", "I wish I could ...": "여행을 갈 수 있으면 좋겠어요", "I think ...": "제 생각에는 좋은 것 같아요", "Have you ever ...?": "한국에 가 본 적 있어요?", "How come ...?": "왜 이렇게 일찍 일어났어요?"};
-function newIdea(){const k=S.free?'free':hintKey(STAGES[Math.min(S.idx,STAGES.length-1)]);const q=(S.lastB||'');if(S.expr&&/didn'?t catch|one more time|say it again|what was that|come again/i.test(q))return '위 표현을 써서 문장 만들기';const hit=(k==='chat'||k==='free'||k==='greet'||k==='close')?QEXPR.filter(x=>x.q.test(q)):[];let ex;if(hit.length){ex=hit.find(x=>x!==S.expr)||hit[0];ex=Object.assign({},ex)}else{const e0=EXPR[k]||EXPR.free;const pool=e0.filter(x=>x!==S.expr&&x.p!==(S.expr||{}).p);ex=Object.assign({},pick(pool.length?pool:e0));const ide=(IDEAS[k]||IDEAS.free);ex.ko=KO_BY_P[ex.p]||pick(ide).replace(/^예:\s*/,'')}S.expr=ex;return '위 표현을 써서 문장 만들기'}
+const EXKO={
+"I'm feeling ...":[["오늘은 기분이 꽤 좋아요","I'm feeling pretty good today."],["좀 졸려요","I'm feeling a little sleepy."],["시험이 끝나서 홀가분해요","I'm feeling relieved because my exam is over."],["날씨 덕분에 기분이 상쾌해요","I'm feeling fresh thanks to the weather."],["조금 긴장돼요","I'm feeling a bit nervous."],["오늘은 에너지가 넘쳐요","I'm feeling full of energy today."],["배가 좀 고파요","I'm feeling kind of hungry."],["주말이라 여유로워요","I'm feeling relaxed because it's the weekend."]],
+"I just ...":[["방금 수업이 끝났어요","I just finished class."],["방금 일어났어요","I just woke up."],["방금 시험을 봤어요","I just took a test."],["방금 학원에서 나왔어요","I just got out of my academy."],["방금 친구를 만나고 왔어요","I just met my friend."],["방금 운동하고 왔어요","I just worked out."],["방금 버스에서 내렸어요","I just got off the bus."],["방금 숙제를 다 끝냈어요","I just finished all my homework."]],
+"kind of":[["조금 피곤해요","I'm kind of tired."],["좀 바빠요","I'm kind of busy."],["약간 긴장돼요","I'm kind of nervous."],["좀 배고파요","I'm kind of hungry."],["조금 신나요","I'm kind of excited."],["약간 추워요","I'm kind of cold."],["좀 지루한 하루였어요","It was kind of a boring day."]],
+"It's been a ... day":[["오늘은 피곤한 하루였어요","It's been a tiring day."],["오늘은 긴 하루였어요","It's been a long day."],["오늘 정말 바쁜 하루였어요","It's been a really busy day."],["오늘은 좋은 하루였어요","It's been a good day."],["오늘은 정신없는 하루였어요","It's been a crazy day."],["오늘은 조용한 하루였어요","It's been a quiet day."],["오늘은 운 좋은 하루였어요","It's been a lucky day."],["오늘은 꽤 괜찮은 하루였어요","It's been a pretty nice day."],["오늘은 좀 힘든 하루였어요","It's been a tough day."],["오늘은 재미있는 하루였어요","It's been a fun day."]],
+"How about you?":[["저는 괜찮아요. 당신은요?","I'm good. How about you?"],["저는 좀 피곤해요. 당신은요?","I'm a little tired. How about you?"],["저는 잘 지내요. 당신은요?","I'm doing well. How about you?"],["좋아요, 고마워요. 당신은요?","Pretty good, thanks. How about you?"],["저는 바빴어요. 당신은요?","I've been busy. How about you?"],["나쁘지 않아요. 당신은요?","Not bad. How about you?"]],
+"Can I get ...?":[["아이스 라떼 한 잔 주실 수 있나요?","Can I get an iced latte?"],["아메리카노 한 잔 주실 수 있나요?","Can I get an americano?"],["따뜻한 녹차 주실 수 있나요?","Can I get a hot green tea?"],["바닐라 라떼 하나 주세요","Can I get a vanilla latte?"],["카푸치노 한 잔 주실래요?","Can I get a cappuccino?"],["핫초코 하나 주실 수 있나요?","Can I get a hot chocolate?"],["레모네이드랑 쿠키 하나 주세요","Can I get a lemonade and a cookie?"],["모카 한 잔 주실 수 있나요?","Can I get a mocha?"]],
+"I'd like ...":[["아이스티로 할게요","I'd like an iced tea."],["카페 라떼 한 잔 주세요","I'd like a cafe latte."],["따뜻한 아메리카노로 주세요","I'd like a hot americano."],["캐러멜 마키아토로 할게요","I'd like a caramel macchiato."],["말차 라떼 마시고 싶어요","I'd like a matcha latte."],["스무디 하나 주세요","I'd like a smoothie."],["콜드브루 한 잔 부탁해요","I'd like a cold brew, please."]],
+"with ... instead of ...":[["일반 우유 대신 귀리 우유로 해 주세요","With oat milk instead of regular milk, please."],["우유 대신 두유로 해 주세요","With soy milk instead of milk, please."],["설탕 대신 꿀로 해 주세요","With honey instead of sugar, please."],["얼음 대신 따뜻하게 해 주세요","Hot instead of iced, please."],["휘핑크림 대신 시나몬으로 해 주세요","With cinnamon instead of whipped cream, please."],["바닐라 대신 캐러멜 시럽으로 해 주세요","With caramel syrup instead of vanilla, please."]],
+"Could you make it ...?":[["덜 달게 만들어 주실 수 있나요?","Could you make it less sweet?"],["좀 더 진하게 해 주실 수 있나요?","Could you make it stronger?"],["얼음 적게 해 주실 수 있나요?","Could you make it with less ice?"],["따뜻하게 해 주실 수 있나요?","Could you make it hot?"],["디카페인으로 해 주실 수 있나요?","Could you make it decaf?"],["너무 뜨겁지 않게 해 주실래요?","Could you make it not too hot?"],["시럽 반만 넣어 주실 수 있나요?","Could you make it half sweet?"]],
+"What's ... like?":[["모카는 어떤 맛이에요?","What's the mocha like?"],["오늘의 커피는 어떤 맛이에요?","What's the coffee of the day like?"],["콜드브루는 어떤 맛이에요?","What's the cold brew like?"],["말차 라떼는 어때요?","What's the matcha latte like?"],["이 머핀은 어떤 맛이에요?","What's this muffin like?"],["캐러멜 마키아토는 많이 달아요?","What's the caramel macchiato like? Is it very sweet?"]],
+"I'll have ...":[["그걸로 할게요","I'll have that."],["같은 걸로 할게요","I'll have the same."],["라떼로 할게요","I'll have a latte."],["추천해 주신 걸로 할게요","I'll have the one you recommended."],["따뜻한 차로 할게요","I'll have a hot tea."],["크루아상도 하나 할게요","I'll have a croissant too."],["아이스 아메리카노로 할게요","I'll have an iced americano."]],
+"... is fine":[["스몰이면 충분해요","Small is fine."],["미디엄이면 돼요","Medium is fine."],["아무 사이즈나 괜찮아요","Any size is fine."],["라지면 좋아요","Large is fine."],["보통 사이즈면 돼요","A regular size is fine."],["제일 작은 거면 돼요","The smallest one is fine."]],
+"a bit ...":[["조금 더 크게 해 주세요","A bit bigger, please."],["조금 작은 걸로 주세요","A bit smaller, please."],["좀 큰 게 좋겠어요","Something a bit bigger would be nice."],["오늘은 조금 더 마시고 싶어요","I want a bit more today."],["조금만 마실게요","Just a bit, please."],["얼음은 조금만 넣어 주세요","Just a bit of ice, please."]],
+"What's the difference between ... and ...?":[["미디엄과 라지는 뭐가 달라요?","What's the difference between medium and large?"],["스몰과 미디엄은 얼마나 차이 나요?","What's the difference between small and medium?"],["톨이랑 그란데는 뭐가 달라요?","What's the difference between tall and grande?"],["라떼와 카푸치노는 뭐가 달라요?","What's the difference between a latte and a cappuccino?"],["아메리카노랑 콜드브루는 뭐가 달라요?","What's the difference between an americano and a cold brew?"]],
+"I'll go with ...":[["미디엄으로 할게요","I'll go with medium."],["라지로 할게요","I'll go with large."],["스몰로 할게요","I'll go with small."],["제일 큰 걸로 할게요","I'll go with the biggest one."],["추천해 주신 사이즈로 할게요","I'll go with the size you recommend."],["평소처럼 미디엄으로 할게요","I'll go with medium, like usual."]],
+"Which size do you recommend?":[["어떤 사이즈가 좋을까요?","Which size do you recommend?"],["처음인데 어떤 사이즈가 좋을까요?","It's my first time. Which size do you recommend?"],["오래 마시려면 어떤 사이즈가 좋아요?","Which size do you recommend if I want it to last?"]],
+"The biggest one, please.":[["제일 큰 걸로 주세요","The biggest one, please."],["오늘은 피곤해서 제일 큰 걸로 주세요","I'm tired today. The biggest one, please."],["공부할 거라 제일 큰 걸로 주세요","I'm going to study, so the biggest one, please."]],
+"It's ...":[["제 이름은 세영이에요","It's Seyoung."],["민호예요","It's Minho."],["지아예요","It's Jia."],["제 이름은 서준이에요","It's Seojun."],["하은이에요","It's Haeun."],["제 이름은 도윤이에요","It's Doyoon."],["유나예요","It's Yuna."]],
+"You can call me ...":[["편하게 세라고 불러 주세요","You can call me Se."],["그냥 민이라고 불러 주세요","You can call me Min."],["영어 이름인 에이미라고 불러 주세요","You can call me Amy. It's my English name."],["친구들처럼 준이라고 불러 주세요","You can call me Jun, like my friends do."],["제이라고 부르셔도 돼요","You can call me J."]],
+"It's spelled ...":[["S-E-Y-O-U-N-G라고 써요","It's spelled S-E-Y-O-U-N-G."],["J-I-A라고 써요","It's spelled J-I-A."],["M-I-N-H-O라고 써요","It's spelled M-I-N-H-O."],["Y-U-N-A라고 써요","It's spelled Y-U-N-A."],["H-A-E-U-N이라고 써요","It's spelled H-A-E-U-N."]],
+"It's pronounced like...":[["'세영'처럼 발음해요","It's pronounced like 'say-young'."],["'지아'처럼 발음해요","It's pronounced like 'gee-ah'."],["'민호'처럼 발음해요","It's pronounced like 'min-ho'."]],
+"be into ...":[["요즘 베이킹에 푹 빠져 있어요","I'm really into baking lately."],["요즘 케이팝에 빠져 있어요","I'm into K-pop these days."],["요즘 그림 그리기에 빠져 있어요","I'm really into drawing lately."],["요즘 배드민턴에 빠졌어요","I'm into badminton these days."],["요즘 추리 소설에 빠져 있어요","I'm really into mystery novels lately."],["요즘 사진 찍기에 빠져 있어요","I'm into taking photos these days."],["요즘 요리에 관심이 많아요","I'm really into cooking lately."]],
+"a lot of ...":[["오늘 숙제가 아주 많았어요","I had a lot of homework today."],["요즘 시험이 많아요","I have a lot of tests these days."],["주말에 할 일이 많아요","I have a lot of things to do this weekend."],["우리 동네에는 카페가 많아요","There are a lot of cafes in my neighborhood."],["오늘 사람이 많네요","There are a lot of people today."],["친구들이랑 사진을 많이 찍었어요","I took a lot of photos with my friends."]],
+"I used to ...":[["예전에 부산에 살았어요","I used to live in Busan."],["예전에 피아노를 쳤어요","I used to play the piano."],["어릴 때 커피를 싫어했어요","I used to hate coffee when I was a kid."],["예전에 축구를 했었어요","I used to play soccer."],["예전엔 아침마다 뛰었어요","I used to run every morning."],["어릴 때 고양이를 키웠어요","I used to have a cat when I was little."],["예전에는 매일 그림을 그렸어요","I used to draw every day."]],
+"I've been ...ing":[["요즘 기타를 배우고 있어요","I've been learning guitar."],["요즘 영어 공부를 하고 있어요","I've been studying English."],["요즘 잠을 잘 못 자고 있어요","I've been sleeping badly lately."],["요즘 드라마를 보고 있어요","I've been watching a drama."],["요즘 매일 걷고 있어요","I've been walking every day."],["요즘 시험 준비를 하고 있어요","I've been preparing for exams."],["요즘 책을 많이 읽고 있어요","I've been reading a lot."]],
+"I'm planning to ...":[["영화를 볼 계획이에요","I'm planning to see a movie."],["주말에 영화를 볼 계획이에요","I'm planning to see a movie this weekend."],["친구랑 쇼핑하러 갈 계획이에요","I'm planning to go shopping with my friend."],["이번 주말엔 집에서 쉴 계획이에요","I'm planning to rest at home this weekend."],["방학에 여행을 갈 계획이에요","I'm planning to travel during vacation."],["도서관에서 공부할 계획이에요","I'm planning to study at the library."],["가족이랑 외식할 계획이에요","I'm planning to eat out with my family."],["공원에서 자전거를 탈 계획이에요","I'm planning to ride my bike in the park."]],
+"Actually, ...":[["사실 한국에서 왔어요","Actually, I'm from Korea."],["사실 여기 처음 와 봐요","Actually, it's my first time here."],["사실 커피를 잘 안 마셔요","Actually, I don't drink coffee much."],["사실 오늘 생일이에요","Actually, today is my birthday."],["사실 영어 연습 중이에요","Actually, I'm practicing my English."],["사실 친구를 기다리고 있어요","Actually, I'm waiting for a friend."]],
+"because ...":[["왜냐하면 마음이 편해지거든요","Because it makes me feel calm."],["재미있거든요","Because it's fun."],["스트레스가 풀리거든요","Because it helps me relax."],["친구들이랑 같이 할 수 있거든요","Because I can do it with my friends."],["여기 커피가 맛있거든요","Because the coffee here is good."],["조용해서 공부하기 좋거든요","Because it's quiet and good for studying."]],
+"It reminds me of ...":[["고향이 생각나요","It reminds me of my hometown."],["할머니 집이 생각나요","It reminds me of my grandma's house."],["어릴 때가 생각나요","It reminds me of when I was a kid."],["한국 카페가 생각나요","It reminds me of cafes in Korea."],["작년 여름 여행이 생각나요","It reminds me of my trip last summer."]],
+"That reminds me of...":[["고향이 생각나요","That reminds me of my hometown."],["제 친구가 생각나요","That reminds me of my friend."],["그 영화가 생각나요","That reminds me of that movie."],["우리 강아지가 생각나요","That reminds me of my dog."]],
+"Me too!":[["저도요!","Me too!"],["저도 그래요! 저도 피곤해요","Me too! I'm tired too."],["저도요! 저도 고양이 좋아해요","Me too! I like cats too."],["저도요! 저도 그 노래 좋아해요","Me too! I love that song too."]],
+"Honestly, I'm not sure.":[["솔직히 잘 모르겠어요","Honestly, I'm not sure."],["솔직히 아직 정하지 않았어요","Honestly, I'm not sure yet."],["솔직히 잘 모르겠어요. 생각해 볼게요","Honestly, I'm not sure. Let me think."]],
+"It was nice ...ing":[["얘기해서 즐거웠어요","It was nice talking to you."],["만나서 반가웠어요","It was nice meeting you."],["수다 떨어서 좋았어요","It was nice chatting with you."],["오늘 얘기 나눠서 즐거웠어요","It was nice talking with you today."],["영어로 얘기해서 좋았어요","It was nice talking in English."]],
+"Hope you ...":[["좋은 하루 보내세요","Hope you have a great day."],["좋은 주말 보내세요","Hope you have a nice weekend."],["오늘 일 너무 힘들지 않으면 좋겠어요","Hope your shift isn't too busy."],["푹 쉬세요","Hope you get some rest."],["시험 잘 보세요","Hope your exam goes well."],["즐거운 저녁 보내세요","Hope you have a fun evening."]],
+"See you ...":[["다음 주에 또 봐요","See you next week."],["내일 봐요","See you tomorrow."],["다음에 또 봐요","See you next time."],["금요일에 봐요","See you on Friday."],["곧 또 봐요","See you soon."],["주말 지나고 봐요","See you after the weekend."]],
+"Thanks for ...":[["추천해 줘서 고마워요","Thanks for the recommendation."],["음료 고마워요","Thanks for the drink."],["얘기 나눠 줘서 고마워요","Thanks for the chat."],["기다려 줘서 고마워요","Thanks for waiting."],["도와줘서 고마워요","Thanks for your help."],["친절하게 대해 줘서 고마워요","Thanks for being so nice."]],
+"It was nice talking to you!":[["얘기해서 즐거웠어요!","It was nice talking to you!"],["오늘 정말 즐거웠어요!","It was nice talking to you today!"]],
+"See you around!":[["또 봐요!","See you around!"],["그럼 또 봐요!","Okay, see you around!"]],
+"I'm curious about ...":[["이 동네가 궁금해요","I'm curious about this neighborhood."],["바리스타 일이 궁금해요","I'm curious about your job."],["미국 학교생활이 궁금해요","I'm curious about school life in America."],["이 카페의 인기 메뉴가 궁금해요","I'm curious about the popular drinks here."],["여기 사람들이 주말에 뭐 하는지 궁금해요","I'm curious about what people do here on weekends."]],
+"What do you usually ...?":[["주말에는 보통 뭐 하세요?","What do you usually do on weekends?"],["보통 뭐 마셔요?","What do you usually drink?"],["일 끝나고 보통 뭐 해요?","What do you usually do after work?"],["아침은 보통 뭐 먹어요?","What do you usually eat for breakfast?"],["쉬는 날엔 보통 뭐 해요?","What do you usually do on your day off?"],["보통 어떤 음악 들어요?","What do you usually listen to?"]],
+"It depends on ...":[["그날 기분에 따라 달라요","It depends on my mood."],["날씨에 따라 달라요","It depends on the weather."],["시간에 따라 달라요","It depends on the time."],["숙제가 얼마나 많은지에 따라 달라요","It depends on how much homework I have."],["누구랑 가느냐에 따라 달라요","It depends on who I'm with."]],
+"I can't wait to ...":[["빨리 집에 가고 싶어요","I can't wait to go home."],["방학이 너무 기다려져요","I can't wait for vacation."],["이 음료 빨리 마셔 보고 싶어요","I can't wait to try this drink."],["주말이 너무 기다려져요","I can't wait for the weekend."],["친구를 빨리 만나고 싶어요","I can't wait to see my friend."],["그 영화 빨리 보고 싶어요","I can't wait to watch that movie."]],
+"I wish I could ...":[["여행을 갈 수 있으면 좋겠어요","I wish I could travel."],["하루 종일 잘 수 있으면 좋겠어요","I wish I could sleep all day."],["영어를 더 잘하면 좋겠어요","I wish I could speak English better."],["매일 여기 올 수 있으면 좋겠어요","I wish I could come here every day."],["강아지를 키울 수 있으면 좋겠어요","I wish I could have a dog."]],
+"I think ...":[["제 생각에는 좋은 것 같아요","I think it's great."],["여기 커피가 제일 맛있는 것 같아요","I think the coffee here is the best."],["오늘 비가 올 것 같아요","I think it's going to rain today."],["그거 재미있을 것 같아요","I think that sounds fun."],["제 생각엔 고양이가 더 귀여워요","I think cats are cuter."],["좋은 생각인 것 같아요","I think that's a good idea."]],
+"Have you ever ...?":[["한국에 가 본 적 있어요?","Have you ever been to Korea?"],["김치 먹어 본 적 있어요?","Have you ever tried kimchi?"],["케이팝 들어 본 적 있어요?","Have you ever listened to K-pop?"],["캠핑 가 본 적 있어요?","Have you ever gone camping?"],["다른 나라에 살아 본 적 있어요?","Have you ever lived in another country?"],["라떼 아트 해 본 적 있어요?","Have you ever made latte art?"]],
+"How come ...?":[["왜 이렇게 일찍 일어났어요?","How come you got up so early?"],["어떻게 바리스타가 됐어요?","How come you became a barista?"],["오늘은 왜 이렇게 조용해요?","How come it's so quiet today?"],["왜 커피를 안 마셔요?","How come you don't drink coffee?"],["왜 이 카페 이름이 이거예요?","How come the cafe has this name?"]],
+"I'm a ... / I'm studying ...":[["저는 고등학생이에요","I'm a high school student."],["저는 고등학교 2학년이에요","I'm a junior in high school."],["저는 영어를 공부하고 있어요","I'm studying English."],["저는 학생이고 시험공부 중이에요","I'm a student. I'm studying for a test."],["저는 대학 입시를 준비하고 있어요","I'm studying for college entrance exams."],["저는 교환학생이에요","I'm an exchange student."]],
+"I'm really into ...":[["요즘 그림 그리기에 푹 빠져 있어요","I'm really into drawing lately."],["요즘 춤에 푹 빠져 있어요","I'm really into dancing lately."],["요즘 게임에 빠져 있어요","I'm really into video games these days."],["요즘 뜨개질에 빠져 있어요","I'm really into knitting lately."],["요즘 웹툰에 빠져 있어요","I'm really into webtoons these days."],["요즘 농구에 빠져 있어요","I'm really into basketball lately."],["요즘 노래 부르기에 빠져 있어요","I'm really into singing these days."]],
+"I'm more of a ... person":[["저는 강아지 쪽이에요","I'm more of a dog person."],["저는 고양이 쪽이에요","I'm more of a cat person."],["저는 차 쪽이에요","I'm more of a tea person."],["저는 커피 쪽이에요","I'm more of a coffee person."],["저는 아침형 인간이에요","I'm more of a morning person."],["저는 저녁형 인간이에요","I'm more of a night person."],["저는 집순이에 가까워요","I'm more of a homebody."]],
+"I just moved here / I live ...":[["얼마 전에 한국에서 이사 왔어요","I just moved here from Korea."],["이 근처에 살아요","I live near here."],["학교 근처에 살아요","I live near my school."],["두 달 전에 이사 왔어요","I just moved here two months ago."],["버스로 10분 거리에 살아요","I live ten minutes away by bus."],["가족이랑 같이 여기로 이사 왔어요","I just moved here with my family."]],
+"I've been listening to ...":[["요즘 케이팝을 듣고 있어요","I've been listening to K-pop."],["요즘 팝송을 듣고 있어요","I've been listening to pop songs."],["요즘 재즈를 듣고 있어요","I've been listening to jazz."],["요즘 테일러 스위프트 노래를 듣고 있어요","I've been listening to Taylor Swift."],["요즘 영화 OST를 듣고 있어요","I've been listening to movie soundtracks."],["요즘 공부할 때 로파이를 들어요","I've been listening to lo-fi while I study."]],
+"I usually ... / I haven't tried ...":[["타코는 아직 못 먹어 봤어요","I haven't tried tacos yet."],["저는 보통 집에서 밥을 먹어요","I usually eat at home."],["햄버거는 아직 안 먹어 봤어요","I haven't tried the burgers here yet."],["보통 점심은 학교에서 먹어요","I usually eat lunch at school."],["보통 매운 음식을 먹어요","I usually eat spicy food."],["베이글은 아직 못 먹어 봤어요","I haven't tried bagels yet."]],
+"I watched ... and it was ...":[["코미디를 봤는데 정말 웃겼어요","I watched a comedy and it was hilarious."],["공포 영화를 봤는데 너무 무서웠어요","I watched a horror movie and it was so scary."],["애니메이션을 봤는데 감동적이었어요","I watched an animated movie and it was touching."],["드라마를 봤는데 지루했어요","I watched a drama and it was boring."],["액션 영화를 봤는데 신났어요","I watched an action movie and it was exciting."],["다큐멘터리를 봤는데 흥미로웠어요","I watched a documentary and it was interesting."]],
+"I play ... / I used to ...":[["예전에 축구를 했었어요","I used to play soccer."],["저는 배드민턴을 쳐요","I play badminton."],["주말마다 농구를 해요","I play basketball on weekends."],["예전에 수영을 배웠어요","I used to take swimming lessons."],["저는 탁구를 쳐요","I play table tennis."],["예전에 태권도를 했어요","I used to do taekwondo."]],
+"My favorite ... is ...":[["제일 좋아하는 과목은 수학이에요","My favorite subject is math."],["제일 좋아하는 과목은 영어예요","My favorite subject is English."],["제일 좋아하는 과목은 미술이에요","My favorite subject is art."],["제일 좋아하는 과목은 체육이에요","My favorite subject is P.E."],["제일 좋아하는 과목은 과학이에요","My favorite subject is science."],["제일 좋아하는 과목은 역사예요","My favorite subject is history."]],
+"I have a ... named ...":[["코코라는 강아지를 키워요","I have a dog named Coco."],["나비라는 고양이를 키워요","I have a cat named Nabi."],["보리라는 햄스터를 키워요","I have a hamster named Bori."],["두부라는 토끼를 키워요","I have a rabbit named Dubu."],["반려동물은 없어요","I don't have any pets."],["콩이라는 강아지를 키워요","I have a puppy named Kongi."]],
+"I usually go to ... to ...":[["보통 공원에 가서 쉬어요","I usually go to the park to relax."],["보통 도서관에 가서 공부해요","I usually go to the library to study."],["보통 쇼핑몰에 가서 친구를 만나요","I usually go to the mall to meet friends."],["보통 한강에 가서 자전거를 타요","I usually go to the Han River to ride a bike."],["보통 카페에 가서 책을 읽어요","I usually go to a cafe to read."],["보통 바닷가에 가서 산책해요","I usually go to the beach to take a walk."]],
+"The hardest part is ...":[["가장 어려운 건 빨리 말하기예요","The hardest part is speaking fast."],["가장 어려운 건 알아듣기예요","The hardest part is understanding people."],["가장 어려운 건 발음이에요","The hardest part is pronunciation."],["가장 어려운 건 단어 생각해 내기예요","The hardest part is thinking of the right words."],["가장 어려운 건 긴장하지 않기예요","The hardest part is not getting nervous."],["가장 어려운 건 농담 이해하기예요","The hardest part is understanding jokes."]],
+"The best part was ... / I'm excited about ...":[["이번 주말이 기대돼요","I'm excited about the weekend."],["제일 좋았던 건 친구들이랑 논 거예요","The best part was hanging out with my friends."],["다음 주 여행이 기대돼요","I'm excited about my trip next week."],["제일 좋았던 건 시험이 끝난 거예요","The best part was finishing my exam."],["콘서트가 기대돼요","I'm excited about the concert."],["제일 좋았던 건 맛있는 점심이었어요","The best part was a delicious lunch."]]
+};
+function exPick(p,lastKo){const a=EXKO[p];if(!a||!a.length)return null;const f=a.filter(x=>x[0]!==lastKo);return pick(f.length?f:a)}
+function newIdea(){const k=S.free?'free':hintKey(STAGES[Math.min(S.idx,STAGES.length-1)]);const q=(S.lastB||'');if(S.expr&&/didn'?t catch|one more time|say it again|what was that|come again/i.test(q))return '위 표현을 써서 문장 만들기';const hit=(k==='chat'||k==='free'||k==='greet'||k==='close')?QEXPR.filter(x=>x.q.test(q)):[];let cands=hit.slice();if(k==='greet'||!cands.length)(EXPR[k]||EXPR.free).forEach(x=>{if(!cands.some(y=>y.p===x.p))cands.push(x)});const prev=S.expr||{};let pool=cands.filter(x=>x.p!==prev.p);if(!pool.length)pool=cands;const ex=Object.assign({},pick(pool));const e=exPick(ex.p,prev.ko);if(e){ex.ko=e[0];ex.en=e[1]}else{ex.ko=KO_BY_P[ex.p]||ex.ko||pick(IDEAS[k]||IDEAS.free).replace(/^예:\s*/,'')}S.expr=ex;return '위 표현을 써서 문장 만들기'}
 function markExpr(){const l=S.log[S.log.length-1];if(l&&l.who==='u'&&S.expr&&S.expr.re.test(l.text))l.used=S.expr.p}
 const FREE_TOPICS=["What kind of music are you into?","Have you tried any good food around here yet?","Do you play any sports?","Seen any good movies lately?","What's your favorite subject at school?","Do you have any pets?","What do you usually do after school?","Any plans for the summer?","Are you a morning person or a night person?","What do you usually drink back home?","Have you been to the beach here yet?","What's the hardest part about speaking English?","What's something you're excited about this week?","Are you more of a coffee person or a tea person?","What's the best thing that happened to you this week?","Do you have a favorite place to hang out?"];
 const FREE_BACK=["Me? Ooh, I love that too! Great minds think alike.","Um, me too, kind of.","Same, pretty much.","Me? I'm just here for the drama.","Oh, me? I just like a good chat, dear."];
@@ -1656,7 +1756,7 @@ async function handle(raw){
       await advance();return;
     }
     let r=CHAT.has(st)?statementReact(n):null;
-    const offScript=(st==='chat1'||st==='chat2')&&!S.followed[st]&&!p.expect[st].test(n.replace(/\?/g,''));
+    const offScript=/^chat\d$/.test(st)&&!S.followed[st]&&!p.expect[st].test(n.replace(/\?/g,''));
     if(st==='order'&&iRe('wrong').re.test(n))r=iRe('wrong').r[pi];
     if(!r&&CHAT.has(st)&&!isQ&&!S.followed[st]&&!S.rush&&!(st==='greet'&&isNeg(n))){const af=actFollow(raw,n,pi);if(af){S.followed[st]=true;flag('topic');await say(af);return}}
     if(!r&&offScript&&!NEGANS.test(n))r=NEUTRAL[pi];
@@ -1743,14 +1843,44 @@ function renderStart(){
   const hist=store.get('stc.history',[]).slice(0,5), saved=savedList();
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:8px">
-    <span class="eyebrow">Corner café · 7 steps · no exam English</span>
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
     <h1>Small Talk Café</h1>
-    <p class="muted">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 영어로 자유롭게 입력하세요. 점수는 대화가 끝난 뒤 영수증에서만 보여 드립니다.</p>
+    <p class="muted">바리스타를 골라 영어로 주문하고 수다를 떨어 보세요. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
   </header>
   <section style="display:flex;flex-direction:column;gap:10px">
     <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'바리스타 20명':'오늘의 바리스타 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
-    ${SHOWALL?'':'<p class="muted" style="font-size:.85rem">바리스타 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다.</p>'}
     <div class="personas">${(SHOWALL?GROUPS.flat():todays()).map(id=>{const p=P[id];return `<button class="pcard" data-p="${id}"><span class="role">${p.role}</span><span class="nm">${p.name}</span><span class="ds">${p.desc}</span><span class="say">“${esc(p.lines.greet)}”</span></button>`}).join('')}</div>
+  </section>
+  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${Math.round(h.total/(h.n||7))} / 100</span></li>`).join('')}</ul></section>`:''}
+  <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 없습니다.</p>`}</section>`;
+  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
+  app.querySelector('#theme').onclick=()=>{setTheme(isDark()?'light':'dark');render()};
+  app.querySelector('#info').onclick=()=>{INFO=true;render();scrollTo(0,0)};
+  app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
+  app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
+  bindLang();
+}
+function renderInfo(){
+  app.innerHTML=`
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">How it works</span><button class="btn themebtn" id="back">← 처음으로</button></div>
+    <h1>사용 안내</h1>
+  </header>
+  <section class="panel">
+    <h3>어떤 곳인가요?</h3>
+    <p class="muted" style="font-size:.88rem">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 시험 영어가 아니라 실제로 쓰는 말을 연습하는 곳이라, 영어로 자유롭게 입력하면 됩니다.</p>
+  </section>
+  <section class="panel">
+    <h3>대화 순서 (${STAGES.length}단계)</h3>
+    <p class="muted" style="font-size:.88rem">${STAGES.map(x=>STAGE_KO[x]).join(' → ')}</p>
+  </section>
+  <section class="panel">
+    <h3>바리스타</h3>
+    <p class="muted" style="font-size:.88rem">바리스타 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다. 홈의 ‘20명 전체 보기’로 아무나 고를 수도 있습니다.</p>
+  </section>
+  <section class="panel">
+    <h3>힌트와 단어 뜻</h3>
+    <p class="muted" style="font-size:.88rem">막히면 ‘힌트 보기’로 쓸 만한 표현을 볼 수 있고, 바리스타 말의 단어를 누르면 뜻이 나옵니다. 뜻을 볼 때마다 그 단계 점수가 5점 줄어듭니다. 힌트에서 ‘저장’을 누른 표현은 홈의 ‘저장한 표현’에 모입니다.</p>
   </section>
   <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>힌트 설명 언어</h3>${langToggle()}</div>
@@ -1765,11 +1895,11 @@ function renderStart(){
       <span class="tier s100 num">100</span><span>이끌기: 반응하고, 덧붙이고, 되물어 대화를 끌고 감</span>
     </div>
   </section>
-  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.total} / 700</span></li>`).join('')}</ul></section>`:''}
-  <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">대화 중 힌트에서 ‘저장’을 누르면 여기에 모입니다.</p>`}</section>`;
-  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
-  app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
-  app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
+  <section class="panel">
+    <h3>점수는 언제 보이나요?</h3>
+    <p class="muted" style="font-size:.88rem">대화 중에는 점수를 보여 주지 않습니다. 대화가 끝나면 영수증에서 단계마다 가장 잘한 답 하나로 계산해 100점 만점 평균으로 보여 드립니다. 다른 사람과 비교하지 않고 내 지난 기록과만 비교합니다.</p>
+  </section>`;
+  app.querySelector('#back').onclick=()=>{INFO=false;render();scrollTo(0,0)};
   bindLang();
 }
 function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang))}
@@ -1789,9 +1919,9 @@ function renderChat(){
     <div class="who"><span class="eyebrow">${p.role}</span><h2>${p.name}</h2></div>
     <button class="btn" id="quit">처음으로</button>
   </div>
-  <div class="steps" aria-label="진행 단계">${STAGES.map((s,i)=>`<span class="${i<S.idx?'done':i===S.idx&&!S.done?'on':''}">${STAGE_KO[s]}</span>`).join('')}</div>
+  <div class="prog" aria-label="진행 단계"><div class="pl"><span>${(()=>{const s=STAGES[Math.min(S.idx,STAGES.length-1)];const ch=STAGES.filter(x=>/^chat\d$/.test(x));return /^chat\d$/.test(s)?(LANG==='ko'?'잡담':'Small talk')+' '+(ch.indexOf(s)+1)+' / '+ch.length:(LANG==='ko'?STAGE_KO[s]:STAGE_EN[s])})()}</span><span class="muted">${Math.min(S.idx+1,STAGES.length)} / ${STAGES.length}</span></div><div class="pb"><i style="width:${S.done?100:Math.min(S.idx,STAGES.length-1)/(STAGES.length-1)*100}%"></i></div></div>
   <div class="log" id="log" aria-live="polite">
-    ${S.log.map((m,i)=>`<div class="msg ${m.who}">${m.who==='b'?glossHTML(m.text):esc(m.text)}${m.orig?`<small class="kofrom">${esc(m.orig)}<br>${m.pairs.map(([k,e])=>esc(k)+' → '+esc(e)).join(' · ')}${m.st&&m.st!=='free'?' (−'+PENALTY*m.pairs.length+'점)':''}</small>`:''}${m.used?`<small class="kofrom">표현 '${esc(m.used)}'을(를) 사용했어요. 잘했어요</small>`:''}${m.who==='b'?`<button class="spk" data-say="${i}" aria-label="듣기">듣기</button>`:''}${S.gloss&&S.gloss.i===i?`<div class="glbox"><b>${esc(S.gloss.k)}</b> ${glossBody(S.gloss.k)}<div class="row"><button data-gsay="${esc(S.gloss.k)}">발음</button><button data-gsave="${esc(S.gloss.k)}">${savedList().some(x=>x.en===S.gloss.k)?'저장됨':'저장'}</button><span class="muted">${S.free||S.done?'추가 대화라 감점 없음':`뜻을 볼 때마다 이 단계 점수 −${PENALTY}`}</span></div></div>`:''}</div>`).join('')}
+    ${S.log.map((m,i)=>`<div class="msg ${m.who}${i>=(S.seen||0)?' new':''}">${m.who==='b'?glossHTML(m.text):esc(m.text)}${m.orig?`<small class="kofrom">${esc(m.orig)}<br>${m.pairs.map(([k,e])=>esc(k)+' → '+esc(e)).join(' · ')}${m.st&&m.st!=='free'?' (−'+PENALTY*m.pairs.length+'점)':''}</small>`:''}${m.used?`<small class="kofrom">표현 '${esc(m.used)}'을(를) 사용했어요. 잘했어요</small>`:''}${m.who==='b'?`<button class="spk" data-say="${i}" aria-label="듣기">듣기</button>`:''}${S.gloss&&S.gloss.i===i?`<div class="glbox"><b>${esc(S.gloss.k)}</b> ${glossBody(S.gloss.k)}<div class="row"><button data-gsay="${esc(S.gloss.k)}">발음</button><button data-gsave="${esc(S.gloss.k)}">${savedList().some(x=>x.en===S.gloss.k)?'저장됨':'저장'}</button><span class="muted">${S.free||S.done?'추가 대화라 감점 없음':`뜻을 볼 때마다 이 단계 점수 −${PENALTY}`}</span></div></div>`:''}</div>`).join('')}
     ${S.busy?`<div class="typing">${p.name} is typing…</div>`:''}
   </div>
   <div class="composer">
@@ -1805,7 +1935,7 @@ function renderChat(){
     <form id="f"><input id="say" autocomplete="off" placeholder="${esc(S.ph||'예: 영어로 편하게 대답해 보기')}" value="${esc(draft)}" ${S.busy?'disabled':''}><button class="btn primary" ${S.busy?'disabled':''}>보내기</button></form>
     <div class="row">${S.free?`<button class="btn" id="stop" style="font-size:.85rem">대화 마치기</button>`:''}<button class="btn" id="hint" style="font-size:.85rem">${S.hintsOpen?'힌트 닫기':'힌트 보기'}</button>${langToggle()}</div>`}
   </div>`;
-  const log=document.getElementById('log');log.lastElementChild&&log.lastElementChild.scrollIntoView({block:'nearest'});
+  S.seen=S.log.length;const log=document.getElementById('log');log.lastElementChild&&log.lastElementChild.scrollIntoView({block:'nearest'});
   app.querySelector('#quit').onclick=()=>{logWrite();S=null;render()};
   if(S.done){app.querySelector('#toReceipt').onclick=()=>{S.receipt=true;render();window.scrollTo(0,0)};return}
   const stopB=app.querySelector('#stop');if(stopB)stopB.onclick=()=>{if(S.busy)return;S.ended=false;S.free=false;endChat()};
@@ -1864,7 +1994,7 @@ function renderReceipt(){
     </div>`}).join('<div class="dash"></div>')}
     ${(()=>{const fx=fixesFor(S.log.filter(m=>m.who==='u').map(m=>m.text));return fx.length?`<div class="dash"></div><div class="line"><div class="top"><span>${LANG==='ko'?'표현 다듬기':'Polish your English'}</span></div>${fx.map(({f,t})=>`<div class="said">“${esc(t)}”</div><div class="tip">${esc(LANG==='ko'?f.ko:f.en)}</div><div class="model">${esc(f.fix)}</div>`).join('')}</div>`:''})()}
     <div class="dash"></div>
-    <div class="total"><span>TOTAL</span><span class="num">${total} / 700</span></div>
+    <div class="total"><span>TOTAL</span><span class="num">${Math.round(total/STAGES.length)} / 100</span></div>
     ${S.freeTurns?`<div class="top" style="display:flex;justify-content:space-between"><span>${LANG==='ko'?'추가 대화 (점수 없음)':'Extra chat (not scored)'}</span><span class="num">${S.freeTurns} ${LANG==='ko'?'번 말함':'turns'}</span></div>`:''}
     <div class="hd muted"><span>${drinkLabel()} · for ${S.slots.name}</span><span>Thank you! Come again.</span></div>
   </div>
@@ -1872,6 +2002,49 @@ function renderReceipt(){
   app.querySelector('#again').onclick=()=>start(S.pid);
   app.querySelector('#home').onclick=()=>{S=null;render()};
 }
-function render(){if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+function render(){if(!S&&INFO)renderInfo();else if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+/* ---------- extended small talk (chat3–chat6): music · food · pets · best thing this week ---------- */
+(()=>{
+const NEW=['chat3','chat4','chat5','chat6'];
+const ORDER=['maya','leo','sam','rico','dottie'];
+const Q={maya:["Ooh wait, what kind of music are you into? I need new playlists!","Okay, food time. Have you tried any good food around here yet?","Do you have any pets? Please say yes, I love pet stories!","Last one, I swear! What's the best thing that happened to you this week?"],
+leo:["Um, do you, like, listen to music while you study?","Um, what's the best thing you've eaten here so far?","Sorry if this is weird, but… do you have any pets?","Um, did anything good happen to you this week?"],
+sam:["Quick one, what music are you into?","Tried any good food around here?","Got any pets?","Best thing this week?"],
+rico:["Serious question: what's on your playlist? No judging. Okay, a little judging.","Pineapple on pizza. Yes or no? Choose wisely.","Do you have a pet? Or a plant? I'll accept a plant.","Give me one good thing from your week. I'm collecting them."],
+dottie:["Tell me, dear, what kind of music do you like?","And what's the best food you've tried around here, sweetie?","Do you have any pets at home, honey?","What was the nicest thing that happened to you this week, dear?"]};
+const R={music:{maya:["Ooh, great taste! I'd listen to that all day.","Love that! Adding it to my playlist."],leo:["Oh. Cool. I, um, like that kind of music too.","Nice. That sounds good."],sam:["Nice, good stuff.","Ha, good taste."],rico:["Okay, you've got taste. I'm impressed.","Solid choice. My playlist is jealous."],dottie:["Oh, how lovely, dear!","That sounds wonderful, sweetie."]},
+food:{maya:["Yum, now I'm hungry!","Ooh, I need to try that!"],leo:["Oh. That sounds, um, really good.","I'd like to try that sometime."],sam:["Sounds tasty.","Nice, good pick."],rico:["Okay, now I'm hungry. Thanks a lot.","That sounds delicious. Respect."],dottie:["Oh, that sounds delicious, dear!","Mmm, I could eat that right now."]},
+pets:{maya:["Aww, so cute!","Ahh, I love that! Pets are the best."],leo:["Oh. That's, um, really nice.","Aw. I wish I had one."],sam:["Aw, nice.","Cool, good company."],rico:["Legend. Pets are the best coworkers.","Okay, that's adorable."],dottie:["Oh, how sweet, dear!","Aww, bless them!"]},
+week:{maya:["Aww, that's awesome! You deserve it.","Yay! That made my day too."],leo:["Oh. That's, um, really good.","Nice. I'm happy for you."],sam:["Nice. Good for you.","Hey, good stuff."],rico:["Okay, that deserves a celebration.","Look at you! Winning."],dottie:["Oh, I'm so happy for you, dear!","How wonderful, sweetie!"]}};
+const F={music:["Ooh, who's your favorite singer?","Um, who's your favorite artist?","Yeah? Favorite song?","Okay, but what's the best song ever? Defend it!","Oh? And who's your favorite singer, dear?"],
+food:["Ooh, what did you like about it?","Um, was it, like, spicy or sweet?","Yeah? What was in it?","Okay, but describe it. I need details!","Oh? And what did it taste like, dear?"],
+pets:["Aww, what's its name?","Um, what's its name?","Yeah? Name?","What's its name? Please say something funny.","Oh, and what's its name, dear?"],
+week:["Oh, tell me more! What happened?","Um, what happened?","Yeah? What happened?","Okay, spill. What happened?","Oh? Tell me all about it, dear."]};
+const B={music:{maya:"Me? I love pop and indie. Taylor Swift on repeat!",leo:"Um, me? I like quiet piano music while I work.",sam:"Me? Whatever's on the radio.",rico:"Me? Sea shanties. Don't ask.",dottie:"Oh, I love old jazz, dear. Ella Fitzgerald is my favorite."},
+food:{maya:"Me? I'm obsessed with tacos!",leo:"Um, me? I like, uh, grilled cheese.",sam:"Honestly? Anything fast.",rico:"Pizza. Always pizza. Pineapple included, fight me.",dottie:"Oh, I make a mean apple pie, dear."},
+pets:{maya:"I have a cat named Mochi! She's a diva.",leo:"Um, I have a goldfish. His name is Bob.",sam:"No time for pets. I have a plant.",rico:"A corgi named Biscuit! He's the boss of me.",dottie:"Two cats and a very loud parrot, dear."},
+week:{maya:"Me? I aced my art project!",leo:"Um, my coworker brought donuts.",sam:"Honestly? A quiet lunch break.",rico:"I made perfect latte art. A tiny bear. Nobody noticed.",dottie:"My tomatoes are finally ripe, dear."}};
+const TOPIC={chat3:'music',chat4:'food',chat5:'pets',chat6:'week'};
+const X={music:/\b(music|song|songs|listen|pop|rock|k-?pop|jazz|hip|rap|band|singer|playlist|like|love|piano|study)\b/,food:/\b(food|eat|ate|pizza|burger|noodles?|kimchi|ramen|rice|chicken|taco|sandwich|cake|cookie|like|love|tried|yes|yeah|good|delicious|tasty)\b/,pets:/\b(pet|pets|dog|cat|fish|bird|hamster|rabbit|puppy|kitten|no|have|don'?t|yes|yeah|not)\b/,week:/\b(test|exam|friend|friends|game|party|weekend|good|great|happy|got|won|finished|best|because|my|i)\b/};
+ORDER.forEach((id,pi)=>{const p=P[id]||null;if(!p)return;NEW.forEach((s,i)=>{const k=TOPIC[s];
+ p.lines[s]=Q[id][i];
+ if(p.react)p.react[s]=R[k][id];
+ if(p.follow)p.follow[s]=F[k][pi];
+ if(p.back)p.back[s]=B[k][id];
+ if(p.expect)p.expect[s]=X[k];});});
+// 20 baristas: derived personas inherit via base; make sure every id has the new stages
+Object.keys(P).forEach(id=>{const p=P[id];if(ORDER.includes(id))return;const b=P[p.base]||P[ORDER[pidx(id)%5]];if(!b)return;NEW.forEach(s=>{p.lines[s]=b.lines[s];if(p.react)p.react[s]=b.react[s];if(p.follow)p.follow[s]=b.follow[s];if(p.back)p.back[s]=b.back[s];if(p.expect)p.expect[s]=b.expect[s];});});
+const copy=(o)=>{if(o&&typeof o==='object')NEW.forEach((s,i)=>{if(o[s]===undefined)o[s]=o[i%2?'chat2':'chat1']})};
+[typeof SHORT!=='undefined'&&SHORT].forEach(copy);
+if(typeof TIPS!=='undefined')Object.values(TIPS).forEach(copy);
+})();
+const MOD={chat3:"I'm really into K-pop and some chill indie music. What about you? Any good playlists?",chat4:"Yes! I tried the kimchi fried rice nearby and it was amazing. Have you been there?",chat5:"I have a small dog named Coco. She's super cute. Do you have any pets?",chat6:"I got a good score on my English test, so I was really happy. How about your week?"};
+const TIPK={chat3:"좋아하는 음악을 말하고 'What about you?'로 되물어 보세요.",chat4:"먹어 본 음식과 느낌을 말하고 'Have you tried it?'로 되물어 보세요.",chat5:"반려동물 이름이나 특징을 덧붙이고 'Do you have any pets?'로 되물어 보세요.",chat6:"이번 주 좋았던 일과 이유를 말하고 'How about your week?'로 되물어 보세요."};
+const TIPE={chat3:"Name the music you like, then ask 'What about you?'",chat4:"Say what you ate and how it tasted, then ask 'Have you tried it?'",chat5:"Add the pet's name or a detail, then ask 'Do you have any pets?'",chat6:"Say the good thing and why, then ask 'How about your week?'"};
+Object.assign(MODEL,MOD);Object.values(P).forEach(p=>{if(p.model)Object.assign(p.model,MOD)});
+Object.assign(STAGE_TIP.ko,TIPK);Object.assign(STAGE_TIP.en,TIPE);
 render();
 </script>
+
+</body>
+</html>
