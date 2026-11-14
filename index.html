@@ -300,7 +300,7 @@ const GROUPS=PIDS.map(b=>Object.keys(P).filter(k=>(P[k].base||k)===b));
 function pidx(pid){return PIDS.indexOf((P[pid]&&P[pid].base)||pid)}
 const dayNum=(()=>{const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000)})();
 function todays(){return GROUPS.map((g,i)=>g[(dayNum+i)%g.length])}
-let SHOWALL=false;
+let SHOWALL=false;let INFO=false;
 
 
 /* ---------- intents: what the user might ask or say ---------- */
@@ -1843,14 +1843,44 @@ function renderStart(){
   const hist=store.get('stc.history',[]).slice(0,5), saved=savedList();
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:8px">
-    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></div>
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
     <h1>Small Talk Café</h1>
-    <p class="muted">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 영어로 자유롭게 입력하세요. 점수는 대화가 끝난 뒤 영수증에서만 보여 드립니다.</p>
+    <p class="muted">바리스타를 골라 영어로 주문하고 수다를 떨어 보세요. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
   </header>
   <section style="display:flex;flex-direction:column;gap:10px">
     <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'바리스타 20명':'오늘의 바리스타 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
-    ${SHOWALL?'':'<p class="muted" style="font-size:.85rem">바리스타 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다.</p>'}
     <div class="personas">${(SHOWALL?GROUPS.flat():todays()).map(id=>{const p=P[id];return `<button class="pcard" data-p="${id}"><span class="role">${p.role}</span><span class="nm">${p.name}</span><span class="ds">${p.desc}</span><span class="say">“${esc(p.lines.greet)}”</span></button>`}).join('')}</div>
+  </section>
+  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${Math.round(h.total/(h.n||7))} / 100</span></li>`).join('')}</ul></section>`:''}
+  <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 없습니다.</p>`}</section>`;
+  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
+  app.querySelector('#theme').onclick=()=>{setTheme(isDark()?'light':'dark');render()};
+  app.querySelector('#info').onclick=()=>{INFO=true;render();scrollTo(0,0)};
+  app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
+  app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
+  bindLang();
+}
+function renderInfo(){
+  app.innerHTML=`
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">How it works</span><button class="btn themebtn" id="back">← 처음으로</button></div>
+    <h1>사용 안내</h1>
+  </header>
+  <section class="panel">
+    <h3>어떤 곳인가요?</h3>
+    <p class="muted" style="font-size:.88rem">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 시험 영어가 아니라 실제로 쓰는 말을 연습하는 곳이라, 영어로 자유롭게 입력하면 됩니다.</p>
+  </section>
+  <section class="panel">
+    <h3>대화 순서 (${STAGES.length}단계)</h3>
+    <p class="muted" style="font-size:.88rem">${STAGES.map(x=>STAGE_KO[x]).join(' → ')}</p>
+  </section>
+  <section class="panel">
+    <h3>바리스타</h3>
+    <p class="muted" style="font-size:.88rem">바리스타 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다. 홈의 ‘20명 전체 보기’로 아무나 고를 수도 있습니다.</p>
+  </section>
+  <section class="panel">
+    <h3>힌트와 단어 뜻</h3>
+    <p class="muted" style="font-size:.88rem">막히면 ‘힌트 보기’로 쓸 만한 표현을 볼 수 있고, 바리스타 말의 단어를 누르면 뜻이 나옵니다. 뜻을 볼 때마다 그 단계 점수가 5점 줄어듭니다. 힌트에서 ‘저장’을 누른 표현은 홈의 ‘저장한 표현’에 모입니다.</p>
   </section>
   <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>힌트 설명 언어</h3>${langToggle()}</div>
@@ -1865,12 +1895,11 @@ function renderStart(){
       <span class="tier s100 num">100</span><span>이끌기: 반응하고, 덧붙이고, 되물어 대화를 끌고 감</span>
     </div>
   </section>
-  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${Math.round(h.total/(h.n||7))} / 100</span></li>`).join('')}</ul></section>`:''}
-  <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">대화 중 힌트에서 ‘저장’을 누르면 여기에 모입니다.</p>`}</section>`;
-  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
-  app.querySelector('#theme').onclick=()=>{setTheme(isDark()?'light':'dark');render()};
-  app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
-  app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
+  <section class="panel">
+    <h3>점수는 언제 보이나요?</h3>
+    <p class="muted" style="font-size:.88rem">대화 중에는 점수를 보여 주지 않습니다. 대화가 끝나면 영수증에서 단계마다 가장 잘한 답 하나로 계산해 100점 만점 평균으로 보여 드립니다. 다른 사람과 비교하지 않고 내 지난 기록과만 비교합니다.</p>
+  </section>`;
+  app.querySelector('#back').onclick=()=>{INFO=false;render();scrollTo(0,0)};
   bindLang();
 }
 function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang))}
@@ -1973,7 +2002,7 @@ function renderReceipt(){
   app.querySelector('#again').onclick=()=>start(S.pid);
   app.querySelector('#home').onclick=()=>{S=null;render()};
 }
-function render(){if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+function render(){if(!S&&INFO)renderInfo();else if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
 /* ---------- extended small talk (chat3–chat6): music · food · pets · best thing this week ---------- */
 (()=>{
 const NEW=['chat3','chat4','chat5','chat6'];
