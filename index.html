@@ -1866,6 +1866,34 @@ const DUNNO_R=[["That's okay! No pressure.","Ha, that's fine! Some questions are
 const SOFT_FAIL=[["Hmm, I didn't quite get that! ","Oops, I missed that. "],["Um, sorry, I didn't get that. ","Sorry, I, um, missed that. "],["Sorry, missed that. ","Didn't catch that. "],["Sorry, my brain buffered. ","Wait, you lost me there. "],["Oh, I didn't quite catch that, dear. ","Sorry, sweetie, I missed that. "]];
 const UNSURE2=[["Hmm, I've never thought about that!","Oh, that's a hard one. I don't know!"],["Um, I don't really know. Sorry.","Hmm. I, um, have no idea."],["No clue.","Hm. Don't know."],["I'll get back to you on that. In five to ten years.","That's above my pay grade. Which is low."],["Oh, you've got me there, dear.","Oh, I couldn't tell you, honey."]];
 function unsureR(pi){return pickNew([UNSURE[pi]].concat(UNSURE2[pi]))}
+/* ---------- 무료 AI 도우미(규칙이 못 알아들은 질문에만) ----------
+   · 규칙 대답이 먼저, 모르는 질문(unsureR 자리)에서만 Cloudflare Worker에 물어봅니다.
+   · 점수·단계 판단에는 쓰지 않습니다. 느리거나 실패하거나 한도가 차면 원래 규칙 대답을 씁니다. */
+const AI_URL='https://small-talk-cafe.seyoung8219.workers.dev';
+const AI_DAY_MAX=15;   // 이 브라우저에서 하루 AI 답변 수(서버에도 같은 한도가 있습니다)
+function aiClient(){let c=store.get('stc.cid',null);if(!c){c=Math.random().toString(36).slice(2)+Date.now().toString(36);store.set('stc.cid',c)}return c}
+function aiLeft(){const d=new Date().toISOString().slice(0,10),u=store.get('stc.ai',{});return u.d===d?AI_DAY_MAX-(u.n||0):AI_DAY_MAX}
+function aiUsed(){const d=new Date().toISOString().slice(0,10),u=store.get('stc.ai',{});store.set('stc.ai',{d,n:(u.d===d?u.n||0:0)+1})}
+function aiTrim(t){/* 마지막 질문 문장은 떼어 냅니다(바로 뒤에 원래 질문이 이어지기 때문) */
+  const parts=(t.match(/[^.!?]+[.!?]*/g)||[]).map(x=>x.trim()).filter(Boolean);
+  if(parts.length>1&&/\?$/.test(parts[parts.length-1]))parts.pop();
+  return parts.join(' ').trim()}
+async function aiOr(text,pi){
+  const fallback=()=>unsureR(pi);
+  try{
+    const li=S.log.map(m=>m.who).lastIndexOf('u');
+    const msg=String(li>=0?S.log[li].text:text||'').trim();
+    if(!msg||aiLeft()<=0||typeof fetch!=='function')return fallback();
+    const hist=S.log.slice(0,Math.max(li,0)).filter(m=>m.text).slice(-6).map(m=>({who:m.who,text:m.text}));
+    S.busy=true;render();
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),4000);
+    let r;try{r=await fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({persona:S.pid,level:S.lv||2,message:msg.slice(0,200),history:hist,client:aiClient()}),signal:ctl.signal});r=await r.json()}finally{clearTimeout(tm);S.busy=false}
+    if(!r||!r.ok||!r.reply)return fallback();
+    aiUsed();const t=aiTrim(String(r.reply));
+    if(!t)return fallback();
+    flag('ai');return t;
+  }catch(e){S.busy=false;return fallback()}
+}
 const MORE_G=[["Ha, it's a long story! But I really love it.","Honestly, I could talk about it all day!"],["Um, it's, um, kind of a long story.","Um, there's not much more to say, really."],["Not much to tell.","That's about it."],["The full story costs extra. Kidding! That's really it.","There's more, but it's classified."],["Oh, that's a story for another day, dear.","Oh, it's a long story, honey."]];
 /* 바리스타 자기 이야기의 '더 자세한 내용' (back 대사와 이어지게) */
 const SELF_MORE={
@@ -1976,7 +2004,7 @@ async function handleFree(raw){
   else if(isCompli(n)&&!isQ)await say(COMPLI_R[pi]);
   else if(isQ&&intent&&intent.r)await say(saidPre(irText(intent,pi,qt||n)));
   else if(isQ&&genQ(qt))await say(saidPre(genQ(qt)));
-  else if(isQ){flag('unsure');await say(unsureR(pi))}
+  else if(isQ){flag('unsure');await say(await aiOr(qt||raw,pi))}
   else if(DUNNO.test(n)&&wordsOf(n).length<=7)await say(pickNew(DUNNO_R[pi]));
   else{const af=!st&&!S.lastAct&&wordsOf(n).length<14?actFollow(raw,n,pi):null;if(af){S.lastAct=true;await askQ(af);return}S.lastAct=false;await say(fill(st||pick(p.react.chat1.concat(p.react.chat2))))}
   await nextTopic();
@@ -2024,7 +2052,7 @@ async function handle(raw){
     if(back){if(S.saidBack[st]){const m=moreOf(st);if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m)}}else await say(p.back[st]||p.back.greet)}
     else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='howsay')await say(saidPre(irText(qIntent,pi,qt)));
     else if(isQ&&qt&&genQ(qt))await say(saidPre(genQ(qt)));
-    else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(unsureR(pi))}
+    else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(await aiOr(qt,pi))}
     await advance();return;
   }
   if(st==='order'&&!findDrink(n)&&!(S.offer&&YES.test(n))){const ar=attrRec(n);if(ar){S.asked[st]=raw;flag('intent:attr');S.offer=ar.d;S.lastRec=ar.d;await say(ar.text);await say(pick(['Want to try it?','Should I make you one?','Want one?']));return}}
@@ -2057,7 +2085,7 @@ async function handle(raw){
   }
   if(isQ&&wc>=3){
     S.asked[st]=raw;const g=genQ(qt);flag(g?'genq':'unsure');
-    await say(g?saidPre(g):unsureR(pi));
+    await say(g?saidPre(g):await aiOr(qt,pi));
     await reask(st,raw);return;
   }
   S.fails[st]=(S.fails[st]||0)+1;
