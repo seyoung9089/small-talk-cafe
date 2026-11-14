@@ -1517,7 +1517,10 @@ function actFollow(raw,n,pi){
   if(ACT_NEG.test(n.replace(/\bnot bad\b/,'')))return null;
   if(!/\b(i|i'?m|i'?ve|we|my|me|just|today|yesterday|last|this|tonight|tomorrow|gonna|going)\b/.test(n))return null;
   const fut=FUT.test(n);
-  for(const a of ACTS){if(a.re.test(n)){const pool=(fut?a.f:a.p);return actSay(pi,pick(pool))}}
+  const pref=/\b(like|love|enjoy|prefer|into|listen to|favou?rite|fan of)\b/.test(n)&&!/\b(yesterday|last|ago|watched|played|ate|went|did|was|were|saw|tried|had|finished|made|got)\b/.test(n);
+  const instr=/guitar|piano|violin|drums?|flute|ukulele|cello/.test(n);
+  const past=/\b(yesterday|last|ago|was|were|did|had|took|finished|went|got)\b|ed\b/.test(n);
+  for(const a of ACTS){if(a.re.test(n)){if(a.k==='study'&&!fut&&!past&&/\b(student|school|college|grade|class|junior|senior|freshman|sophomore)\b/.test(n)&&/\b(i'?m|i am|i go to|i attend)\b/.test(n))return actSay(pi,pick(["What grade are you in?","What's your favorite subject?","Do you like it?"]));const pool=fut?a.f:(pref&&PREF_Q[a.k]&&!instr)?PREF_Q[a.k]:a.p.filter(x=>instr||!/played/.test(x));return actSay(pi,pick(pool))}}
   const m=n.match(/\b(?:went|going|go|been|headed|heading)\s+to\s+(?:the |a |an |my )?([a-z]{3,})/);
   if(m&&!/^(school|work|bed|sleep|class|home)$/.test(m[1]))return actSay(pi,PLACE_Q[m[1]]||(fut?"What are you going to do there?":"How was the "+m[1]+"?"));
   return null;
@@ -1532,6 +1535,7 @@ function stageMatch(st,n,raw,isQ){
   if(st==='size'){if(/^(s|m|l)$/.test(n))return true;return segsOf(raw).filter(x=>!infoQ(x)).some(x=>SIZE.test(norm(x)))}
   if(st==='name')return !!extractName(n,raw);
   if(/^chat\d$/.test(st)&&/^(yes|yeah|yep|no|nope|maybe|sometimes|not really|sure|kind of|sort of|i guess|probably|not much|a little|a bit|very|yes very|always|never|ok|okay|exactly|totally|of course|unfortunately|definitely|absolutely)[.!]?$/.test(n))return true;
+  if(/^chat\d$/.test(st)&&isQ&&!BACK.test(n)&&!segsOf(raw).some(x=>!isQSeg(x))&&/\b(you|your|yours)\b/.test(n))return false;
   if(/^chat\d$/.test(st))return p.expect[st].test(n.replace(/\?/g,''))&&!(isQ&&wc<=3)||(!isQ&&wc>=3);
   if(st==='close')return CLOSE.test(n)||!isQ||wc<=4;
 }
@@ -1561,7 +1565,7 @@ async function say(text,key){
   S.busy=true;render();
   const lv=S.lv||2;await sleep(Math.min(1200,350+text.length*12)*(lv>=4?.6:lv===1?1.15:1));/* Lv4는 더 빨리 답함 */
   /* 화면에는 레벨 말투로 바꾼 문장, 대화 판단(lastB·힌트 키)에는 원래 문장 */
-  S.log.push({who:'b',text:levelize(text)});S.lastB=key||text;S.busy=false;setHintKey(key||text);S.ph=newIdea();render();
+  S.log.push({who:'b',text:levelize(text)});S.lastB=key||text;S.saidK=(S.saidK||[]).concat(key||text).slice(-30);{const bk=P[S.pid]&&P[S.pid].back;if(bk)for(const k in bk)if(bk[k]===text&&k!=='close'){S.saidBack=S.saidBack||{};S.saidBack[k]=true;S.selfSt=k;S.selfFresh=true}}S.busy=false;setHintKey(key||text);S.ph=newIdea();render();
 }
 function koAttach(st){if(!S.pendingKo)return;const m=S.log[S.log.length-1];m.orig=S.pendingKo.orig;m.pairs=S.pendingKo.pairs;if(st&&!S.free){S.looked[st]=S.looked[st]||[];for(const[k,e] of m.pairs){const key=k+'→'+e;if(!S.looked[st].includes(key))S.looked[st].push(key)}}S.pendingKo=null}
 function flag(f){for(let i=S.log.length-1;i>=0;i--)if(S.log[i].who==='u'){S.log[i].flag=f;break}}
@@ -1575,7 +1579,7 @@ async function advance(){
   if(S.idx>=STAGES.length){await say(pick(["Oh hey, I'm on break in a minute. Want to chat a bit more?","It's pretty quiet now, actually. Want to hang out and chat a little?"]));S.ended=true;render();return}
   S.hk=null;
   if(STAGES[S.idx]==='size'&&S.presize){record('size',S.foodOnly?'(음식만 주문)':S.slots.size+' (주문할 때 함께 말함)',30);S.idx++;if(!S.foodOnly)await say(pick(['Got it, '+S.slots.size+'!','Okay, '+S.slots.size+'.']))}
-  {const L=stageLine(STAGES[S.idx]);await say(L.text,L.key)}
+  {const L=stageLine(STAGES[S.idx]);await askQ(L.text,L.key)}
 }
 async function finish(){
   S.done=true;S.ended=false;logSave();
@@ -1590,7 +1594,7 @@ async function finish(){
 }
 async function reask(st,raw){
   const p=P[S.pid],pi=pidx(S.pid);
-  if(/^chat\d$/.test(st)){if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
+  if(/^chat\d$/.test(st)){S.reasks[st]=(S.reasks[st]||0)+1;if(!S.best[st]&&S.reasks[st]===1&&S.q&&S.q.st===st){await say(pick(["Anyway! ","But anyway, ","Okay, so "])+lc(qPart(S.q.t)),S.q.t);return}if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
   if(st==='close'){await say(pick(["Anyway, enjoy your drink!","Oh, and your drink's getting cold!","Alright, enjoy!"]));if(!S.best.close)record('close',raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
   S.reasks[st]=(S.reasks[st]||0)+1;
   if(S.reasks[st]>=3){
@@ -1786,32 +1790,209 @@ function attrRec(n){
 const BYE=/\b(bye|gotta go|got to go|have to go|need to go|should go|see you|see ya|leave now|i'?m done|that'?s all)\b/;
 async function nextTopic(){
   if(!S.topics.length){await say("Oh! My manager's looking at me. I'd better get back to work!");await endChat();return}
-  await say(S.topics.shift());
+  await askQ(S.topics.shift());
 }
 async function endChat(){await say(P[S.pid].lines.end);S.free=false;await finish()}
+/* ---------- follow-ups: 되묻기·왜?·정말?·무슨 뜻?·짧은 반응 (직전 질문/주제 기억) ----------
+   S.q = 바리스타가 마지막으로 던진 '대화 질문' {st, t}
+   S.selfFresh = 바로 앞 바리스타 말에 '자기 이야기'가 있었는지, S.selfSt = 그 이야기의 주제(단계) */
+const FU=[
+ ['clarify',/^(sorry,? |um,? |uh,? )?(what do you mean|what does that mean|what you mean|what'?s that mean|meaning|i don'?t (understand|get it|get that|follow|know what you mean)|i'?m (so )?confused|confused|what is that|i didn'?t understand)( (by that|exactly|sorry))?[?.!]*$/],
+ ['youfirst',/^(you (go |answer |say )?first|you tell me( first)?|your turn|ladies first|after you|you go)[!.?]*$/],
+ ['back',/^((and|so|but|well|okay|ok|hmm|um|oh)[, ]+)?((how|what) (a)?bout (you|yourself|u)|you|u|yourself|and you|do you|are you|did you|have you|what'?s yours|what is yours|yours|same question|same to you)[?!.]*$/],
+ ['why',/^(but |and |okay,? |hmm,? )?(why|why do you ask|why do you want to know|why'?s that|why is that|how come|why that)[?!.]*$/],
+ ['really',/^(oh,? |wait,? )?(really|seriously|for real|are you serious|no way|is that (so|true|right)|you do|you are|you did|you have|truly)[?!.]*$/],
+ ['think',/^(hmm+|umm*|uh+|well+|let me think|let me see|good question|that'?s a (good|hard|tough|great) (question|one)|i need to think|give me a (second|sec|minute)|one (sec|second)|wait)([.!?,… ]+(let me think|let me see|good question|hmm+|umm*))*[.!?… ]*$/],
+ ['react',/^(oh,? |wow,? |ah,? |haha,? )?(wow+|cool|nice|awesome|great|amazing|interesting|i see|oh i see|okay|ok|haha+|hahaha|lol|lmao|ha+|ah+|aw+|oh+|ooh+|that'?s (so |really |pretty )?(cool|nice|great|awesome|funny|amazing|interesting|cute|fun)|sounds (so |really )?(fun|cool|nice|great|good|amazing)|no kidding|cute|fun|neat|sweet|love it|same|me too|good for you|congrats|lucky you)( (cool|nice|wow|haha))?[.!?~ ]*$/]
+];
+function fuOf(n){const t=n.replace(/\s+/g,' ').trim();if(wordsOf(t).length>7)return null;for(const[id,re] of FU)if(re.test(t))return id;return null}
+const DUNNO=/^(hmm+[.,… ]*|um+[.,… ]*|well[.,… ]*)?(i don'?t know|i do not know|i'?m not (really )?sure|not (really )?sure|no idea|i have no idea|dunno|idk|i don'?t really know|i can'?t (think|remember)|nothing really|i forgot)\b/;
+const TOPIC_RE=[
+ ['catsdogs',/cats or dogs|dogs or cats/,"Do you like cats or dogs more?"],
+ ['food',/pineapple on pizza/,"Do you like pineapple on pizza? Yes or no?"],
+ ['drinkhome',/drink back home/,"What do you drink at home?"],
+ ['coffeetea',/coffee person|tea person/,"Do you like coffee or tea more?"],
+ ['morning',/morning person|night person/,"Do you like mornings or nights more?"],
+ ['music',/music|playlist|\bsongs?\b|singer|artist|band\b|listen/,"What music do you like?"],
+ ['pets',/\bpets?\b|\bplant\b|goldfish|parrot|corgi|its name|\bdog\b|\bcat\b|\bcats\b/,"Do you have a pet? Like a dog or a cat?"],
+ ['food',/\bfood\b|eaten|\beat\b|tacos?|grilled cheese|pizza|pie\b|delicious|tasty|yummy/,"What food do you like here?"],
+ ['excited',/excited about/,"What are you excited about this week?"],
+ ['week',/this week|your week|happen(ed)? to you|good thing/,"What was a good thing this week?"],
+ ['weekend',/weekend/,"What will you do this weekend?"],
+ ['summer',/summer/,"What will you do this summer?"],
+ ['afterschool',/after school/,"What do you do after school?"],
+ ['subject',/subject/,"What class do you like best?"],
+ ['sports',/sports?\b|soccer|basketball/,"Do you play any sports?"],
+ ['movies',/movies?\b|film/,"Did you watch a good movie?"],
+ ['beach',/beach/,"Did you go to the beach here?"],
+ ['english',/english/,"What is hard about English for you?"],
+ ['hangout',/hang out/,"Where do you like to go?"],
+ ['student',/student|study break|college|\bclass\b|studying art/,"Are you a student?"],
+ ['study',/come here to study|study here/,"Do you study here?"],
+ ['firsttime',/first time here|seen you before|first job|worked here/,"Is this your first time here?"],
+ ['newtown',/new in town|seen your face|lived here/,"Are you new here?"],
+ ['live',/live around|live near|minutes away/,"Do you live near here?"],
+ ['busy',/busy day|double shift/,"Are you busy today?"],
+ ['brings',/brings you in|here for/,"Why did you come here today?"],
+ ['fun',/for fun|like to do|gardening|hobby/,"What do you like to do?"],
+ ['day',/how'?s your day|how are you|how'?s it going|how is your day|your day going/,"How are you today?"]
+];
+function topicOf(t){t=(t||'').toLowerCase();for(const[id,re] of TOPIC_RE)if(re.test(t))return id;return null}
+function simpleOf(t){t=(t||'').toLowerCase();for(const[,re,s] of TOPIC_RE)if(re.test(t))return s;return null}
+const SIMPLE_T={greet:"How are you today?",order:"What drink do you want?",size:"Small, medium, or large?",name:"What's your name? I'll write it on the cup."};
+function qPart(t){const m=(t||'').match(/[^.!?…]*\?/g);let q=(m?m[m.length-1]:t||'').trim();if(m&&m.length>1&&/^or\b/i.test(q))q=m[m.length-2].trim()+' '+q;
+  for(let i=0;i<4;i++)q=q.replace(/^(ooh|oh|um|uh|so|okay|ok|well|wait|hey|and|but|tell me|quick one|serious question|last one|dear|honey|sweetie|like)[,:.!…]?\s+/i,'');
+  return q.replace(/,?\s*(dear|honey|sweetie)\?$/i,'?')}
+const lc=t=>/^(I\b|I'|K-pop|Taylor|Ella|Biscuit|Mochi|Bob)/.test(t)?t:t.charAt(0).toLowerCase()+t.slice(1);
+function pickNew(a){const recent=(S.saidK||[]).slice(-14);const f=a.filter(x=>!recent.includes(x));return pick(f.length?f:a)}
+/* r[pi] = [maya, leo, sam, rico, dottie] 순서. 같은 유형의 다른 바리스타도 같은 성격 대사를 씀 */
+const TURN=[["Okay, your turn!","Now you! Tell me!"],["Um, what about you?","Um, how about you?"],["You?","Your turn."],["Okay, your turn. Go!","Now you. Impress me."],["Now, what about you, dear?","And you, sweetie?"]];
+const RESUME=["So, ","Um, so… ","So, ","Okay, back to you. ","So tell me, dear, "];
+const YOUFIRST=["Ha, okay! ","Oh, um, okay. ","Fine. ","Me first? Okay! ","Alright, dear. "];
+const SAID_PRE=["Like I said, ","Um, like I said, ","Like I said, ","Like I said, and I'll say it again: ","As I said, dear, "];
+const WHY_ASK=[["Just curious! I love hearing about people.","No reason! I'm just nosy. In a nice way!"],["Oh, um, sorry. I was just curious.","Um, just making small talk. Sorry."],["Just making conversation.","Just curious."],["I'm writing a novel about my customers. Kidding! Just curious.","Research. For science. Kidding, I'm just curious!"],["Oh, I just like getting to know people, dear.","Oh, an old lady likes to chat, honey."]];
+const WHY_T={
+ order:["Because it's my favorite! It's so good.","Um, it's really popular. People like it.","It's good. Trust me.","Because I make it best. Humble, I know.","Oh, everyone loves it, dear."],
+ size:["So I know which cup to grab!","Um, so I can pick the right cup.","For the cup.","Cups come in three sizes. It's a whole system.","So I know which cup to use, dear."],
+ name:["So I can call you when it's ready!","Um, so I can call you when your drink is ready.","To call you when it's ready.","So I can yell it across the room. Dramatically.","So I can call you when it's ready, dear."]};
+const SELF_WHY=[["Honestly? It just makes me happy!","I don't know, I just love it!"],["Um, I don't know. It's just… calming, I guess.","Um, it makes me feel relaxed."],["Just do.","No reason. Just like it."],["Why? Because I have great taste. Next question!","Because life is short. And so is my corgi."],["Oh, it reminds me of the good old days, dear.","Oh, it keeps me young, honey."]];
+const REALLY_SELF=["Yep, really! ","Um, yeah, really. ","Yep. ","Really! I would never lie. Okay, sometimes. ","Oh yes, dear. "];
+const REALLY_Q=[["Yep, really! I want to know!","Really! I'm curious!"],["Um, yeah. Really. If that's okay.","Um, yes. I'm curious."],["Yep, really.","Really."],["Really really. I'm very curious.","Yes! This is very important information."],["Oh yes, dear, really.","Oh, I really want to know, honey."]];
+const REACT_SELF=[["Right?!","I know!"],["Ha, yeah.","Um, thanks."],["Yep.","Yeah."],["I know, right?","Thank you, thank you."],["Oh, it is, dear.","Oh, thank you, honey."]];
+const REACT_Q=["Ha! So, ","Um, so… ","So, ","Ha! Okay, but seriously, ","Oh, so, dear, "];
+const CLAR_PRE=["Oh, sorry! I mean, ","Oh, um, sorry. I mean… ","I mean, ","Sorry, I talk too fast. I mean, ","Oh, sorry, dear. I mean, "];
+const THINK_R=[["Take your time!","No rush!"],["Oh, um, no rush.","It's okay, take your time."],["Sure, take your time.","No rush."],["Take your time. I'll just stand here looking cool.","No rush. I'll pretend to wipe this counter."],["Take all the time you need, dear.","No hurry, sweetie."]];
+const DUNNO_R=[["That's okay! No pressure.","Ha, that's fine! Some questions are hard."],["Oh, that's okay. Me neither, honestly.","Um, that's fine. No worries."],["Fair enough.","No worries."],["Ha, the mystery continues!","A person of mystery. I respect it."],["That's alright, dear.","Oh, that's quite alright, honey."]];
+const SOFT_FAIL=[["Hmm, I didn't quite get that! ","Oops, I missed that. "],["Um, sorry, I didn't get that. ","Sorry, I, um, missed that. "],["Sorry, missed that. ","Didn't catch that. "],["Sorry, my brain buffered. ","Wait, you lost me there. "],["Oh, I didn't quite catch that, dear. ","Sorry, sweetie, I missed that. "]];
+const UNSURE2=[["Hmm, I've never thought about that!","Oh, that's a hard one. I don't know!"],["Um, I don't really know. Sorry.","Hmm. I, um, have no idea."],["No clue.","Hm. Don't know."],["I'll get back to you on that. In five to ten years.","That's above my pay grade. Which is low."],["Oh, you've got me there, dear.","Oh, I couldn't tell you, honey."]];
+function unsureR(pi){return pickNew([UNSURE[pi]].concat(UNSURE2[pi]))}
+const MORE_G=[["Ha, it's a long story! But I really love it.","Honestly, I could talk about it all day!"],["Um, it's, um, kind of a long story.","Um, there's not much more to say, really."],["Not much to tell.","That's about it."],["The full story costs extra. Kidding! That's really it.","There's more, but it's classified."],["Oh, that's a story for another day, dear.","Oh, it's a long story, honey."]];
+/* 바리스타 자기 이야기의 '더 자세한 내용' (back 대사와 이어지게) */
+const SELF_MORE={
+ maya:{greet:"We had a huge line this morning, but everyone was so nice! I even got a free muffin.",chat1:"I'm studying art! Mostly painting. I want to open a little gallery someday.",chat2:"It's an indie band called The Paper Kites. I've wanted to see them for years!",chat3:"Taylor Swift, obviously! But I also love an indie band called The Paper Kites.",chat4:"There's a little taco truck around the corner. Their fish tacos are amazing!",chat5:"Mochi is a fluffy white cat. She's three, and she sleeps on my sketchbook every day!",chat6:"I painted the ocean at sunset, and my teacher hung it up in the hallway!"},
+ leo:{greet:"Um, I stayed up late reading comics. That's why I'm sleepy.",chat1:"Um, it's my first job, so I was really nervous at first. It's getting better.",chat2:"Um, mostly superhero comics. And some manga. I like quiet stories.",chat3:"Um, mostly calm piano music. It helps me focus. Sometimes lo-fi.",chat4:"Um, the grilled cheese here is really good. It's, like, extra cheesy.",chat5:"Um, Bob is an orange goldfish. He's two. He just, um, swims in circles.",chat6:"Um, she brought chocolate donuts. I had two. Don't tell anyone."},
+ sam:{greet:"Yeah, mornings are crazy. Lots of coffee, lots of people.",chat1:"Yeah, I just walk here. Takes five minutes.",chat2:"Yeah, I play soccer on Thursdays. Just for fun.",chat3:"Whatever's on. Usually pop. I don't really pick.",chat4:"Burritos, mostly. Fast and cheap.",chat5:"It's a cactus. Hard to kill. Perfect for me.",chat6:"Ate outside. Nobody bothered me. Perfect."},
+ rico:{greet:"It was a coffee joke. 'This place is grounds for celebration.' Get it? They laughed!",chat1:"Also the music. I control the playlist. It's a lot of power.",chat2:"Biscuit is a corgi. Short legs, big attitude. He runs my whole life.",chat3:"Sea shanties are great for cleaning the espresso machine. Try it!",chat4:"Pineapple pizza is sweet and salty. It's balance. I will not be taking questions.",chat5:"Biscuit is four. He steals my socks and hides them under the couch.",chat6:"It was a tiny bear on a latte. Ears and everything. My best work."},
+ dottie:{greet:"Oh, I walked here this morning, dear, and the sun was lovely. My knees didn't agree, though.",chat1:"Oh, this street used to have a little bakery and a shoe shop, dear. Times change.",chat2:"Oh, I grow tomatoes, basil, and roses, dear. I talk to them every morning.",chat3:"Oh, Ella Fitzgerald, dear. I danced to her records when I was young.",chat4:"Oh, my apple pie has lots of cinnamon, dear. It's my mother's recipe.",chat5:"Oh, the cats are Salt and Pepper, dear. And the parrot is Captain. He sings!",chat6:"Oh, big red tomatoes, dear. I'll make sauce this weekend."}};
+/* 자유 대화 질문 주제별 바리스타 자기 대답 */
+const FREE_SELF={
+ sports:["I skateboard! Badly, but with style.","Um, not really. I like walking, though.","Soccer. Thursdays.","I play basketball. I'm short, but I'm loud.","Oh, I do water aerobics on Tuesdays, dear!"],
+ movies:["I saw an animated movie last week. I cried twice!","Um, I watched a superhero movie. It was okay.","Haven't had time. Maybe next week.","I watched a horror movie and screamed. Loudly. In the theater.","Oh, I watched an old black-and-white film, dear. Lovely."],
+ subject:["Art, obviously! And a little bit of history.","Um, I liked English. Lots of reading.","Math. One right answer. Simple.","Lunch. Is lunch a subject? It should be.","Oh, home economics, dear. I baked my first pie there."],
+ afterschool:["I paint or go to the park with my friends!","Um, I read comics at home.","Work. Then sleep.","I practice my jokes on my dog. He's a tough crowd.","Oh, these days I water my garden, dear."],
+ summer:["I want to go on a road trip to the beach!","Um, maybe stay home and read. That's my plan.","Work. More work.","I'm going camping. With bugs. Wish me luck.","Oh, my grandkids are visiting, dear. I can't wait."],
+ morning:["Morning person! I love the sunrise.","Um, night person. Definitely.","Morning. I have to be.","Night person. My jokes get better after 10 p.m.","Oh, morning, dear. I'm up at five every day."],
+ drinkhome:["My mom makes amazing hot chocolate at home!","Um, I drink a lot of milk tea at home.","Water. And coffee.","Coffee at home is terrible. That's why I come here.","Oh, I drink chamomile tea every night, dear."],
+ beach:["Yes! I go there to paint the waves sometimes.","Um, once. I got a sunburn.","Not lately. No time.","I went once and a seagull stole my sandwich. We're enemies now.","Oh, I used to go every summer, dear. Lovely sunsets."],
+ english:["Hmm, English is my first language, so I can't say! But you're doing great.","Um, for me, it's talking to new people. I get nervous.","Spelling. English spelling is weird.","Honestly? Spelling 'Wednesday.' Who did that?","Oh, I think you're doing just fine, dear."],
+ excited:["My concert this weekend! I'm so excited.","Um, a new comic book comes out on Friday.","My day off. Sunday.","Payday. Very exciting. Very short.","Oh, my grandkids are coming for dinner, dear."],
+ coffeetea:["Coffee! I mean, look where I work.","Um, tea, actually. Don't tell my boss.","Coffee. Lots.","Coffee. Tea is just leaf water. Kidding! Kind of.","Oh, tea, dear. Always tea."],
+ hangout:["The park by the river! I sketch there.","Um, the library. It's quiet.","Here, honestly.","The arcade. I'm the champion of air hockey.","Oh, my garden, dear. It's my happy place."]};
+const FREE_MAP={music:'chat3',food:'chat4',pets:'chat5',week:'chat6'};
+function saidPre(t){if(!t)return t;const pi=pidx(S.pid);S.ansSaid=S.ansSaid||[];if(S.ansSaid.includes(t))return SAID_PRE[pi]+lc(t.replace(/^(Um, )?me\?\s*/i,'').replace(/^(Honestly\?|Oh,)\s*/,''));S.ansSaid.push(t);return t}
+function moreOf(st){const p=P[S.pid],base=p.base||S.pid,pi=pidx(S.pid);if(!/^(greet|chat\d)$/.test(st||''))return null;if(p.base&&p.back[st]!==P[base].back[st])return null;return (SELF_MORE[base]||{})[st]||null}
+async function askQ(text,key){S.q={st:S.free?'free':STAGES[S.idx],t:key||text};await say(text,key)}
+async function sayQ(text,key){if(/\?/.test(text))return askQ(text,key);return say(text,key)}
+/* 바리스타가 자기 이야기를 한다(첫 번째: back 대사, 두 번째: 자세한 이야기, 세 번째: 마무리) */
+async function selfTell(st,pi){
+  const p=P[S.pid];S.saidBack=S.saidBack||{};S.moreSaid=S.moreSaid||{};
+  if(st==='free'){const tp=topicOf(S.q&&S.q.t);const cs=FREE_MAP[tp];if(cs)return selfTell(cs,pi);
+    const key='free:'+(tp||'x');if(!S.saidBack[key]){S.saidBack[key]=true;S.selfSt=key;S.selfFresh=true;await say(tp&&FREE_SELF[tp]?FREE_SELF[tp][pi]:FREE_BACK[pi]);return}
+    S.selfFresh=true;S.selfSt=key;await say(pickNew(MORE_G[pi]));return}
+  if(!S.saidBack[st]&&p.back[st]){await say(p.back[st]);return}
+  const m=moreOf(st);S.selfSt=st;S.selfFresh=true;
+  if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m);return}
+  await say(pickNew(MORE_G[pi]));
+}
+/* 대화를 다시 사용자에게 넘김: 같은 질문 중이면 '너는?', 이미 다음 질문으로 넘어갔으면 그 질문을 다시 */
+function turnText(st,pi){if(!S.q)return pickNew(TURN[pi]);if(S.q.st===st&&S.selfSt&&(S.selfSt===st||S.selfSt.startsWith('free:')||FREE_MAP[topicOf(S.q.t)]===S.selfSt))return pickNew(TURN[pi]);return RESUME[pi]+lc(qPart(S.q.t))}
+async function giveTurn(st,pi,pre){await say((pre?pre+' ':'')+turnText(st,pi),S.q&&S.q.t)}
+async function reAsk(pi,pre){const q=S.q?qPart(S.q.t):'';await say(pre+lc(q),S.q&&S.q.t)}
+const DETAILQ=/\b(its|his|her|their|they|it|that|name|named|what kind|which one|how old|how long|how many|where|who|what color|what'?s (it|she|he|that) like|tell me more|more about|what happened|how was it|is it good|what did)\b/;
+const FU_INTENT_OK=['petname','pets','music','favorite','hobby','howareyou','weekend','school','eat','bread','garden','comedy','sports','blive','fromwhere','likejob','worklong','job'];
+/* 후속 의도 처리. 처리했으면 true. 점수는 매기지 않고, 원래 질문은 그대로 남겨 둔다 */
+async function followUp(fu,st,raw,n,isQ,fresh){
+  const p=P[S.pid],pi=pidx(S.pid);const chat=st==='free'||CHAT.has(st);
+  S.fuN=S.fuN||{};if((S.fuN[st]||0)>=3)return false;
+  if(!chat&&['back','youfirst'].includes(fu))return false;
+  if(!chat&&fu!=='clarify'&&fu!=='think'&&fu!=='why'&&!(fu==='really'&&S.offer)&&fu!=='react')return false;
+  if(st!=='free'&&(fu==='react'||fu==='really')&&stageMatch(st,n,raw,isQ))return false;
+  if(st==='order'&&fu==='react'&&S.offer&&YES.test(n))return false;
+  if(chat&&!S.q)return false;
+  S.fuN[st]=(S.fuN[st]||0)+1;flag('fu:'+fu);
+  if(fu==='back'||fu==='youfirst'){
+    if(fu==='youfirst'&&!S.saidBack[st]&&st!=='free')await say(YOUFIRST[pi]+(p.back[st]||''));else await selfTell(st,pi);
+    if(fu==='youfirst'&&!(S.saidBack||{})[st]&&st!=='free'){S.saidBack[st]=true;S.selfSt=st;S.selfFresh=true}
+    await giveTurn(st,pi);return true}
+  if(fu==='why'){
+    if(!chat){if(st==='order'&&S.offer)await say(WHY_T.order[pi]+' Want to try it?');else if(st==='order')await say(pickNew(WHY_ASK[pi])+' '+SIMPLE_T.order);else await say(WHY_T[st][pi]+' '+SIMPLE_T[st]);return true}
+    if(fresh){await say(pickNew(SELF_WHY[pi]));await giveTurn(st,pi);return true}
+    await reAsk(pi,pickNew(WHY_ASK[pi])+' '+(pi===2?'':'So, '));return true}
+  if(fu==='really'){
+    if(!chat){await say(REALLY_SELF[pi]+WHY_T.order[pi]+' Want to try it?');return true}
+    if(fresh){const m=moreOf(S.selfSt);S.moreSaid=S.moreSaid||{};if(m&&!S.moreSaid[S.selfSt]){S.moreSaid[S.selfSt]=true;await say(REALLY_SELF[pi]+m)}else await say(REALLY_SELF[pi].trim());S.selfFresh=true;await giveTurn(st,pi);return true}
+    await reAsk(pi,pickNew(REALLY_Q[pi])+' ');return true}
+  if(fu==='clarify'){S.hintsOpen=true;S.hintNote=true;
+    const simple=chat?(simpleOf(S.q.t)||simpleOf(st==='free'?'':p.lines[st])||qPart(S.q.t)):(st==='order'&&S.offer?'do you want the '+S.offer+'? Yes or no?':SIMPLE_T[st]||ALT_SHORT[st][0]);
+    await say(CLAR_PRE[pi]+lc(simple),chat?S.q.t:undefined);return true}
+  if(fu==='think'){S.hintsOpen=true;await say(pickNew(THINK_R[pi]),S.q&&chat?S.q.t:undefined);return true}
+  if(fu==='react'){
+    if(!chat){await say(REACT_Q[pi]+(st==='order'&&S.offer?'want to try the '+S.offer+'?':lc(SIMPLE_T[st]||ALT_SHORT[st][0])));return true}
+    if(fresh){await giveTurn(st,pi,pickNew(REACT_SELF[pi]));return true}
+    await reAsk(pi,REACT_Q[pi]);return true}
+  return false;
+}
+/* 바리스타의 자기 이야기에 대한 세부 질문("What's its name?", "Where is it?") */
+async function detailQ(st,raw,n,qt,fresh){
+  if(!fresh||!S.selfSt)return false;const pi=pidx(S.pid);
+  const it=matchIntent(qt||n);if(it&&it.r&&!FU_INTENT_OK.includes(it.id))return false;
+  const tq=topicOf(qt||n),ts=S.selfSt.startsWith('free:')?S.selfSt.slice(5):topicOf(P[S.pid].lines[S.selfSt]||'');
+  if(!(DETAILQ.test(qt||n)&&(!tq||tq===ts))&&!(tq&&tq===ts))return false;
+  S.fuN=S.fuN||{};if((S.fuN[st]||0)>=3)return false;S.fuN[st]=(S.fuN[st]||0)+1;flag('fu:detail');
+  const m=moreOf(S.selfSt);S.moreSaid=S.moreSaid||{};
+  if(m&&!S.moreSaid[S.selfSt]){S.moreSaid[S.selfSt]=true;await say(m)}else await say(pickNew(MORE_G[pi]));
+  S.selfFresh=true;await giveTurn(st,pi);return true;
+}
+/* 지금 질문 주제를 사용자가 되물을 때("Do you have any pets?" ← 반려동물 질문 중) */
+async function topicBack(st,raw,n,qt,isQ){
+  if(!isQ||segsOf(raw).some(x=>!isQSeg(x))||!/\b(you|your|u|yours)\b/.test(n))return false;
+  const ts=st==='free'?topicOf(S.q&&S.q.t):(topicOf(P[S.pid].lines[st])||topicOf(S.q&&S.q.t));const tq=topicOf(qt||n);
+  if(!ts||tq!==ts)return false;
+  S.fuN=S.fuN||{};if((S.fuN[st]||0)>=3)return false;S.fuN[st]=(S.fuN[st]||0)+1;flag('fu:topicq');
+  const pi=pidx(S.pid);await selfTell(st,pi);await giveTurn(st,pi);return true;
+}
+const PREF_Q={music:["Ooh, who's your favorite?","Nice! Any song I should check out?","Oh cool, since when?"],movie:["Ooh, what's your favorite one?","Nice! Any you'd recommend?"],game:["Ooh, what's your favorite game?","Nice! Are you any good?"],book:["Ooh, what's your favorite?","Any you'd recommend?"],eat:["Ooh, where's the best place for that?","Nice! How often do you have it?"],sport:["Nice! How often do you do that?","Oh cool, who do you usually go with?"],cook:["Ooh, what's your best dish?","Nice! What do you like to make?"],art:["Ooh, what do you like to make?","Nice! How long have you done that?"],pet:["Aw, do you have one?","Aw, me too! Do you have one?"]};
+function onlyQ(raw){return segsOf(raw).filter(x=>!isQSeg(x)).every(x=>fuOf(norm(x))||wordsOf(norm(x)).length<=1)}
 async function handleFree(raw){
   const p=P[S.pid],pi=pidx(S.pid);const n=norm(raw);if(!n)return;
+  const fresh=S.selfFresh;S.selfFresh=false;
   S.log.push({who:'u',text:raw,st:'free'});markExpr();S.freeTurns++;koAttach(null);render();
   if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){await endChat();return}
   const isQ=isQuestion(raw,n);const qt=qText(raw);const intent=matchIntent(qt||n);
+  {const fu=fuOf(n);if(fu&&await followUp(fu,'free',raw,n,isQ,fresh))return}
+  if(isQ&&onlyQ(raw)&&(await detailQ('free',raw,n,qt,fresh)||await topicBack('free',raw,n,qt,isQ)))return;
   const st=statementReact(n);
-  if(BACK.test(n)&&!(intent&&intent.r)){await say(st||pick(p.react.chat1.concat(p.react.chat2)));await say(FREE_BACK[pi])}
+  if(BACK.test(n)&&!(intent&&intent.r)){await say(st||pick(p.react.chat1.concat(p.react.chat2)));await selfTell('free',pi)}
   else if(isCompli(n)&&!isQ)await say(COMPLI_R[pi]);
-  else if(isQ&&intent&&intent.r)await say(irText(intent,pi,qt||n));
-  else if(isQ&&genQ(qt))await say(genQ(qt));
-  else if(isQ){flag('unsure');await say(UNSURE[pi])}
-  else{const af=!st&&!S.lastAct?actFollow(raw,n,pi):null;if(af){S.lastAct=true;await say(af);return}S.lastAct=false;await say(fill(st||pick(p.react.chat1.concat(p.react.chat2))))}
+  else if(isQ&&intent&&intent.r)await say(saidPre(irText(intent,pi,qt||n)));
+  else if(isQ&&genQ(qt))await say(saidPre(genQ(qt)));
+  else if(isQ){flag('unsure');await say(unsureR(pi))}
+  else if(DUNNO.test(n)&&wordsOf(n).length<=7)await say(pickNew(DUNNO_R[pi]));
+  else{const af=!st&&!S.lastAct&&wordsOf(n).length<14?actFollow(raw,n,pi):null;if(af){S.lastAct=true;await askQ(af);return}S.lastAct=false;await say(fill(st||pick(p.react.chat1.concat(p.react.chat2))))}
   await nextTopic();
 }
 async function handle(raw){
   if(S.free)return handleFree(raw);
   const st=STAGES[S.idx], p=P[S.pid], pi=pidx(S.pid);
   const n=norm(raw); if(!n)return;
+  const fresh=S.selfFresh;S.selfFresh=false;
   S.lastRaw=raw;
   S.log.push({who:'u',text:raw,st});markExpr();S.hintNote=false;koAttach(st);render();
   const wc=wordsOf(n).length;
   const isQ=isQuestion(raw,n);
   if(REPEAT.test(n)&&wc<=6){flag('repeat');const lq=[...S.log].reverse().find(m=>m.who==='b'&&/\?$/.test(m.text));await say("Sure! "+(lq?lq.text:fill(p.lines[st])));return}
+  if(st!=='close'){const fu=fuOf(n);if(fu&&await followUp(fu,st,raw,n,isQ,fresh))return;
+    const qt0=qText(raw);if(CHAT.has(st)&&isQ&&onlyQ(raw)&&(await detailQ(st,raw,n,qt0,fresh)||await topicBack(st,raw,n,qt0,isQ)))return}
   const ok=stageMatch(st,n,raw,isQ);
   const qt=qText(raw);
   const qIntent=qt?matchIntent(qt):null;
@@ -1829,20 +2010,21 @@ async function handle(raw){
       await advance();return;
     }
     let r=CHAT.has(st)?statementReact(n):null;
+    if(CHAT.has(st)&&DUNNO.test(n)&&wc<=7){r=pickNew(DUNNO_R[pi]);S.followed[st]=true}
     const offScript=/^chat\d$/.test(st)&&!S.followed[st]&&!p.expect[st].test(n.replace(/\?/g,''));
     if(st==='order'&&iRe('wrong').re.test(n))r=iRe('wrong').r[pi];
-    if(!r&&CHAT.has(st)&&!isQ&&!S.followed[st]&&!S.rush&&!(st==='greet'&&isNeg(n))){const af=actFollow(raw,n,pi);if(af){S.followed[st]=true;flag('topic');await say(af);return}}
+    if(!r&&CHAT.has(st)&&!isQ&&!S.followed[st]&&!S.rush&&wc<14&&!(st==='greet'&&isNeg(n))){const af=actFollow(raw,n,pi);if(af){S.followed[st]=true;flag('topic');await askQ(af);return}}
     if(!r&&offScript&&!NEGANS.test(n))r=NEUTRAL[pi];
-    if(sc===10&&CHAT.has(st)&&!S.followed[st]&&!S.rush&&!offScript&&!(st==='greet'&&isNeg(n))&&!(st==='greet'&&isNeg(n))){S.followed[st]=true;await say(r||(st!=='greet'&&NEGANS.test(n)?FOLLOW_NEG[pi]:p.follow[st]));return}
+    if(sc===10&&CHAT.has(st)&&!S.followed[st]&&!S.rush&&!offScript&&!(st==='greet'&&isNeg(n))&&!(st==='greet'&&isNeg(n))){S.followed[st]=true;await sayQ(r||(st!=='greet'&&NEGANS.test(n)?FOLLOW_NEG[pi]:p.follow[st]));return}
     if(!r&&st!=='greet'&&CHAT.has(st)&&NEGANS.test(n))r=REACT_NO[pi];
     if(!r)r=st==='greet'?pick(isNeg(n)?p.react.greetNeg:p.react.greetPos):pick(p.react[st]);
     await say(fill(r));
     if(st==='order'&&S.slots.drinks)await say(pick(["So that's "+listJoin(S.slots.drinks.map(aOf))+". Got it!","Okay, "+['','one','two','three','four'][S.slots.drinks.length]+" drinks: "+listJoin(S.slots.drinks.map(aOf))+"."]));
     if(st==='order'&&S.food)await say("And a "+S.food+", got it!");
-    if(back)await say(p.back[st]||p.back.greet);
-    else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='howsay')await say(irText(qIntent,pi,qt));
-    else if(isQ&&qt&&genQ(qt))await say(genQ(qt));
-    else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(UNSURE[pi])}
+    if(back){if(S.saidBack[st]){const m=moreOf(st);if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m)}}else await say(p.back[st]||p.back.greet)}
+    else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='howsay')await say(saidPre(irText(qIntent,pi,qt)));
+    else if(isQ&&qt&&genQ(qt))await say(saidPre(genQ(qt)));
+    else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(unsureR(pi))}
     await advance();return;
   }
   if(st==='order'&&!findDrink(n)&&!(S.offer&&YES.test(n))){const ar=attrRec(n);if(ar){S.asked[st]=raw;flag('intent:attr');S.offer=ar.d;S.lastRec=ar.d;await say(ar.text);await say(pick(['Want to try it?','Should I make you one?','Want one?']));return}}
@@ -1869,13 +2051,13 @@ async function handle(raw){
     const fp=(qt||n).match(FOOD);
     if(/how much|price|cost/.test(qt||n)&&fp){await say(cap(fp[0])+'? That one is three fifty.')}
     else if(intent.id==='whatsin'&&d){await say(DESC_PRE[pi]+(DESC[d]||intent.r[pi]))}
-    else await say(intent.r?irText(intent,pi,qt||n):(p.back[st]||p.back.greet));
+    else await say(saidPre(intent.r?irText(intent,pi,qt||n):(p.back[st]||p.back.greet)));
     if(st==='order'&&d&&['whatsin','isgood','price','sweet','drinksize','temp','nosugar','diet'].includes(intent.id)){S.offer=d;await say(pick(['Want to try it?','Want one?','Should I make you one?']));return}
     await reask(st,raw);return;
   }
   if(isQ&&wc>=3){
     S.asked[st]=raw;const g=genQ(qt);flag(g?'genq':'unsure');
-    await say(g||UNSURE[pi]);
+    await say(g?saidPre(g):unsureR(pi));
     await reask(st,raw);return;
   }
   S.fails[st]=(S.fails[st]||0)+1;
@@ -1886,7 +2068,7 @@ async function handle(raw){
     await say(p.giveup);await advance();return;
   }
   S.hintsOpen=true;S.hintNote=true;
-  await say(pick(p.clarify));
+  {const simple=CHAT.has(st)&&S.q?(simpleOf(S.q.t)||qPart(S.q.t)):(SIMPLE_T[st]||'');await say(pickNew(p.clarify.concat(simple?SOFT_FAIL[pi].map(x=>x+simple):[])),CHAT.has(st)&&S.q?S.q.t:undefined)}
 }
 
 /* ---------- conversation log (so Claude can read what went wrong) ---------- */
@@ -1987,10 +2169,10 @@ function renderInfo(){
 function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang))}
 
 function start(pid){
-  S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:'',lv:talkLv(),hinted:{},heard:[],asides:[]};
+  S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:'',lv:talkLv(),hinted:{},heard:[],asides:[],q:null,saidK:[],saidBack:{},moreSaid:{},fuN:{},ansSaid:[],selfFresh:false,selfSt:null};
   render();
   const L=stageLine('greet');
-  say(L.text,L.key).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
+  askQ(L.text,L.key).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
 }
 function hintKey(st){return CHAT.has(st)&&st!=='greet'?'chat':st}
 function renderChat(){
