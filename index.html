@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
 <title>Small Talk Café</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,6 +91,21 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .composer input{flex:1;min-width:0;font:inherit;height:48px;padding:0 16px;border-radius:12px;border:0;box-shadow:inset 0 0 0 1px var(--ring);background:var(--surface);color:var(--ink);transition:box-shadow .2s}
 .composer input:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--accent)}
 .composer input::placeholder{color:var(--neutral-dark-lightest)}
+/* 대화 화면: 보이는 화면(키보드 제외) 높이에 딱 맞춘 고정 틀. 대화 목록만 안에서 스크롤 */
+html.chatlock,html.chatlock body{overflow:hidden;overscroll-behavior:none}
+.wrap.chatmode{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100dvh);min-height:0;padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:0;gap:12px;overflow:hidden}
+.wrap.chatmode .bar,.wrap.chatmode .prog{flex:none}
+.wrap.chatmode .log{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.wrap.chatmode .log{flex:1 1 0;min-height:64px}
+.wrap.chatmode .composer{position:static;flex:0 1 auto;min-height:0;overflow:hidden}
+.wrap.chatmode .composer>*{flex:none}
+.wrap.chatmode .composer>.hints{flex:0 1 auto;min-height:40px;max-height:calc(var(--vvh,100dvh) * .3);overflow-y:auto;overscroll-behavior:contain}
+/* 키보드가 열렸을 때(.kb): 진행 막대·하단 버튼 줄을 잠시 숨겨 대화가 보일 자리를 확보 */
+.wrap.chatmode.kb{padding-top:8px;gap:8px}
+.wrap.chatmode.kb .prog,.wrap.chatmode.kb .bar .eyebrow,.wrap.chatmode.kb .composer>.row:last-child{display:none}
+.wrap.chatmode.kb .bar .btn{padding:6px 12px;font-size:.85rem}
+.wrap.chatmode.kb .composer{padding-block:8px;gap:8px}
+.wrap.chatmode.kb .composer>.hints{max-height:calc(var(--vvh,100dvh) * .22)}
 .hints{background:var(--accent-soft);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
 .hints .note{font-size:.85rem;font-weight:700;color:var(--accent)}
 .chip{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;box-shadow:0 -1px 0 rgba(0,111,253,.18);padding-top:10px}
@@ -1907,12 +1922,13 @@ function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=
 function start(pid){
   S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:''};
   render();
-  say(P[pid].lines.greet).then(()=>{const i=document.getElementById('say');i&&i.focus()});
+  say(P[pid].lines.greet).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
 }
 function hintKey(st){return CHAT.has(st)&&st!=='greet'?'chat':st}
 function renderChat(){
   const p=P[S.pid], st=STAGES[Math.min(S.idx,STAGES.length-1)];
   const draft=(document.getElementById('say')||{}).value||'';
+  const oldLog=document.getElementById('log');const oldTop=oldLog?oldLog.scrollTop:0;const wasBottom=!oldLog||oldLog.scrollHeight-oldLog.scrollTop-oldLog.clientHeight<40;const hadFocus=document.activeElement&&document.activeElement.id==='say';
   const hk=S.free?'chat':hintKey(st);
   app.innerHTML=`
   <div class="bar">
@@ -1935,17 +1951,19 @@ function renderChat(){
     <form id="f"><input id="say" autocomplete="off" placeholder="${esc(S.ph||'예: 영어로 편하게 대답해 보기')}" value="${esc(draft)}" ${S.busy?'disabled':''}><button class="btn primary" ${S.busy?'disabled':''}>보내기</button></form>
     <div class="row">${S.free?`<button class="btn" id="stop" style="font-size:.85rem">대화 마치기</button>`:''}<button class="btn" id="hint" style="font-size:.85rem">${S.hintsOpen?'힌트 닫기':'힌트 보기'}</button>${langToggle()}</div>`}
   </div>`;
-  S.seen=S.log.length;const log=document.getElementById('log');log.lastElementChild&&log.lastElementChild.scrollIntoView({block:'nearest'});
+  const isNew=S.log.length>(S.seen||0);S.seen=S.log.length;const log=document.getElementById('log');
+  if(isNew||wasBottom||S.busy)logToBottom();else{log.scrollTop=oldTop;const gb=log.querySelector('.glbox');if(gb){const lr=log.getBoundingClientRect(),gr=gb.getBoundingClientRect();if(gr.bottom>lr.bottom)log.scrollTop+=gr.bottom-lr.bottom+8}}
+  if(hadFocus){const i=document.getElementById('say');i&&!i.disabled&&i.focus({preventScroll:true})}
   app.querySelector('#quit').onclick=()=>{logWrite();S=null;render()};
   if(S.done){app.querySelector('#toReceipt').onclick=()=>{S.receipt=true;render();window.scrollTo(0,0)};return}
   const stopB=app.querySelector('#stop');if(stopB)stopB.onclick=()=>{if(S.busy)return;S.ended=false;S.free=false;endChat()};
-  if(S.ended){const m=app.querySelector('#more');if(m)m.onclick=()=>{S.ended=false;S.free=true;S.hintsOpen=false;nextTopic().then(()=>{const i=document.getElementById('say');i&&i.focus()})};return}
+  if(S.ended){const m=app.querySelector('#more');if(m)m.onclick=()=>{S.ended=false;S.free=true;S.hintsOpen=false;nextTopic().then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})})};return}
   const sayEl=document.getElementById('say');
   sayEl.addEventListener('input',()=>koFind(sayEl.value));
   if(draft)koFind(draft);
-  app.querySelector('#f').onsubmit=e=>{e.preventDefault();if(S.busy)return;const v=document.getElementById('say').value.trim();if(!v)return;let sendV=v;S.pendingKo=null;if(/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(v)){const c=koConvert(v);if(!c.ok||!/[a-z]/i.test(c.text)){koFind(v,true);return}sendV=c.text;S.pendingKo={orig:v,pairs:c.pairs}}document.getElementById('say').value='';const kb=document.getElementById('kofind');if(kb){kb.hidden=true;kb.innerHTML=''}handle(sendV).then(()=>{logSave();const i=document.getElementById('say');i&&i.focus()})};
+  app.querySelector('#f').onsubmit=e=>{e.preventDefault();if(S.busy)return;const v=document.getElementById('say').value.trim();if(!v)return;let sendV=v;S.pendingKo=null;if(/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(v)){const c=koConvert(v);if(!c.ok||!/[a-z]/i.test(c.text)){koFind(v,true);return}sendV=c.text;S.pendingKo={orig:v,pairs:c.pairs}}document.getElementById('say').value='';const kb=document.getElementById('kofind');if(kb){kb.hidden=true;kb.innerHTML=''}handle(sendV).then(()=>{logSave();const i=document.getElementById('say');i&&i.focus({preventScroll:true})})};
   app.querySelector('#hint').onclick=()=>{S.hintsOpen=!S.hintsOpen;render()};
-  app.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const i=document.getElementById('say');i.value=b.dataset.use.replace(/ \.\.\.|\.\.\./,' ');i.focus()});
+  app.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const i=document.getElementById('say');i.value=b.dataset.use.replace(/ \.\.\.|\.\.\./,' ');i.focus({preventScroll:true})});
   app.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>saveChunk(b.dataset.save,b.dataset.ko));
   app.querySelectorAll('.gl').forEach(b=>b.onclick=()=>{const i=+b.closest('.msg').querySelector('[data-say]').dataset.say;const k=b.dataset.k;
     if(S.gloss&&S.gloss.i===i&&S.gloss.k===k){S.gloss=null;render();return}
@@ -1971,8 +1989,8 @@ function koFind(v,blocked){
   }
   box.innerHTML=html;box.hidden=false;
   const inp=document.getElementById('say');
-  box.querySelectorAll('[data-ins]').forEach(b=>b.onclick=()=>{inp.value=inp.value.replace(b.dataset.ins,b.dataset.en).replace(/\s+/g,' ');saveChunk2(b.dataset.en,b.dataset.ko);koFind(inp.value);inp.focus()});
-  box.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.ex;saveChunk2(b.dataset.en,b.dataset.ko);koFind(inp.value);inp.focus()});
+  box.querySelectorAll('[data-ins]').forEach(b=>b.onclick=()=>{inp.value=inp.value.replace(b.dataset.ins,b.dataset.en).replace(/\s+/g,' ');saveChunk2(b.dataset.en,b.dataset.ko);koFind(inp.value);inp.focus({preventScroll:true})});
+  box.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.ex;saveChunk2(b.dataset.en,b.dataset.ko);koFind(inp.value);inp.focus({preventScroll:true})});
 }
 function saveChunk2(en,ko){const l=savedList();if(!l.some(x=>x.en===en)){l.unshift({en,ko,at:Date.now()});store.set('stc.saved',l)}}
 function renderReceipt(){
@@ -2002,7 +2020,20 @@ function renderReceipt(){
   app.querySelector('#again').onclick=()=>start(S.pid);
   app.querySelector('#home').onclick=()=>{S=null;render()};
 }
-function render(){if(!S&&INFO)renderInfo();else if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+function logToBottom(){const l=document.getElementById('log');if(l)l.scrollTop=l.scrollHeight}
+/* 휴대폰 키보드 대응: 실제로 보이는 화면 크기(visualViewport)를 CSS 변수로 넘김 */
+let vvMax=0,vvW=0;
+function vvSync(){const v=window.visualViewport,h=v?v.height:innerHeight,t=v?v.offsetTop:0;
+  const r=document.documentElement;r.style.setProperty('--vvh',h+'px');r.style.setProperty('--vvt',t+'px');
+  const w=v?v.width*(v.scale||1):innerWidth;if(Math.abs(w-vvW)>40){vvW=w;vvMax=0}/* 가로·세로 전환 시 기준 높이 초기화 */
+  vvMax=Math.max(vvMax,h);const kb=vvMax-h>120;
+  if(app.classList.contains('chatmode')){const l=document.getElementById('log');const near=l&&(l.dataset.bottom!=='0');app.classList.toggle('kb',kb);if(near)logToBottom()}}
+if(window.visualViewport){visualViewport.addEventListener('resize',vvSync);visualViewport.addEventListener('scroll',vvSync)}
+addEventListener('resize',vvSync);
+document.addEventListener('scroll',e=>{const l=e.target;if(l&&l.id==='log')l.dataset.bottom=(l.scrollHeight-l.scrollTop-l.clientHeight<40)?'1':'0'},true);
+document.addEventListener('focusin',e=>{if(e.target&&e.target.id==='say'&&app.classList.contains('chatmode')){setTimeout(()=>{vvSync();logToBottom()},60);setTimeout(()=>{vvSync();logToBottom()},350)}});
+vvSync();
+function render(){const chat=!!(S&&!S.receipt);app.classList.toggle('chatmode',chat);if(!chat)app.classList.remove('kb');document.documentElement.classList.toggle('chatlock',chat);if(!S&&INFO)renderInfo();else if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
 /* ---------- extended small talk (chat3–chat6): music · food · pets · best thing this week ---------- */
 (()=>{
 const NEW=['chat3','chat4','chat5','chat6'];
