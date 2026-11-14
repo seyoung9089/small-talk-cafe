@@ -46,7 +46,7 @@
 :root{--bg:var(--surface-muted);--surface:#fff;--ink:var(--neutral-dark-darkest);--muted:var(--neutral-dark-light);--line:var(--neutral-light-medium);--ring:#C5C6CC;--accent:var(--highlight-darkest);--accent-soft:var(--highlight-lightest);--me:var(--highlight-darkest);--me-ink:#fff;--display:'Nunito','Noto Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;--body:var(--display);--mono:var(--display);--t10:#8F9098;--t30:#2897FF;--t60:#006FFD;--t100:#0050B3;--ease:cubic-bezier(.2,.7,.2,1)}
 *{box-sizing:border-box}html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-.wrap{max-width:520px;min-height:100vh;margin:0 auto;background:#fff;padding-block:24px 32px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+.wrap{max-width:520px;min-height:100vh;margin:0 auto;background:var(--surface);padding-block:24px 32px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.2}
 h1{font-size:1.75rem;font-weight:800}h2{font-size:1.25rem;font-weight:800}h3{font-size:1rem;font-weight:800}
 p{margin:0}.muted{color:var(--muted)}
@@ -86,9 +86,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .msg .spk{border:0;background:none;color:var(--accent);font-size:.75rem;font-weight:700;padding:0;margin-left:8px}
 .typing{align-self:flex-start;color:var(--muted);font-size:.85rem;animation:arrive .35s var(--ease) both}
 .typing::after{content:"";display:inline-block;width:18px;height:6px;margin-left:6px;vertical-align:middle;background:radial-gradient(circle,var(--accent) 3px,transparent 3.5px) 0 0/6px 6px repeat-x;animation:blink 1s infinite}
-.composer{position:sticky;bottom:0;background:#fff;padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;box-shadow:0 -1px 0 var(--line)}
+.composer{position:sticky;bottom:0;background:var(--surface);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;box-shadow:0 -1px 0 var(--line)}
 .composer form{display:flex;gap:8px}
-.composer input{flex:1;min-width:0;font:inherit;height:48px;padding:0 16px;border-radius:12px;border:0;box-shadow:inset 0 0 0 1px var(--ring);background:#fff;color:var(--ink);transition:box-shadow .2s}
+.composer input{flex:1;min-width:0;font:inherit;height:48px;padding:0 16px;border-radius:12px;border:0;box-shadow:inset 0 0 0 1px var(--ring);background:var(--surface);color:var(--ink);transition:box-shadow .2s}
 .composer input:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--accent)}
 .composer input::placeholder{color:var(--neutral-dark-lightest)}
 .hints{background:var(--accent-soft);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
@@ -97,7 +97,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .chip:first-of-type{box-shadow:none;padding-top:0}
 .chip .t{min-width:0}.chip .t b{display:block}.chip .t small{color:var(--muted)}
 .chip .acts{display:flex;gap:6px;flex-shrink:0}
-.chip .acts button{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:200px;border:0;background:#fff;color:var(--accent)}
+.chip .acts button{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:200px;border:0;background:var(--surface);color:var(--accent)}
 .chip .acts button:hover{background:var(--accent);color:#fff}
 .gl{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-decoration-color:rgba(0,111,253,.3);text-decoration-thickness:1px;text-underline-offset:3px}
 .gl:hover{color:var(--accent)}
@@ -105,7 +105,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .gl.w{text-decoration:none}.gl.w:hover,.gl.w.on{text-decoration:underline;text-decoration-color:var(--accent)}
 .glbox .sense{line-height:1.45}.glbox .sense i{color:var(--muted);font-style:normal;margin-right:4px}
 .glbox .ex{display:block;color:var(--muted);font-size:.8rem}.glbox .src{font-size:.72rem;color:var(--muted)}
-.glbox{margin-top:8px;padding:10px 12px;border-radius:12px;background:#fff;color:var(--ink);font-size:.88rem;display:flex;flex-direction:column;gap:6px;animation:rise .3s var(--ease) both}
+.glbox{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface);color:var(--ink);font-size:.88rem;display:flex;flex-direction:column;gap:6px;animation:rise .3s var(--ease) both}
 .glbox .row{font-size:.78rem}
 .glbox button{font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:200px;border:0;background:var(--accent-soft);color:var(--accent)}
 .btnlink{font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:200px;background:var(--accent-soft);color:var(--accent);text-decoration:none;white-space:nowrap}
@@ -128,8 +128,21 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 @keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
 @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style>
 
+
+/* ---------- dark mode: phone setting by default, or the button on the home screen ---------- */
+.themebtn{flex:none;padding:6px 12px;font-size:.78rem;border-radius:200px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--surface-muted:#0F1115;--surface:#181A20;--neutral-light-light:#20232B;--neutral-light-medium:#2C2F39;--neutral-light-darkest:#3B3E49;--ring:#3B3E49;
+--neutral-dark-darkest:#ECEDF2;--neutral-dark-light:#A5A7B0;--neutral-dark-lightest:#80838D;
+--highlight-lightest:#18294A;--highlight-light:#21396A;--highlight-dark:#2E73E6;--highlight-darkest:#5A9CFF;--me:#2266D9;--t10:#8F9098;--t30:#6FB0FF;--t60:#5A9CFF;--t100:#9CC6FF;color-scheme:dark}
+:root:not([data-theme="light"]) .btn.primary,:root:not([data-theme="light"]) .seg button[aria-pressed="true"],:root:not([data-theme="light"]) .chip .acts button:hover{background:var(--me)}
+:root:not([data-theme="light"]) .btn.primary:hover{background:var(--highlight-dark)}}
+:root[data-theme="dark"]{--surface-muted:#0F1115;--surface:#181A20;--neutral-light-light:#20232B;--neutral-light-medium:#2C2F39;--neutral-light-darkest:#3B3E49;--ring:#3B3E49;
+--neutral-dark-darkest:#ECEDF2;--neutral-dark-light:#A5A7B0;--neutral-dark-lightest:#80838D;
+--highlight-lightest:#18294A;--highlight-light:#21396A;--highlight-dark:#2E73E6;--highlight-darkest:#5A9CFF;--me:#2266D9;--t10:#8F9098;--t30:#6FB0FF;--t60:#5A9CFF;--t100:#9CC6FF;color-scheme:dark}
+:root[data-theme="dark"] .btn.primary,:root[data-theme="dark"] .seg button[aria-pressed="true"],:root[data-theme="dark"] .chip .acts button:hover{background:var(--me)}
+:root[data-theme="dark"] .btn.primary:hover{background:var(--highlight-dark)}
+</style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
@@ -138,6 +151,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 /* ---------- storage helpers ---------- */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let LANG=store.get('stc.lang','ko');
+/* ---------- theme: follows the phone setting until the user picks one ---------- */
+const DARKQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+function isDark(){const t=document.documentElement.dataset.theme;return t?t==='dark':DARKQ.matches}
+function setTheme(t){document.documentElement.dataset.theme=t;store.set('stc.theme',t)}
+{const t=store.get('stc.theme',null);if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}
 
 /* ---------- personas ---------- */
 const P={
@@ -401,12 +419,12 @@ const STATEMENTS=[
 ];
 
 /* ---------- stages ---------- */
-const STAGES=['greet','order','size','name','chat1','chat2','close'];
-const STAGE_KO={greet:'인사',order:'주문',size:'사이즈',name:'이름',chat1:'잡담 1',chat2:'잡담 2',close:'마무리'};
-const STAGE_EN={greet:'Greeting',order:'Order',size:'Size',name:'Name',chat1:'Chat 1',chat2:'Chat 2',close:'Goodbye'};
+const STAGES=['greet','order','size','name','chat1','chat2','chat3','chat4','chat5','chat6','close'];
+const STAGE_KO={greet:'인사',order:'주문',size:'사이즈',name:'이름',chat1:'잡담 1',chat2:'잡담 2',chat3:'잡담 3',chat4:'잡담 4',chat5:'잡담 5',chat6:'잡담 6',close:'마무리'};
+const STAGE_EN={greet:'Greeting',order:'Order',size:'Size',name:'Name',chat1:'Chat 1',chat2:'Chat 2',chat3:'Chat 3',chat4:'Chat 4',chat5:'Chat 5',chat6:'Chat 6',close:'Goodbye'};
 const SHORT={greet:"how's your day?",order:"what can I get you?",size:"what size?",name:"what name should I put?"};
 const ALT_SHORT={greet:["how's your day?","how are you doing today?","how's it going so far?"],order:["what can I get you?","what are you in the mood for?","what sounds good today?","what'll it be?"],size:["what size?","small, medium, or large?","how big do you want it?"],name:["what name should I put?","what's your name?","who should I write on the cup?"]};
-const CHAT=new Set(['greet','chat1','chat2']);
+const CHAT=new Set(['greet','chat1','chat2','chat3','chat4','chat5','chat6']);
 const MODEL={greet:"Pretty good, thanks! I just finished my exams, so I'm finally relaxing. How about you?",order:"Can I get an iced vanilla latte, please? Actually, what do you recommend?",size:"A medium, please. Is it pretty sweet?",name:"It's Seyoung. S-E-Y-O-U-N-G. It's a Korean name.",close:"Thanks so much! You have a great day too. I'll come back next week!"};
 const DRINKS=['honey oat latte','caramel macchiato','vanilla cold brew','vanilla latte','chai latte','matcha latte','hot chocolate','cold brew','flat white','drip coffee','iced coffee','green tea','latte','americano','cappuccino','mocha','espresso','macchiato','frappuccino','chai','matcha','tea','lemonade','smoothie','coffee',
  'cafe latte','caffe latte','cafe au lait','cafe mocha','pumpkin spice latte','hazelnut latte','caramel latte','oat latte','oat milk latte','almond milk latte','soy latte','iced americano','iced latte','iced tea','iced mocha','cortado','bubble tea','milk tea','black tea','earl grey','herbal tea','peppermint tea','chamomile tea','jasmine tea','hot tea','orange juice','apple juice','juice','milk','water','sparkling water','cocoa','hot cocoa','milkshake','shake','frappe','soda','kombucha','decaf','vanilla','caramel','hazelnut','lungo','ristretto','red eye','affogato','yuzu tea','lemon tea','ginger tea','strawberry smoothie','mango smoothie','berry smoothie','banana smoothie','iced chocolate','chocolate milk','pour over','pour-over','oat latte','iced chai','iced matcha','dirty chai','london fog','ginger tea'].sort((a,b)=>b.length-a.length);
@@ -1446,8 +1464,8 @@ function stageMatch(st,n,raw,isQ){
   if(st==='order'){const q=qText(raw);if(q&&/recommend|suggest|what'?s good|your favorite|popular/.test(q))return false;const ok=segsOf(raw).filter(x=>!infoQ(x)).map(norm);if(S.offer&&ok.some(x=>YES.test(x)))return true;if(!findDrink(ok.join(' '))&&attrRec(ok.join(' ')||n))return false;return ok.some(x=>findDrink(x)!==null||ORDER_GENERIC.test(x)||FOOD.test(x))}
   if(st==='size'){if(/^(s|m|l)$/.test(n))return true;return segsOf(raw).filter(x=>!infoQ(x)).some(x=>SIZE.test(norm(x)))}
   if(st==='name')return !!extractName(n,raw);
-  if((st==='chat1'||st==='chat2')&&/^(yes|yeah|yep|no|nope|maybe|sometimes|not really|sure|kind of|sort of|i guess|probably|not much|a little|a bit|very|yes very|always|never|ok|okay|exactly|totally|of course|unfortunately|definitely|absolutely)[.!]?$/.test(n))return true;
-  if(st==='chat1'||st==='chat2')return p.expect[st].test(n.replace(/\?/g,''))&&!(isQ&&wc<=3)||(!isQ&&wc>=3);
+  if(/^chat\d$/.test(st)&&/^(yes|yeah|yep|no|nope|maybe|sometimes|not really|sure|kind of|sort of|i guess|probably|not much|a little|a bit|very|yes very|always|never|ok|okay|exactly|totally|of course|unfortunately|definitely|absolutely)[.!]?$/.test(n))return true;
+  if(/^chat\d$/.test(st))return p.expect[st].test(n.replace(/\?/g,''))&&!(isQ&&wc<=3)||(!isQ&&wc>=3);
   if(st==='close')return CLOSE.test(n)||!isQ||wc<=4;
 }
 const FLAVOR={pumpkin:'pumpkin spice latte',honey:'honey oat latte',strawberry:'strawberry smoothie',mango:'mango smoothie',chocolate:'mocha',mint:'peppermint tea',peppermint:'peppermint tea',lemon:'lemon tea',ginger:'ginger tea',coconut:'iced latte',cinnamon:'chai latte'};
@@ -1494,12 +1512,12 @@ async function advance(){
 async function finish(){
   S.done=true;S.ended=false;logSave();
   const total=STAGES.reduce((a,s)=>a+adj(s),0);
-  const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,at:Date.now()});store.set('stc.history',hist.slice(0,20));
+  const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,n:STAGES.length,at:Date.now()});store.set('stc.history',hist.slice(0,20));
   render();
 }
 async function reask(st,raw){
   const p=P[S.pid],pi=pidx(S.pid);
-  if(st==='chat1'||st==='chat2'){if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
+  if(/^chat\d$/.test(st)){if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
   if(st==='close'){await say(pick(["Anyway, enjoy your drink!","Oh, and your drink's getting cold!","Alright, enjoy!"]));if(!S.best.close)record('close',raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
   S.reasks[st]=(S.reasks[st]||0)+1;
   if(S.reasks[st]>=3){
@@ -1738,7 +1756,7 @@ async function handle(raw){
       await advance();return;
     }
     let r=CHAT.has(st)?statementReact(n):null;
-    const offScript=(st==='chat1'||st==='chat2')&&!S.followed[st]&&!p.expect[st].test(n.replace(/\?/g,''));
+    const offScript=/^chat\d$/.test(st)&&!S.followed[st]&&!p.expect[st].test(n.replace(/\?/g,''));
     if(st==='order'&&iRe('wrong').re.test(n))r=iRe('wrong').r[pi];
     if(!r&&CHAT.has(st)&&!isQ&&!S.followed[st]&&!S.rush&&!(st==='greet'&&isNeg(n))){const af=actFollow(raw,n,pi);if(af){S.followed[st]=true;flag('topic');await say(af);return}}
     if(!r&&offScript&&!NEGANS.test(n))r=NEUTRAL[pi];
@@ -1825,7 +1843,7 @@ function renderStart(){
   const hist=store.get('stc.history',[]).slice(0,5), saved=savedList();
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:8px">
-    <span class="eyebrow">Corner café · ${STAGES.length} steps · no exam English</span>
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></div>
     <h1>Small Talk Café</h1>
     <p class="muted">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 영어로 자유롭게 입력하세요. 점수는 대화가 끝난 뒤 영수증에서만 보여 드립니다.</p>
   </header>
@@ -1847,9 +1865,10 @@ function renderStart(){
       <span class="tier s100 num">100</span><span>이끌기: 반응하고, 덧붙이고, 되물어 대화를 끌고 감</span>
     </div>
   </section>
-  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.total} / 700</span></li>`).join('')}</ul></section>`:''}
+  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${Math.round(h.total/(h.n||7))} / 100</span></li>`).join('')}</ul></section>`:''}
   <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">대화 중 힌트에서 ‘저장’을 누르면 여기에 모입니다.</p>`}</section>`;
   app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
+  app.querySelector('#theme').onclick=()=>{setTheme(isDark()?'light':'dark');render()};
   app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
   app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
   bindLang();
@@ -1946,7 +1965,7 @@ function renderReceipt(){
     </div>`}).join('<div class="dash"></div>')}
     ${(()=>{const fx=fixesFor(S.log.filter(m=>m.who==='u').map(m=>m.text));return fx.length?`<div class="dash"></div><div class="line"><div class="top"><span>${LANG==='ko'?'표현 다듬기':'Polish your English'}</span></div>${fx.map(({f,t})=>`<div class="said">“${esc(t)}”</div><div class="tip">${esc(LANG==='ko'?f.ko:f.en)}</div><div class="model">${esc(f.fix)}</div>`).join('')}</div>`:''})()}
     <div class="dash"></div>
-    <div class="total"><span>TOTAL</span><span class="num">${total} / 700</span></div>
+    <div class="total"><span>TOTAL</span><span class="num">${Math.round(total/STAGES.length)} / 100</span></div>
     ${S.freeTurns?`<div class="top" style="display:flex;justify-content:space-between"><span>${LANG==='ko'?'추가 대화 (점수 없음)':'Extra chat (not scored)'}</span><span class="num">${S.freeTurns} ${LANG==='ko'?'번 말함':'turns'}</span></div>`:''}
     <div class="hd muted"><span>${drinkLabel()} · for ${S.slots.name}</span><span>Thank you! Come again.</span></div>
   </div>
@@ -1955,6 +1974,46 @@ function renderReceipt(){
   app.querySelector('#home').onclick=()=>{S=null;render()};
 }
 function render(){if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+/* ---------- extended small talk (chat3–chat6): music · food · pets · best thing this week ---------- */
+(()=>{
+const NEW=['chat3','chat4','chat5','chat6'];
+const ORDER=['maya','leo','sam','rico','dottie'];
+const Q={maya:["Ooh wait, what kind of music are you into? I need new playlists!","Okay, food time. Have you tried any good food around here yet?","Do you have any pets? Please say yes, I love pet stories!","Last one, I swear! What's the best thing that happened to you this week?"],
+leo:["Um, do you, like, listen to music while you study?","Um, what's the best thing you've eaten here so far?","Sorry if this is weird, but… do you have any pets?","Um, did anything good happen to you this week?"],
+sam:["Quick one, what music are you into?","Tried any good food around here?","Got any pets?","Best thing this week?"],
+rico:["Serious question: what's on your playlist? No judging. Okay, a little judging.","Pineapple on pizza. Yes or no? Choose wisely.","Do you have a pet? Or a plant? I'll accept a plant.","Give me one good thing from your week. I'm collecting them."],
+dottie:["Tell me, dear, what kind of music do you like?","And what's the best food you've tried around here, sweetie?","Do you have any pets at home, honey?","What was the nicest thing that happened to you this week, dear?"]};
+const R={music:{maya:["Ooh, great taste! I'd listen to that all day.","Love that! Adding it to my playlist."],leo:["Oh. Cool. I, um, like that kind of music too.","Nice. That sounds good."],sam:["Nice, good stuff.","Ha, good taste."],rico:["Okay, you've got taste. I'm impressed.","Solid choice. My playlist is jealous."],dottie:["Oh, how lovely, dear!","That sounds wonderful, sweetie."]},
+food:{maya:["Yum, now I'm hungry!","Ooh, I need to try that!"],leo:["Oh. That sounds, um, really good.","I'd like to try that sometime."],sam:["Sounds tasty.","Nice, good pick."],rico:["Okay, now I'm hungry. Thanks a lot.","That sounds delicious. Respect."],dottie:["Oh, that sounds delicious, dear!","Mmm, I could eat that right now."]},
+pets:{maya:["Aww, so cute!","Ahh, I love that! Pets are the best."],leo:["Oh. That's, um, really nice.","Aw. I wish I had one."],sam:["Aw, nice.","Cool, good company."],rico:["Legend. Pets are the best coworkers.","Okay, that's adorable."],dottie:["Oh, how sweet, dear!","Aww, bless them!"]},
+week:{maya:["Aww, that's awesome! You deserve it.","Yay! That made my day too."],leo:["Oh. That's, um, really good.","Nice. I'm happy for you."],sam:["Nice. Good for you.","Hey, good stuff."],rico:["Okay, that deserves a celebration.","Look at you! Winning."],dottie:["Oh, I'm so happy for you, dear!","How wonderful, sweetie!"]}};
+const F={music:["Ooh, who's your favorite singer?","Um, who's your favorite artist?","Yeah? Favorite song?","Okay, but what's the best song ever? Defend it!","Oh? And who's your favorite singer, dear?"],
+food:["Ooh, what did you like about it?","Um, was it, like, spicy or sweet?","Yeah? What was in it?","Okay, but describe it. I need details!","Oh? And what did it taste like, dear?"],
+pets:["Aww, what's its name?","Um, what's its name?","Yeah? Name?","What's its name? Please say something funny.","Oh, and what's its name, dear?"],
+week:["Oh, tell me more! What happened?","Um, what happened?","Yeah? What happened?","Okay, spill. What happened?","Oh? Tell me all about it, dear."]};
+const B={music:{maya:"Me? I love pop and indie. Taylor Swift on repeat!",leo:"Um, me? I like quiet piano music while I work.",sam:"Me? Whatever's on the radio.",rico:"Me? Sea shanties. Don't ask.",dottie:"Oh, I love old jazz, dear. Ella Fitzgerald is my favorite."},
+food:{maya:"Me? I'm obsessed with tacos!",leo:"Um, me? I like, uh, grilled cheese.",sam:"Honestly? Anything fast.",rico:"Pizza. Always pizza. Pineapple included, fight me.",dottie:"Oh, I make a mean apple pie, dear."},
+pets:{maya:"I have a cat named Mochi! She's a diva.",leo:"Um, I have a goldfish. His name is Bob.",sam:"No time for pets. I have a plant.",rico:"A corgi named Biscuit! He's the boss of me.",dottie:"Two cats and a very loud parrot, dear."},
+week:{maya:"Me? I aced my art project!",leo:"Um, my coworker brought donuts.",sam:"Honestly? A quiet lunch break.",rico:"I made perfect latte art. A tiny bear. Nobody noticed.",dottie:"My tomatoes are finally ripe, dear."}};
+const TOPIC={chat3:'music',chat4:'food',chat5:'pets',chat6:'week'};
+const X={music:/\b(music|song|songs|listen|pop|rock|k-?pop|jazz|hip|rap|band|singer|playlist|like|love|piano|study)\b/,food:/\b(food|eat|ate|pizza|burger|noodles?|kimchi|ramen|rice|chicken|taco|sandwich|cake|cookie|like|love|tried|yes|yeah|good|delicious|tasty)\b/,pets:/\b(pet|pets|dog|cat|fish|bird|hamster|rabbit|puppy|kitten|no|have|don'?t|yes|yeah|not)\b/,week:/\b(test|exam|friend|friends|game|party|weekend|good|great|happy|got|won|finished|best|because|my|i)\b/};
+ORDER.forEach((id,pi)=>{const p=P[id]||null;if(!p)return;NEW.forEach((s,i)=>{const k=TOPIC[s];
+ p.lines[s]=Q[id][i];
+ if(p.react)p.react[s]=R[k][id];
+ if(p.follow)p.follow[s]=F[k][pi];
+ if(p.back)p.back[s]=B[k][id];
+ if(p.expect)p.expect[s]=X[k];});});
+// 20 baristas: derived personas inherit via base; make sure every id has the new stages
+Object.keys(P).forEach(id=>{const p=P[id];if(ORDER.includes(id))return;const b=P[p.base]||P[ORDER[pidx(id)%5]];if(!b)return;NEW.forEach(s=>{p.lines[s]=b.lines[s];if(p.react)p.react[s]=b.react[s];if(p.follow)p.follow[s]=b.follow[s];if(p.back)p.back[s]=b.back[s];if(p.expect)p.expect[s]=b.expect[s];});});
+const copy=(o)=>{if(o&&typeof o==='object')NEW.forEach((s,i)=>{if(o[s]===undefined)o[s]=o[i%2?'chat2':'chat1']})};
+[typeof SHORT!=='undefined'&&SHORT].forEach(copy);
+if(typeof TIPS!=='undefined')Object.values(TIPS).forEach(copy);
+})();
+const MOD={chat3:"I'm really into K-pop and some chill indie music. What about you? Any good playlists?",chat4:"Yes! I tried the kimchi fried rice nearby and it was amazing. Have you been there?",chat5:"I have a small dog named Coco. She's super cute. Do you have any pets?",chat6:"I got a good score on my English test, so I was really happy. How about your week?"};
+const TIPK={chat3:"좋아하는 음악을 말하고 'What about you?'로 되물어 보세요.",chat4:"먹어 본 음식과 느낌을 말하고 'Have you tried it?'로 되물어 보세요.",chat5:"반려동물 이름이나 특징을 덧붙이고 'Do you have any pets?'로 되물어 보세요.",chat6:"이번 주 좋았던 일과 이유를 말하고 'How about your week?'로 되물어 보세요."};
+const TIPE={chat3:"Name the music you like, then ask 'What about you?'",chat4:"Say what you ate and how it tasted, then ask 'Have you tried it?'",chat5:"Add the pet's name or a detail, then ask 'Do you have any pets?'",chat6:"Say the good thing and why, then ask 'How about your week?'"};
+Object.assign(MODEL,MOD);Object.values(P).forEach(p=>{if(p.model)Object.assign(p.model,MOD)});
+Object.assign(STAGE_TIP.ko,TIPK);Object.assign(STAGE_TIP.en,TIPE);
 render();
 </script>
 
