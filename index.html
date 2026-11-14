@@ -1742,7 +1742,7 @@ const GENQ=[
  {re:/do you have (a |an |any )?([a-z' -]{2,20}?)\??$/,r:["Hmm, no {x}, sadly! Do you?","Um, no, I don't. Do you?","Nope. You?","No {x}. Just jokes. Lots of jokes.","Oh, no, dear. Do you?"]},
  {re:/are you (a |an )?([a-z' -]{2,20}?)\??$/,r:["Ha, kind of! Why?","Um, maybe a little?","Kind of.","Depends who's asking. Kidding, kind of!","Oh, maybe a little, honey."]}
 ];
-function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
+function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\s+(too|also|as well)$/,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
 const isNeg=n=>NEG.test(n.replace(/not (too |that |so |really |very )?(bad|busy|tired|stressed|sleepy)/g,''));
 const NEUTRAL=["Oh, nice!","Oh, cool.","Nice.","Ha! Fair enough.","Oh, how nice, dear."];
 const REJECT=/no thanks|something else|not that|anything else|other options?|i'?ll pass|not really feeling/;
@@ -2202,6 +2202,10 @@ function talkPool(t,pi){const x=(TALK_X[S.pid]||{})[t.id];if(x)return x;if(!P[S.
 function talkOf(q,st){if(!q)return null;const pi=pidx(S.pid);for(const t of TALK){if(t.svc&&st==='order')continue;if(t.re.test(q)){if(!talkPool(t,pi))return null;return t}}return null}
 function talkQ(n,isQ,qt){if(qt)return qt;if(isQ||/^((so|and|okay|ok|well|hey|oh),? )?tell me (a little |more )?about your/.test(n))return n;return ''}
 function talkAns(t){const parts=(t.match(/[^.!?]+[.!?]*/g)||[]).map(x=>x.trim()).filter(Boolean);if(parts.length>1&&/\?$/.test(parts[parts.length-1]))parts.pop();return parts.join(' ')}
+const TALK_MORE=[["Ooh, tell me more! What do you like about it?","Wait, how did you get into that?","Ha, I love that! What else do you like?"],["Oh. Um, how come?","Um, how did you, um, start?","Oh. Do you, um, do that a lot?"],["Yeah? What else?","Nice. How come?","Oh yeah? Do you do that a lot?"],["Ooh, plot twist! Why though? Defend it!","Okay, I need the full story. Go!","Ha! And how did that start?"],["Oh? And how did you get started with that, dear?","Oh, tell me more, honey. What do you like about it?","Oh, how lovely. What else do you like, sweetie?"]];
+/* 되묻기 성향: 한 주제에서 이어 묻는 횟수. Maya·Dottie는 2번, Leo·Rico는 1번, Sam은 0번(대신 '너도 물어봐'). 15명도 같은 유형을 따름 */
+const TALK_FUN=[2,1,0,1,2];
+const ASK_ME=['Your turn. Ask me something.','Got questions? Go.','Ask away, I have a minute.'];
 const ASKED_FIRST=["Ha, I asked you first! ","Um, I asked first… ","You first. ","Nice try! You first. ","Oh, you first, dear. "];
 /* 대답하고(되묻기 포함이면 true를 돌려주고 사용자의 대답을 기다림) */
 async function talkSay(tk,st,pi,withQ){
@@ -2215,13 +2219,22 @@ async function talkSay(tk,st,pi,withQ){
 async function talkResolve(st,raw,n,isQ,fresh){
   const t=S.tq;if(!t)return false;if(t.st!==st){S.tq=null;return false}
   const pi=pidx(S.pid);const fu=fuOf(n);
-  if(fu==='back'||fu==='youfirst'){flag('talk:first');await say(ASKED_FIRST[pi]+lc(qPart(S.q.t)),S.q.t);return true}
+  if(fu==='back'||fu==='youfirst'){flag('talk:first');if(t.n){S.tq=null;S.q=t.prevQ;await selfTell(st,pi);await giveTurn(st,pi);return true}await say(ASKED_FIRST[pi]+lc(qPart(S.q.t)),S.q.t);return true}
   if(fu&&!(fu==='react'&&/\b(me too|same)\b/.test(n))){if(await followUp(fu,st,raw,n,isQ,fresh))return true}
   if(isQ&&!segsOf(raw).some(x=>!isQSeg(x))){S.tq=null;S.q=t.prevQ;return false}
-  S.tq=null;S.q=t.prevQ;flag('talk:ans');
+  flag('talk:ans');
   const wc=wordsOf(n).length;
+  const plain=!(DUNNO.test(n)&&wc<=7)&&!NEGANS.test(n);
+  /* 대답이 쓸 만하면 한 번 더 이어서 묻는다(바리스타당 한 주제에 한 번만) */
+  if(plain&&(t.n||0)<TALK_FUN[pi]&&!isQ&&wc>=1&&wc<=14){
+    const af=actFollow(raw,n,pi)||pickNew(TALK_MORE[pi]);
+    S.tq={...t,n:(t.n||0)+1};
+    await say(fill(statementReact(n)||pickNew(TALK_OK[pi])));
+    await askQ(af);return true}
+  S.tq=null;S.q=t.prevQ;
+  const inv=plain&&!t.n&&pi===2&&!isQ?pick(ASK_ME):'';
   const r=DUNNO.test(n)&&wc<=7?pickNew(DUNNO_R[pi]):NEGANS.test(n)?REACT_NO[pi]:(statementReact(n)||pickNew(TALK_OK[pi]));
-  await say(fill(r));
+  await say(fill(r)+(inv?' '+inv:''));
   const qt=isQ?qText(raw):'';const tk=qt?talkOf(qt,st):null;if(tk&&tk.id!==t.id)await talkSay(tk,st,pi,false);
   if(st==='free'){await nextTopic();return true}
   if(S.best[st])await advance();else await reask(st,raw);
