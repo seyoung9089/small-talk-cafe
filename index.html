@@ -160,7 +160,7 @@ html.chatlock,html.chatlock body{overflow:hidden;overscroll-behavior:none}
 
 /* ---------- 레벨 · 프로필 ---------- */
 .lvb{display:inline-flex;align-items:center;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:200px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
-.lvb.lv3{background:var(--success-light);color:var(--success-dark)}.lvb.lv4{background:var(--warning-light);color:var(--warning-dark)}
+.lvb.lv3{background:var(--success-light);color:var(--success-dark)}.lvb.lv4{background:var(--warning-light);color:var(--warning-dark)}.lvb.lv5{background:var(--error-light,var(--warning-light));color:var(--error-dark,var(--warning-dark))}.lvb.lv6{background:var(--text);color:var(--bg)}
 .me{display:flex;gap:14px;align-items:center}
 .av{flex:none;width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem}
 .av.sm{width:40px;height:40px;font-size:1rem}
@@ -174,6 +174,7 @@ html.chatlock,html.chatlock body{overflow:hidden;overscroll-behavior:none}
 .stats div{background:var(--neutral-light-light);border-radius:14px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
 .stats b{font-size:1.2rem;font-weight:800}.stats span{font-size:.7rem;color:var(--muted);line-height:1.3}
 @media (max-width:360px){.stats{grid-template-columns:repeat(2,1fr)}}
+.badge{display:inline-block;padding:2px 9px;margin:2px 2px 2px 0;border-radius:999px;font-size:.78rem;font-weight:700;box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent)}
 .lvup{font-family:var(--display);font-weight:800;font-size:1.1rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap;animation:pop .5s var(--ease)}
 .hints .chal{font-size:.8rem;color:var(--muted)}.hints .chal b{color:var(--ink)}
 .lvres .gain{font-size:1.25rem;font-weight:800;color:var(--accent)}
@@ -342,7 +343,7 @@ let SHOWALL=false;let INFO=false;
 // r = replies in order [maya, leo, sam, rico, dottie]
 const INTENTS=[
  {id:'age',re:/how old are you|your age/,r:["I'm twenty-two!","Um, nineteen.","Twenty-five.","Old enough to make bad jokes. Thirty.","Oh, I'm sixty-three, dear. Don't tell anyone."]},
- {id:'job',re:/what do you do( for (a )?living| for work)?\??$|what'?s your (job|major)|what is your (job|major)|do you work here (full|part)/,r:["I'm a barista! And I study art on the side.","Um, I work here. And I'm in school.","Barista. Full time.","I'm a barista and a part-time comedian. Mostly part-time.","Oh, I run this little shop, dear. Forty years now."]},
+ {id:'job',re:/what do you do( for (a )?living| for work)?\??$|what'?s your (job|major)|what is your (job|major)|do you work here (full|part)/,r:["I'm a barista! And I study art on the side.","Um, I work here. And I'm in school.","Barista. Full time.","I'm a barista and a part-time comedian. Mostly part-time.","Oh, I make the coffee and the pies here, dear. Fifteen years now."]},
  {id:'help',re:/can you help me|could you help me|need (some )?help|help me (with|find|choose|decide|pick)/,r:["Of course! What do you need?","Oh, um, sure. What do you need?","Sure. What's up?","Help? That's literally my job. Well, partly. What's up?","Of course, honey. What do you need?"]},
  {id:'lesssweet',re:/not (too |very |so |that )?sweet (drink|one|thing)|(something|anything|drink|one)( that'?s| that is| is)? not (too |very |so |that )?sweet|less sweet (drink|option|one)|least sweet/,offer:'latte',r:["Try a plain latte! It's creamy, but not sweet at all.","Um, a plain latte isn't sweet. Or an americano.","Plain latte. Not sweet.","A plain latte. It's sweet like me, which means not very. Kidding!","Oh, a plain latte, honey. Nice and gentle, not sweet."]},
  {id:'flavors',re:/(other|another|what|which|any|more) (flavou?rs?|favou?rs?|syrups?)|flavou?r options/,r:["We have vanilla, caramel, hazelnut, and honey! Honey is my favorite.","Um, vanilla, caramel, hazelnut, and honey.","Vanilla, caramel, hazelnut, honey.","Vanilla, caramel, hazelnut, honey, and my secret flavor: confidence.","Oh, vanilla, caramel, hazelnut, and honey, sweetie."]},
@@ -370,7 +371,7 @@ const INTENTS=[
  {id:'blive',re:/do you live (near|around|close|here)|where do you live|you live (nearby|around here|close)/,r:["Yep! I live like ten minutes away.","Um, yeah, kind of close. I take the bus.","Five minutes away.","I live close. Close enough to still be late every day.","Oh, right around the corner, dear. Forty years now."]},
  {id:'bread',re:/what (kind of |kinds of )?(comics|books?|manga|novels?)|what do you (like to )?read|favorite (comic|book|manga)/,r:["Mostly art books! And some fantasy novels.","Oh, um, superhero comics, mostly. And some manga.","Don't read much. No time.","Joke books. For research.","Oh, mystery novels, honey. I love a good mystery."]},
  {id:'comedy',re:/stand.?up|comedy|comedian|are you (always )?(this )?funny|open mic/,r:["Ha! No, but Rico at the other shop thinks he's a comedian.","Me? Oh, no. I'm way too shy.","No. Not my thing.","Every Thursday at the open mic downtown! Two people laughed last time. A new record.","Oh, no, honey. But I laugh at everyone's jokes."]},
- {id:'petname',re:/(dog|cat|pet|corgi|hamster)'?s? name|name of (your|the) (dog|cat|pet|corgi|hamster)|what'?s (his|her) name|what is (his|her) name/,r:["My cat's name is Mochi! She's so lazy.","My hamster's name is Bean. He's, um, very small.","No pets. No time.","Biscuit! He's a corgi, and he's the boss of me.","My cat is named Pepper, sweetie. She's old and very spoiled."]},
+ {id:'petname',re:/(dog|cat|pet|corgi|hamster)'?s? name|name of (your|the) (dog|cat|pet|corgi|hamster)|what'?s (his|her) name|what is (his|her) name/,r:["My cat's name is Mochi! She's so lazy.","My goldfish's name is Bob. He's, um, orange.","No pets. No time.","Biscuit! He's a corgi, and he's the boss of me.","My cats are Salt and Pepper, sweetie. And my parrot is Captain."]},
  {id:'garden',re:/garden|do you grow|grow (any|your)|plants?\b/,r:["Nope, but I have like five plants in my room!","Um, no. I can't even keep a cactus alive.","No garden. Apartment.","My garden is one sad plant named Steve.","Oh, yes! My tomatoes are the best in the neighborhood, honey."]},
  {id:'nameok',re:/is (that|it) (okay|ok|fine|alright)\??$|hard to (spell|say)|can you spell it|is that a weird name/,r:["Of course! It's a really pretty name.","Oh, yes. Of course.","Sure.","Totally fine. Way easier to spell than mine.","Of course, sweetheart. It's lovely."]},
  {id:'stay',re:/(can|could|may) i (stay|sit|study|work|hang out) (here|for|a while|long)|(is it|it'?s) (ok(ay)?|fine|alright) (if i|to) (stay|sit|study|work)|how long can i (stay|sit)|stay (here )?(for )?(a )?(long|while|all day|few hours)|mind if i (stay|sit|study)/,r:["Totally! Stay as long as you want. Lots of people study here all day.","Oh, um, yes. You can stay as long as you like. It's quiet.","Sure, stay as long as you want.","Stay forever! Just buy a muffin every few hours so my boss is happy.","Of course, honey. Stay as long as you like. Make yourself at home."]},
@@ -391,7 +392,7 @@ const INTENTS=[
  {id:'likejob',re:/(like|enjoy|love) (your job|working here|it here|work)/,r:["I love it! I get to talk to people all day.","Yeah, I like it. The people are nice.","Yeah, it's good. Fast-paced.","I love it. Free coffee and a captive audience for my jokes.","Oh, I love it. I get to meet sweet people like you."]},
  {id:'busy',re:/(always|so|this|that) busy|busy today|crowded|is it busy|(a lot of|lots of|many) (students|people|customers)/,r:["Mornings are crazy! It gets quieter after ten, though.","Um, yeah. Mornings are really busy.","Mornings, yeah. Every day.","Busy? This is our quiet time. You should see Mondays.","Oh, it gets busy in the mornings, but I like it."]},
  {id:'weather',re:/weather|\brain|sunny|hot (today|out)|cold (today|out)|nice (day|out)|beautiful day/,r:["Right? It's so nice out today! Perfect iced coffee weather.","Yeah, it's… pretty nice today.","Yeah, nice day.","The weather? Great. Unlike my jokes.","Oh, it's a beautiful day, isn't it? Perfect for a walk."]},
- {id:'fromwhere',re:/where are you from|are you from (here|around)|did you grow up|where did you grow/,r:["I grew up here! Born and raised.","I'm from Ohio, actually. I moved here for school.","Grew up here.","I'm from Texas. That's why I talk so much.","I've lived here my whole life, sweetie."]},
+ {id:'fromwhere',re:/where are you from|are you from (here|around)|did you grow up|where did you grow/,r:["I grew up here! Born and raised.","I'm from Ohio, actually. I moved here for school.","Grew up here.","I'm from Texas. That's why I talk so much.","I grew up two towns over, sweetie. But I've lived on this street for forty years."]},
  {id:'weekend',re:/(your|you) .*(weekend|plans)|doing this weekend|plans for the weekend/,r:["I'm going to a concert on Saturday!","I'll probably just read at home.","Working. Then soccer.","Taking my corgi to the dog park. He has more friends than me.","I'll be in my garden, dear. The tomatoes need me."]},
  {id:'school',re:/do you (go to|study)|are you a student|in college|go to school/,r:["Yep! I study art at the community college.","Yeah, I'm a college student. I'm studying computer science.","Not anymore. Just work.","I took one acting class once. Does that count?","Oh, no, dear. I finished school a long, long time ago."]},
  {id:'hobby',re:/for fun|hobb|free time|like to do/,r:["I paint! And I'm learning to skateboard. Badly.","I read comics and play video games.","Soccer. Every weekend.","Stand-up comedy. You can tell, right?","Gardening and baking, honey."]},
@@ -399,7 +400,7 @@ const INTENTS=[
  {id:'eat',re:/(place|places|somewhere).*(eat|food|lunch|dinner)|restaurant/,r:["There's an amazing taco place across the street!","Um, the sandwich shop next door is good.","Taco place across the street.","The pizza place on the corner. Tell them Rico sent you. They won't know me, but tell them.","Oh, the diner on Main Street, dear. Best pancakes in town."]},
  {id:'sights',re:/things to do|should i (see|visit)|places to visit|fun around here|tourist/,r:["Go to the park by the river! It's so pretty at sunset.","The library downtown is really nice. And quiet.","River park. Nice walk.","The river park. Bring snacks. The ducks are aggressive.","Oh, visit the farmers market on Saturday, sweetie."]},
  {id:'sports',re:/\b(the game|basketball|football|baseball|soccer|team)\b/,r:["I don't really follow sports, but my brother loves basketball!","Um, I don't really watch sports, sorry.","Did you see the game last night? Crazy ending.","Sports? I only know one move. It's called the coffee pour.","Oh, my grandson plays baseball. I go to all his games."]},
- {id:'pets',re:/\b(pets?|do you have a (dog|cat))\b/,r:["I have a cat named Mochi! She's so lazy.","I have a hamster. His name is Bean.","No pets. No time.","I have a corgi named Biscuit. He's the boss.","I have an old cat named Pepper, dear."]},
+ {id:'pets',re:/\b(pets?|do you have a (dog|cat))\b/,r:["I have a cat named Mochi! She's so lazy.","I have a goldfish. His name is Bob.","No pets. No time.","I have a corgi named Biscuit. He's the boss.","I have two cats and a parrot, dear."]},
  {id:'compliment',re:/(love|like|cool|nice|cute|great) (this|your) (place|shop|cafe|café|vibe|shirt|apron|hair|music|decor)|great vibe|smells (so )?good/,r:["Aww, thank you! That made my day!","Oh, um, thank you. That's nice of you.","Thanks!","Thank you! I'll add that to my résumé.","Oh, aren't you sweet! Thank you, honey."]},
  {id:'hours',re:/what time do you (close|open)|when do you (close|open)|(opening|closing) time|open (late|tomorrow|on sunday)|your hours/,r:["We close at eight! Plenty of time.","Um, we close at 8 p.m.","Open six to eight.","We close at eight. Then I go home and practice jokes in the mirror.","We're open from six to eight, dear."]},
  {id:'time',re:/what time is it|do you (know|have) the time/,r:["Oh, it's almost ten!","Um, it's about ten o'clock.","Almost ten.","Coffee o'clock. Also, about ten.","It's just about ten, sweetie."]},
@@ -1529,6 +1530,7 @@ function statementReact(n){const pi=pidx(S.pid);S.usedSt=S.usedSt||[];for(let i=
 
 function stageMatch(st,n,raw,isQ){
   const wc=wordsOf(n).length, p=P[S.pid];
+  if(S.scene&&(st==='order'||st==='size')){if(isQ&&wc<=3&&!BACK.test(n))return false;return wc>=1}
   if(S.followed[st]&&CHAT.has(st)&&wc>=1&&!(isQ&&!segsOf(raw).some(x=>!isQSeg(x))))return true;
   if(st==='greet')return FEEL.test(n)||(!isQ&&wc>=3);
   if(st==='order'){const q=qText(raw);if(q&&/recommend|suggest|what'?s good|your favorite|popular/.test(q))return false;const ok=segsOf(raw).filter(x=>!infoQ(x)).map(norm);if(S.offer&&ok.some(x=>YES.test(x)))return true;if(!findDrink(ok.join(' '))&&attrRec(ok.join(' ')||n))return false;return ok.some(x=>findDrink(x)!==null||ORDER_GENERIC.test(x)||FOOD.test(x))}
@@ -1555,6 +1557,7 @@ function extractName(n,raw){
   return null;
 }
 function captureSlots(st,n){
+  if(S.scene&&(st==='order'||st==='size'))return;
   if(st==='order'){const pi=pidx(S.pid);let d=findDrink(n);if(!d&&S.offer&&YES.test(n))d=S.offer;if(!d){if(/something (cold|iced|ice)|(ice|iced|cold) (thing|drink|one)/.test(n))d='iced latte';else if(/something (hot|warm)/.test(n))d='latte';else if(/something sweet/.test(n))d='caramel macchiato';else if(/something strong/.test(n))d='cold brew';else d=S.lastRec||REC[pi]}const okn=norm(segsOf(S.lastRaw||n).filter(x=>!infoQ(x)).join(' '));const all=findDrinks(okn);S.slots.drinks=all.length>1?all.slice(0,4):null;if(S.slots.drinks)d=S.slots.drinks[0];if(d==='coffee'&&/\bsweet\b/.test(n))d='vanilla latte';let drink=d;if(/\b(iced?|cold)\b/.test(n)&&!/\bhot\b/.test(n)&&!d.includes('iced')&&!d.includes('cold'))drink='iced '+d;S.slots.drink=drink;const sz=norm(segsOf(S.lastRaw||n).filter(x=>!infoQ(x)).join(' ')).match(/\b(small|medium|large|tall|grande|venti)\b/);if(sz){S.slots.size=({tall:'small',grande:'medium',venti:'large'})[sz[1]]||sz[1];S.presize=true}const fd=n.match(FOOD);S.food=fd?fd[0]:null;S.foodOnly=!!(S.food&&!findDrink(okn));if(S.foodOnly){S.slots.drink=S.food;S.presize=true;S.slots.size=''}}
   if(st==='size'){if(/^(s|m|l)$/.test(n)){S.slots.size={s:'small',m:'medium',l:'large'}[n];return}const mm=[...n.matchAll(new RegExp(SIZE.source,'g'))];const m=mm[mm.length-1];let s=m[1];s=({tall:'small',short:'small',grande:'medium',venti:'large',regular:'medium',normal:'medium',middle:'medium',mid:'medium',big:'large',biggest:'large',largest:'large',little:'small',smallest:'small','12':'small','16':'medium','20':'large'})[s]||(['small','medium','large'].includes(s)?s:'medium');S.slots.size=s}
   if(st==='name'){S.slots.name=extractName(n,S.lastRaw)||'friend'}
@@ -1563,7 +1566,7 @@ function captureSlots(st,n){
 /* ---------- conversation engine ---------- */
 async function say(text,key){
   S.busy=true;render();
-  const lv=S.lv||2;await sleep(Math.min(1200,350+text.length*12)*(lv>=4?.6:lv===1?1.15:1));/* Lv4는 더 빨리 답함 */
+  const lv=S.lv||2;await sleep(Math.min(1200,350+text.length*12)*(lv>=5?.45:lv>=4?.6:lv===1?1.15:1));/* Lv4는 더 빨리 답함 */
   /* 화면에는 레벨 말투로 바꾼 문장, 대화 판단(lastB·힌트 키)에는 원래 문장 */
   S.log.push({who:'b',text:levelize(text)});S.lastB=key||text;S.saidK=(S.saidK||[]).concat(key||text).slice(-30);{const bk=P[S.pid]&&P[S.pid].back;if(bk)for(const k in bk)if(bk[k]===text&&k!=='close'){S.saidBack=S.saidBack||{};S.saidBack[k]=true;S.selfSt=k;S.selfFresh=true}}S.busy=false;setHintKey(key||text);S.ph=newIdea();render();
 }
@@ -1582,12 +1585,16 @@ async function advance(){
   {const L=stageLine(STAGES[S.idx]);await askQ(L.text,L.key)}
 }
 async function finish(){
+  const bb=badgesNow();
   S.done=true;S.ended=false;logSave();
   const total=STAGES.reduce((a,s)=>a+adj(s),0);
   const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,n:STAGES.length,at:Date.now()});store.set('stc.history',hist.slice(0,20));
   /* 레벨: 이번 대화 평균 점수 + 도전 표현 보너스를 XP로 */
   const avg=Math.round(total/STAGES.length),before=myProg(),c=todayChal(S.lv),hit=chalHit(c);
-  const g=gamesList();if(!g.some(x=>x.at===S.startAt)){g.push({at:S.startAt,pid:S.pid,s:avg,b:hit?CHAL_BONUS:0,lv:S.lv});store.set('stc.games',g)}
+  const g=gamesList();if(!g.some(x=>x.at===S.startAt)){g.push({at:S.startAt,pid:S.pid,s:avg,b:hit?CHAL_BONUS:0,lv:S.lv,sc:S.scene?S.scene.id:undefined});store.set('stc.games',g)}
+  S.revHits=revCheck();
+  if(!S.counted){S.counted=true;daysAdd();memFinish()}
+  S.newBadges=badgeNames(badgesNow().filter(x=>!bb.includes(x)));
   S.result={before,after:myProg(),gain:avg+(hit?CHAL_BONUS:0),chal:c,hit};
   if(AUTH.user)syncNow();
   render();
@@ -1599,7 +1606,8 @@ async function reask(st,raw){
   S.reasks[st]=(S.reasks[st]||0)+1;
   if(S.reasks[st]>=3){
     if(!S.best[st])record(st,S.asked[st]||raw,60);
-    if(st==='order'){S.slots.drink=S.lastRec||REC[pi];await say("Tell you what, I'll make you my favorite. One "+S.slots.drink+"!")}
+    if(S.scene&&st!=='name')await say("Okay, let's move on!");
+    else if(st==='order'){S.slots.drink=S.lastRec||REC[pi];await say("Tell you what, I'll make you my favorite. One "+S.slots.drink+"!")}
     else if(st==='size')await say("I'll just make it a medium!");
     else if(st==='name')await say("I'll just draw a smiley face on the cup!");
     else await say(pick(["Anyway!","Okay, moving on!"]));
@@ -1742,7 +1750,7 @@ const GENQ=[
  {re:/do you have (a |an |any )?([a-z' -]{2,20}?)\??$/,r:["Hmm, no {x}, sadly! Do you?","Um, no, I don't. Do you?","Nope. You?","No {x}. Just jokes. Lots of jokes.","Oh, no, dear. Do you?"]},
  {re:/are you (a |an )?([a-z' -]{2,20}?)\??$/,r:["Ha, kind of! Why?","Um, maybe a little?","Kind of.","Depends who's asking. Kidding, kind of!","Oh, maybe a little, honey."]}
 ];
-function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
+function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\s+(too|also|as well)$/,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
 const isNeg=n=>NEG.test(n.replace(/not (too |that |so |really |very )?(bad|busy|tired|stressed|sleepy)/g,''));
 const NEUTRAL=["Oh, nice!","Oh, cool.","Nice.","Ha! Fair enough.","Oh, how nice, dear."];
 const REJECT=/no thanks|something else|not that|anything else|other options?|i'?ll pass|not really feeling/;
@@ -1866,6 +1874,379 @@ const DUNNO_R=[["That's okay! No pressure.","Ha, that's fine! Some questions are
 const SOFT_FAIL=[["Hmm, I didn't quite get that! ","Oops, I missed that. "],["Um, sorry, I didn't get that. ","Sorry, I, um, missed that. "],["Sorry, missed that. ","Didn't catch that. "],["Sorry, my brain buffered. ","Wait, you lost me there. "],["Oh, I didn't quite catch that, dear. ","Sorry, sweetie, I missed that. "]];
 const UNSURE2=[["Hmm, I've never thought about that!","Oh, that's a hard one. I don't know!"],["Um, I don't really know. Sorry.","Hmm. I, um, have no idea."],["No clue.","Hm. Don't know."],["I'll get back to you on that. In five to ten years.","That's above my pay grade. Which is low."],["Oh, you've got me there, dear.","Oh, I couldn't tell you, honey."]];
 function unsureR(pi){return pickNew([UNSURE[pi]].concat(UNSURE2[pi]))}
+/* ---------- 스몰토크 질문(바리스타 자신에 대한 질문) ----------
+   r[pi] = [maya, leo, sam, rico, dottie] 순서. 각 대답 = 자기 이야기 + 끝에 되묻는 질문.
+   대화 단계(인사·잡담·자유 대화)에서는 되묻고 사용자의 대답을 기다립니다.
+   주문·사이즈·이름 단계에서는 되묻는 질문을 떼고 원래 질문으로 돌아갑니다.
+   svc:true = 주문 단계에서는 기존 추천 대답이 우선. 프로필: plan/barista-profiles.md */
+const F='favou?rite';
+const TALK=[
+ {id:'korea',ko:'한국·K-문화',re:new RegExp([
+   "(have|did) you (ever )?(been|gone|go|went|visited?) (to )?(south )?korea","(been|go|went) to (seoul|busan)",
+   "do you (like|love|know|listen to|watch|eat|enjoy|ever eat|ever watch|ever listen to) (any )?(k-?pop|k-?dramas?|korean|kimchi|bts|blackpink|newjeans|stray kids|twice|bibimbap|bulgogi|tteokbokki|webtoons?)",
+   "(what do you think|how do you feel|what'?s your opinion) (about|of) (korea|korean|k-?pop|k-?dramas?)",
+   "(do you know|have you heard (of|about)) (anything about )?(korea|k-?pop|bts|blackpink|korean)","(ever )?(tried|eaten|had) korean (food|bbq|barbecue|fried chicken)","korean (food|bbq|barbecue|fried chicken|dramas?|music|culture)"].join('|')),
+  r:[["I've never been, but I really want to try real Korean BBQ! And I love K-dramas. Have you been to Korea?","Korea is on my list! I watched a K-drama last month and cried at every episode. Do you watch K-dramas?"],
+     ["Um, I've never been. But I read a lot of Korean webtoons. They're really good. Do you read webtoons?","Um, not yet. I want to go someday, though. What's Korea like?"],
+     ["Never been. Tried Korean fried chicken once. Loved it. Is it really that good in Korea?","Haven't been. Want to, though. You from there?"],
+     ["Not yet, but I tried Korean fried chicken and it changed my life. What should I eat first when I go?","Never been. But I know one K-pop dance move. Just one. Want to see it? No? What should I see in Korea?"],
+     ["Oh, I've never been, dear, but my granddaughter loves K-pop. She plays it in the car! Do you like K-pop, honey?","Oh, I tried kimchi once, dear. Spicy, but so good! Do you make it at home?"]]},
+ {id:'catsdogs',ko:'고양이 vs 강아지',re:/cats? or dogs?|dogs? or cats?|(are you|you'?re) (more )?(a )?(cat|dog) (person|lover)|do you (like|prefer) (cats|dogs)( or| more|\??$)|team (cat|dog)/,
+  r:[["Cats! My cat Mochi would never forgive me otherwise. Are you a cat person or a dog person?","Cats, obviously. But I'd pet any dog I see. What about you?"],
+     ["Um, I like both. But I only have a goldfish. Do you like cats or dogs more?","Um, cats, I think. They're quiet like me. You?"],
+     ["Dogs. But no time for one. You?","Dogs. Easy question. You?"],
+     ["Dogs. My corgi Biscuit is listening, so I have to say that. Cats or dogs for you?","Dogs. Cats are fine, but they judge me. Which one for you?"],
+     ["Oh, I have two cats, dear, so I'm a cat lady! But I love dogs too. And you, honey?","Oh, cats, sweetie. Salt and Pepper would be upset if I said dogs. What about you?"]]},
+ {id:'coffeetea',ko:'커피 vs 차',re:/coffee or tea|tea or coffee|(are you|you'?re) (a )?(coffee|tea) (person|drinker|lover)|how (much|many) (coffee|cups)( of coffee)? do you|do you (even |actually |still )?(drink|like) (coffee|tea)\??$|(sick|tired) of coffee|how many coffees|drink (a lot of|lots of|much|so much) coffee/,
+  r:[["Coffee! Look where I work. I drink like three a day. Are you more of a coffee or tea person?","Coffee all the way. My honey oat latte is my best friend. What about you?"],
+     ["Um, tea, actually. Don't tell my boss. Do you like coffee or tea more?","Um, I drink tea at home. Milk tea, mostly. What about you?"],
+     ["Coffee. Lots. Four cups, maybe. You?","Coffee. Black. You?"],
+     ["Coffee. Tea is just leaf water. Kidding! Kind of. What's your pick?","I drink so much coffee I can hear colors. Coffee or tea for you?"],
+     ["Oh, tea, dear. Chamomile every night. And you, sweetie?","Oh, I love a cup of tea, honey. Coffee makes my heart dance too fast. Do you like tea?"]]},
+ {id:'lastweekend',ko:'지난 주말',re:/(how was|how'?s|how did) your weekend( go)?|what did you do (on |over |during |this past |last |for the )?(the )?weekend|(did you |you )?(have|do) (a good|a nice|a fun|anything fun|anything|something fun)( fun)? (last |this past |over the |on the )?weekend|(do|did) anything (fun |special |cool )?(last |this past |over the )weekend|last weekend|what did you do (on |last )(saturday|sunday)/,
+  r:[["It was so fun! I went to an art market with my friends and bought tiny earrings. How was your weekend?","I painted all Saturday and ate way too many tacos. Did you do anything fun last weekend?"],
+     ["Um, I stayed home and played a new game. It was nice and quiet. What did you do last weekend?","Um, it was okay. I read comics and did homework. How was yours?"],
+     ["Worked. Played soccer. We won. Yours?","Soccer on Sunday. Slept the rest. You?"],
+     ["I took my corgi to the dog park. He made three friends. I made zero. How was your weekend?","Great! I told jokes at a birthday party. Two people laughed. One was me. What did you do?"],
+     ["Oh, I went to my grandson's baseball game, dear. He hit the ball! How was your weekend, honey?","Oh, I worked in my garden, dear, and baked a pie. Did you have a nice weekend?"]]},
+ {id:'weekendplan',ko:'주말 계획',re:/(any|got any|have any|what are your|what'?s your|your) (fun |big |special )?plans? (for |this |on |over )(the )?(weekend|saturday|sunday)|what are you (doing|up to|gonna do|going to do|planning( to do)?) (this|on the|for the|over the|on) (weekend|saturday|sunday)|(doing|planning) anything (fun |special |cool )?(this|for the|on the|over the) weekend|plans for the weekend|your weekend plans|this weekend/,
+  r:[["I'm going to a concert on Saturday! The Paper Kites! I'm so excited. What are you doing this weekend?","Concert on Saturday, then painting on Sunday. What about you? Any fun plans?"],
+     ["Um, I'll probably just read at home. Maybe play a game. Do you have any plans this weekend?","Um, nothing big. A new comic comes out, so I'll read it. What about you?"],
+     ["Working Saturday. Soccer Sunday. You?","Double shift, then soccer. Plans?"],
+     ["Taking Biscuit to the dog park. He has more friends than me. What about you?","I'm practicing jokes for Thursday. On my dog. He's a tough crowd. Any plans?"],
+     ["Oh, I'll be in my garden, dear. The tomatoes need me. And you, honey? Any plans?","Oh, my grandkids are coming for dinner on Sunday. I'm making pie! What are you up to this weekend, dear?"]]},
+ {id:'afterwork',ko:'퇴근 후·오늘 밤',re:/what (do|are|will) you (usually |normally )?(do|doing|gonna do|going to do|plan to do|up to) (after work|after your shift|after this|tonight|later( today)?|when you get off|after you get off|when you'?re done|when your shift ends)|(any|got|have any|what are your) plans (for )?(tonight|after work|later|after your shift)|when do you get off( work)?|when does your shift (end|finish)|what time do you (finish|get off)|what do you do after work/,
+  r:[["I'm going to paint at the park, or hang out with my friends! What are you doing after this?","I'll go home and paint, probably. Or binge a baking show. What about you?"],
+     ["Um, I'll take the bus home and play games. That's it. What about you?","Um, homework, probably. And then comics. Do you have plans later?"],
+     ["Sleep. Then soccer. You?","Going home. Sleeping. Your plans?"],
+     ["I walk my corgi. Then he walks me. Then we nap. What are you doing later?","I practice my jokes in the mirror. The mirror never laughs. What about you?"],
+     ["Oh, I'll go home and water my garden, dear. Then a cup of tea. And what about you, honey?","Oh, I'll feed my cats and my parrot, dear. He sings for dinner! What are you doing later?"]]},
+ {id:'yesterday',ko:'어제·어젯밤 한 일',re:/what did you do (yesterday|last night|last evening)|how was your (night|evening|yesterday)|(do|did) (you )?(do )?anything (fun |special |cool )?(yesterday|last night)|what were you (doing|up to) (yesterday|last night)|yesterday|last night/,
+  r:[["I had painting class! We painted fruit for three hours. What did you do yesterday?","I watched a movie with my brother and ate too much popcorn. How about you?"],
+     ["Um, I did coding homework all night. It was, um, a lot. What did you do?","Um, I read comics until really late. That's why I'm tired. What about you?"],
+     ["Soccer game. We won. You?","Worked. Slept. You?"],
+     ["I practiced my jokes on my corgi. He fell asleep. Rude. What did you do yesterday?","I made chili. Texas style. My neighbors can still smell it. What about you?"],
+     ["Oh, I baked an apple pie for my neighbors, dear. What did you do yesterday, honey?","Oh, I had a quiet night, dear. Tea and a mystery novel. And you?"]]},
+ {id:'morning',ko:'오늘 아침·출근 전',re:/what did you do (this morning|before work|before your shift|before (you )?(came|come|got) here|earlier( today)?)|what did you (have|eat|get) for breakfast|(did|have) you (have|eat|eaten|had) breakfast|what time did you (wake|get) up|when did you (wake|get) up|how was your morning/,
+  r:[["I sketched ducks at the park before work! And I had a muffin. What did you do this morning?","I woke up early and painted for an hour. Then pancakes! Did you have breakfast?"],
+     ["Um, I had an eight a.m. class. Then I came here. Did you have class this morning?","Um, I just had toast. And I almost missed the bus. What about you?"],
+     ["Opened the shop at five thirty. Coffee for breakfast. You?","Woke up at five. Came here. You?"],
+     ["My corgi stole my sock, and I chased him for ten minutes. Great workout. What did you do this morning?","I had cereal for breakfast. With coffee instead of milk. Kidding. Mostly. What did you have?"],
+     ["Oh, I got up at five, dear, and watered my garden. Then I walked here. Did you have a good breakfast, honey?","Oh, I had oatmeal and tea, dear. My parrot ate some too. What did you have this morning?"]]},
+ {id:'lunch',ko:'점심·저녁 메뉴',re:/what did you (have|eat|get) for (lunch|dinner)|(did|have) you (eat|eaten|had|have) (lunch|dinner)( yet)?|what are you (having|eating|gonna eat|going to eat|getting) for (lunch|dinner)|what'?s for (lunch|dinner)|where do you (eat|get) lunch|what do you (usually )?(eat|have) for (lunch|dinner)|what did you eat( today)?\??$/,
+  r:[["Fish tacos from the taco truck around the corner! What did you have for lunch?","Not yet! I'm thinking tacos. Again. What about you? Did you eat?"],
+     ["Um, a grilled cheese. From here. It's really good. Did you eat already?","Um, not yet. Maybe ramen later. What did you have?"],
+     ["Burrito. Ate it in two minutes. You?","Not yet. Burrito later. You eat?"],
+     ["Pizza. With pineapple. I will not be taking questions. What did you have?","Not yet. I'm living on coffee and confidence. Did you eat?"],
+     ["Oh, I had a bowl of tomato soup, dear. From my own tomatoes! Did you have lunch, honey?","Oh, not yet, sweetie. Maybe a sandwich later. Have you eaten?"]]},
+ {id:'today',ko:'오늘 한 일·요즘 근황',re:/what did you do today|what have you been (up to|doing)( today| lately| recently)?|what'?ve you been up to|what (are|r) you up to (today|lately|these days)|(did )?anything (fun |interesting |exciting |good |cool )?happen (today|to you)|(how was|how'?s|how has) your (shift|day) (been|so far)|what are you doing today/,
+  r:[["It's been so busy! But a lady gave me a free muffin, so it's a great day. What have you been up to today?","I aced my art project this week, so I'm still happy! What about your day? Anything fun?"],
+     ["Um, just work and class today. Nothing exciting. How about you?","Um, I learned to make a leaf in the latte foam today. It's, um, small but I'm proud. What did you do today?"],
+     ["Work. All day. Double shift. You?","Morning rush. That's my day. Yours?"],
+     ["I made a latte with a tiny bear on it. Nobody noticed. What have you been up to today?","I told a joke and a customer laughed. Big day for me. What about you?"],
+     ["Oh, I walked here, worked in my garden, and now I'm talking to you, dear! What have you been up to today?","Oh, a quiet day, honey. Pies and coffee. Tell me about yours!"]]},
+ {id:'whatsnew',ko:'새 소식',re:/what'?s new( with you)?|anything new|what'?s up with you|what'?s going on (with you|in your life)|how'?s life|what'?s new in your life|any news/,
+  r:[["I aced my art project! My teacher hung it up in the hallway! What's new with you?","I'm learning to skateboard! Badly, but I'm trying. What's new with you?"],
+     ["Um, I learned leaf latte art. That's, um, my big news. What about you?","Um, not much. I got a new comic book. Anything new with you?"],
+     ["Nothing much. Same old. You?","Not much. Just work. You?"],
+     ["My corgi learned to roll over. He's smarter than me now. What's new with you?","I got a new joke. It's terrible. Want to hear it later? What's new with you?"],
+     ["Oh, my tomatoes are finally ripe, dear! That's big news for me. What's new with you, honey?","Oh, my parrot learned a new song, dear. He sings it all day! And what's new with you?"]]},
+ {id:'favspot',ko:'동네에서 좋아하는 곳',re:new RegExp("your "+F+" (place|spot|park|restaurant|cafe|store|shop) (around here|in (this |the )?(town|city|neighborhood|area))|where do you (like to )?(go|hang out|spend time) (around here|after work|on your days? off|in (this|the) (town|city|neighborhood))|your "+F+" (place|spot) to (go|hang out|eat|relax)|where do you (like to )?hang out"),
+  r:[["The park by the river! I sketch there all the time. Do you have a favorite spot yet?","The taco truck around the corner. It's not fancy, but I love it. Where do you like to go?"],
+     ["Um, the library downtown. It's really quiet. Do you like libraries?","Um, the comic shop on Main Street. I go every Friday. Where do you hang out?"],
+     ["Soccer field by the school. You?","Here, honestly. Or home. You?"],
+     ["The arcade. I'm the air hockey champion. Self-declared. Where's your favorite place?","The dog park. Biscuit is the mayor there. Where do you like to go?"],
+     ["Oh, my own garden, dear. It's my happy place. Where do you like to go, honey?","Oh, the diner on Main Street, dear. Best pancakes in town. Have you been there?"]]},
+ {id:'favdrink',ko:'좋아하는 음료',svc:true,re:new RegExp("your "+F+" (drink|coffee|beverage|tea|latte)\\b|what do you (usually |always )?(drink|order|get)( here| every day| on your break)?\\??$|what'?s your (go-to|usual)( drink| order)?|what do you drink (every day|on your break|at work)"),
+  r:[["The honey oat latte! I drink one every shift. What's your favorite drink?","Honey oat latte, iced. Always. What do you usually get?"],
+     ["Um, a chai latte. It's, um, warm and sweet. What do you like to drink?","Um, I like milk tea. What's your favorite drink?"],
+     ["Black coffee. Fast and simple. Yours?","Americano. Big one. You?"],
+     ["A cold brew with one ice cube. Very specific. I'm a mystery. What's your favorite?","Whatever's free. Kidding. Mocha. What's yours?"],
+     ["Oh, chamomile tea, dear. Every night. What's your favorite drink, honey?","Oh, a hot chocolate with a little cinnamon, dear. What do you like?"]]},
+ {id:'dessert',ko:'좋아하는 디저트·간식',svc:true,re:new RegExp("your "+F+" (dessert|sweets?|snack|candy|ice cream( flavou?r)?|cake|pastry|treat|cookie|chocolate)|do you (like|have|eat) (sweets|desserts|candy|chocolate|a sweet tooth)|sweet tooth|what (kind of )?(desserts?|snacks|sweets) do you like"),
+  r:[["Churros! With chocolate sauce. What's your favorite dessert?","Anything with chocolate. I have a huge sweet tooth. Do you like sweets?"],
+     ["Um, chocolate donuts. My coworker brought some once. Do you like donuts?","Um, mint chocolate ice cream. People say it tastes like toothpaste. Do you like it?"],
+     ["Ice cream. Vanilla. Simple. You?","Not a big sweets guy. Chips, maybe. You?"],
+     ["Pecan pie. I'm from Texas, it's the law. What's your favorite dessert?","Cookies. I eat them like a cookie monster, but with better manners. Do you like sweets?"],
+     ["Oh, my apple pie, dear. My mother's recipe! Do you like pie, honey?","Oh, I can't say no to a warm cookie, sweetie. What's your favorite treat?"]]},
+ {id:'favfood',ko:'좋아하는 음식',re:new RegExp("your "+F+" (food|meal|dish|thing to eat|kind of food|restaurant)|what (kind of |kinds of |type of |sort of )?food do you (like|love|enjoy|eat|prefer)|what do you (like|love|enjoy) to eat|do you have a "+F+" (food|dish|meal)|what'?s the best (food|thing|meal) you'?ve (ever )?(eaten|had)|what (do|did) you (usually )?eat\\??$|what foods? do you like|do you like (spicy|sweet|mexican|italian|chinese|japanese|thai|indian|fast|street) food|your "+F+" (kind of |type of )?(pizza|ramen|taco|sandwich|burger|noodles|pasta|sushi)"),
+  r:[["Tacos! Always tacos. Fish tacos are the best. What's your favorite food?","I'm obsessed with tacos. I could eat them every day. What do you like to eat?"],
+     ["Um, probably ramen. Real ramen, not the instant kind. What's your favorite food?","Um, I like ramen. And grilled cheese. Simple stuff. What about you?"],
+     ["Pizza. Or burritos. Anything fast. You?","Burritos. Cheap, fast, good. Yours?"],
+     ["Pizza. With pineapple. Fight me. What's your favorite food?","Texas barbecue. I'm from Texas, so I have to say it. What do you like to eat?"],
+     ["Oh, a warm bowl of soup, dear. And apple pie, of course. What's your favorite food, honey?","Oh, I love a good roast chicken, dear. What do you like to eat?"]]},
+ {id:'music',ko:'좋아하는 음악·가수',re:new RegExp("what (kind of |kinds of |type of |sort of |genre of )?music (do you|are you|you)|(what|who) do you (usually |like to )?listen to|your "+F+" (song|singer|band|artist|music|album|rapper|group|genre|musician)|who'?s your "+F+" (singer|band|artist)|do you (like|listen to|love) (music|pop|rock|hip-?hop|rap|jazz|classical|country)\\b|what are you listening to|(what|any) (good )?songs? (do you|are you)"),
+  r:[["I love pop and indie! Taylor Swift on repeat. What music do you like?","An indie band called The Paper Kites! I'm seeing them on Saturday. Who's your favorite singer?"],
+     ["Um, quiet piano music. And lo-fi. It helps me focus. What do you listen to?","Um, mostly game music, actually. Is that weird? What kind of music do you like?"],
+     ["Whatever's on the radio. Pop, I guess. You?","Pop. Don't really pick. You?"],
+     ["Sea shanties. Don't ask. Okay, ask. They're great for cleaning. What music do you like?","Country, because Texas. And sea shanties, because I'm weird. What about you?"],
+     ["Oh, old jazz, dear. Ella Fitzgerald is my favorite. What music do you like, honey?","Oh, I love the old songs, sweetie. I danced to them when I was young. What do young people listen to now?"]]},
+ {id:'movie',ko:'좋아하는 영화',re:new RegExp("your "+F+" (movie|film|movies|films)|what (kind of |kinds of |type of )?(movies|films) do you|(have you )?(seen|watched) (any |a )?(good )?(movies?|films?)( lately| recently)?|do you (like|watch|love) (movies|films|horror|action movies|marvel)|what movie|did you see (the new|any) movie|go to the movies|(last|latest) movie"),
+  r:[["I love animated movies! I cried twice at one last week. What's your favorite movie?","Anything by Studio Ghibli! The art is so pretty. What kind of movies do you like?"],
+     ["Um, superhero movies. I saw one last week. It was okay. Do you like superhero movies?","Um, I like sci-fi movies. Space stuff. What about you?"],
+     ["Action movies. Haven't had time lately. You?","Action. Fast cars. You?"],
+     ["Horror movies. I scream every time. Loudly. In the theater. What movies do you like?","Comedies, obviously. I take notes. What's your favorite movie?"],
+     ["Oh, old black-and-white films, dear. Roman Holiday is my favorite. Do you like old movies, honey?","Oh, I watched a lovely old film last night, dear. What kind of movies do you like?"]]},
+ {id:'tvshow',ko:'좋아하는 드라마·쇼',re:new RegExp("(what|any) (good )?(shows?|series|dramas?|tv shows?|anime|youtube channels?) (are you|do you|have you|you)|your "+F+" (show|tv show|series|drama|anime|cartoon|youtuber|youtube channel)|do you watch (tv|netflix|anime|youtube|dramas?|k-?dramas?|any shows)|(are you )?watching (anything|any shows?|netflix|anything good)|what do you watch|binge|(watched|seen|watching) anything good|(are you )?into (anime|k-?dramas|dramas|tv shows|cartoons)"),
+  r:[["Baking shows! I can't bake, but I love watching. What shows do you watch?","I'm binging a K-drama right now. I can't stop! Do you watch any shows?"],
+     ["Um, anime, mostly. I'm watching a really long one right now. Do you watch anime?","Um, I watch a lot of game videos on YouTube. What do you watch?"],
+     ["Sports highlights. That's it. You?","Soccer games. No time for shows. You?"],
+     ["Stand-up specials. For research. Also a cooking show where everyone cries. What do you watch?","Reality shows. I yell at the TV. What are you watching these days?"],
+     ["Oh, mystery shows, dear. I always guess who did it! Do you watch any shows, honey?","Oh, cooking shows, sweetie. Then I say, 'I can do that better.' What do you watch?"]]},
+ {id:'book',ko:'좋아하는 책',re:new RegExp("your "+F+" (book|author|novel|comic|manga|webtoon|writer)|what (kind of |kinds of |type of )?(books?|novels?|comics?|manga) do you|do you (like to |ever )?read( a lot| books)?\\??$|what are you reading|(reading|read) anything (good|interesting)|what do you (like to )?read|(read|reading) (any )?good books"),
+  r:[["Fantasy novels! And art books. I love dragons. Do you like reading?","I'm reading a fantasy book about a painter who is also a witch. So good! What do you like to read?"],
+     ["Um, superhero comics. And manga. I like quiet stories. Do you read comics?","Um, I'm reading a manga about a cafe, actually. It's funny. What do you like to read?"],
+     ["Don't read much. No time. You?","Sports news. That counts. You?"],
+     ["Joke books. For research. What do you like to read?","I read the back of cereal boxes. Very educational. Do you read a lot?"],
+     ["Oh, mystery novels, dear. I love a good mystery. Do you like to read, honey?","Oh, I'm in a book club, dear. We read a new mystery every month. What do you like to read?"]]},
+ {id:'games',ko:'게임',re:new RegExp("do you (play|like|love) (any )?(video ?games|games|computer games|mobile games|phone games|minecraft|roblox|fortnite|valorant|lol|league( of legends)?|overwatch|pokemon|mario|board games)|are you a gamer|your "+F+" (game|video game|board game)|what (kind of |kinds of |type of )?(video )?games? do you (play|like)|do you game"),
+  r:[["Mario Kart with my brother! I always lose. Do you play video games?","Not a lot, but I love cozy games where you build a farm. What games do you like?"],
+     ["Um, yeah. A lot. Mostly puzzle games and RPGs. Do you play games?","Um, I'm playing a long fantasy game right now. Sixty hours. What do you play?"],
+     ["Soccer games. On the console. You?","FIFA. Sometimes. You?"],
+     ["Air hockey at the arcade. I'm the champion. Self-declared. Do you play games?","I play board games and lose every time. My dog wins. What do you play?"],
+     ["Oh, I do crossword puzzles, dear. And bingo on Fridays! Do you play games, honey?","Oh, my grandson taught me a phone game, dear. I'm terrible! What do you play?"]]},
+ {id:'instrument',ko:'악기·노래',re:/do you play (an |any )?(instruments?|guitar|the guitar|piano|the piano|drums|the drums|violin|the violin|ukulele|the ukulele|flute|the flute|cello)|can you play (an |any |the )?(instruments?|guitar|piano|drums|violin|ukulele|flute)|can you sing|do you (like to )?sing|are you (a )?(good )?(singer|musician)/,
+  r:[["I play the ukulele! Badly, but happily. Do you play any instruments?","A little ukulele. I know four songs. Can you play anything?"],
+     ["Um, a little piano. Only when no one is listening. Do you play an instrument?","Um, piano, a little. Mostly game music. What about you?"],
+     ["Nope. No time. You?","No. Can't sing either. You?"],
+     ["I play the kazoo. Professionally. Kidding. Do you play anything?","I sing in the shower. My neighbors hate it. Can you sing?"],
+     ["Oh, I play the piano at church, dear. Do you play anything, honey?","Oh, I sing while I bake, dear. My parrot sings along! Do you like to sing?"]]},
+ {id:'sport',ko:'운동·스포츠',re:new RegExp("do you (play|like|watch|follow|do|enjoy) (any )?(sports?|soccer|basketball|baseball|football|tennis|volleyball|badminton|hockey|golf|swimming|yoga)|your "+F+" (sport|team|player|athlete|soccer team|basketball team)|what sports? do you|are you (into|good at) sports|do you (work out|exercise|go to the gym|run)\\b|are you (on|in) a team|do you like (to )?(exercise|work out)|who do you root for"),
+  r:[["Not really, but I'm learning to skateboard! I fall a lot. Do you play any sports?","My brother loves basketball, so I watch with him sometimes. Do you like sports?"],
+     ["Um, not really. I like walking, though. Do you play sports?","Um, I'm not very sporty. I play sports games, though. What about you?"],
+     ["Soccer. Thursdays and weekends. You play?","Soccer. Big fan. Your team?"],
+     ["Basketball. I'm short, but I'm loud. Do you play anything?","I play basketball with my friends. I'm the worst one, but I'm the loudest. Do you like sports?"],
+     ["Oh, I do water aerobics on Tuesdays, dear! And I watch my grandson play baseball. Do you play any sports, honey?","Oh, I walk every morning, dear. Good for the knees. What about you?"]]},
+ {id:'hobby',ko:'취미·여가',re:/(what do you|what you|what do u) (like to |usually |love to )?do (for fun|in your free time|in your spare time|when you'?re not working|outside (of )?work|on your days? off|when you have time|on weekends|in your downtime)|(any|your|what are your|what'?s your|do you have (any )?)(hobby|hobbies)|what are you into|hobb(y|ies)|free time|spare time|for fun\??$|what do you like doing|your favou?rite thing to do/,
+  r:[["I paint! And I'm learning to skateboard. Badly. What do you like to do for fun?","Painting, mostly. I carry my sketchbook everywhere. Do you have any hobbies?"],
+     ["Um, I read comics and play video games. What about you? What do you like to do?","Um, I play games. And I'm learning to code a little game. Do you have a hobby?"],
+     ["Soccer. Every weekend. You?","Soccer, mostly. And sleep. Hobbies?"],
+     ["Stand-up comedy. You can tell, right? What do you do for fun?","Open mic on Thursdays and walking my corgi. What are your hobbies?"],
+     ["Oh, gardening and baking, honey. What do you like to do for fun, dear?","Oh, my garden, my pies, and my book club, dear. Do you have any hobbies?"]]},
+ {id:'school',ko:'학교·전공',re:/are you (a |still a )?(student|in college|in school|at college|in university)|do you (go to|study at|attend|still go to) (school|college|university|class)|what (do|did) you (study|major in)|what'?s your major|what is your major|what year are you|where did you go to (school|college|university)|do you study\??$|are you in school/,
+  r:[["Yep! I study art at the community college. Painting, mostly. Are you a student too?","I'm an art student! It's my second year. What about you? Are you in school?"],
+     ["Um, yeah. I'm in college. I study computer science. Do you go to school around here?","Um, computer science. It's hard, but I like it. Are you a student?"],
+     ["Not anymore. Just work. You in school?","No. Full-time here. You?"],
+     ["I took one acting class once. Does that count? Are you a student?","I studied at the school of life. And one acting class. Are you in school?"],
+     ["Oh, no, dear. I finished school a long, long time ago. Are you a student, honey?","Oh, I'm too old for school, sweetie. But I'm still learning! Are you studying?"]]},
+ {id:'subject',ko:'좋아하는 과목',re:new RegExp("your "+F+" (subject|class|course)|what (subject|class|classes|subjects) (do|did) you (like|love|enjoy|hate)|(were|are) you (good at|a good student|good in) (school|math|english|science)|did you like (school|math|english|science)|what were you like in school|worst subject"),
+  r:[["Art, obviously! And a little bit of history. What's your favorite subject?","Art class! Math was my worst, though. What subject do you like?"],
+     ["Um, I liked English. Lots of reading. And computer class. What's your favorite subject?","Um, coding class. It's like a puzzle. What do you like?"],
+     ["Math. One right answer. Simple. You?","Math. Hated English. You?"],
+     ["Lunch. Is lunch a subject? It should be. What's your favorite?","Drama class. Big surprise, right? What's your favorite subject?"],
+     ["Oh, home economics, dear. I baked my first pie there. What's your favorite subject, honey?","Oh, I loved music class, dear. What about you?"]]},
+ {id:'dreamjob',ko:'꿈·장래 희망',re:/what do you want to (be|do) (in the future|when you grow up|after (college|school|graduation|you graduate)|someday|later|in life|with your life)|your dream( job)?(\?|$)|what'?s your dream(\?|$)|(what are|what'?s|what is) your (goal|goals|plans for the future|future plans)|what did you want to be (as a kid|when you were (a kid|little|young|a child))|(do you|will you) (want to )?(work here forever|always work here)|what do you want to do next|dream job/,
+  r:[["I want to open a little art gallery someday! What's your dream?","My dream is to sell my paintings. Even one! What do you want to be in the future?"],
+     ["Um, I want to make my own video game someday. A quiet one. What do you want to do?","Um, maybe a game designer. If I'm brave enough. What about you?"],
+     ["Own my own coffee cart someday. You?","My own shop. Small one. Your dream?"],
+     ["A comedy show on TV. Or at least one laugh per show. What's your dream?","I want my own comedy special. My dog will be the opening act. What do you want to be?"],
+     ["Oh, I'd love to write a little cookbook for my grandkids, dear. What's your dream, honey?","Oh, at my age, dear, I just want a good garden and happy grandkids. What's your dream?"]]},
+ {id:'fromwhere',ko:'고향',re:/where (are|r) (you|u) (originally )?from|are you (originally )?from (here|around here|around|this (city|town|area))|where did you grow up|did you grow up (here|around here|in this)|where'?s your hometown|what'?s your hometown|where is your hometown|where were you born|are you a local/,
+  r:[["I grew up here! Born and raised. Where are you from?","Right here! I've never lived anywhere else. What about you? Where's your hometown?"],
+     ["Um, I'm from Ohio. I moved here for college. Where are you from?","Um, Ohio. It's, um, pretty quiet there. Where did you grow up?"],
+     ["Grew up here. You?","Here. Local. You?"],
+     ["I'm from Texas. That's why I talk so much. Where are you from?","Texas! Everything's bigger there. Except me. Where are you from?"],
+     ["Oh, I grew up two towns over, dear. But I've lived on this street for forty years. Where are you from, honey?","Oh, not far, sweetie. I've been on this street for forty years. And where's home for you?"]]},
+ {id:'live',ko:'사는 곳·출근 방법',re:/where do you live|do you live (near|around|close|nearby|here|far)|you live (nearby|around here|close|far)|how (do|did) you (get|come) (here|to work)|how far (away )?(do you live|is your (house|home|place|apartment))|do you (take the bus|drive|walk|bike) (here|to work)|how do you commute|do you live alone|do you live with|how long have you lived (here|in this|around)/,
+  r:[["Like ten minutes away! I ride my bike here. Do you live nearby?","Close! I bike here every morning. Where do you live?"],
+     ["Um, kind of close. I take the bus. Do you live around here?","Um, about twenty minutes by bus. I read comics on the way. What about you?"],
+     ["Five minutes away. I walk. You?","Close. I walk here. You live near?"],
+     ["Close enough to still be late every day. Do you live around here?","I drive my old car. It's older than me. It makes noises. Do you live nearby?"],
+     ["Oh, right around the corner, dear. I walk here every morning. Do you live close by, honey?","Oh, just down the street, sweetie. Forty years now! Where do you live?"]]},
+ {id:'family',ko:'가족',re:/do you have (any )?(brothers?|sisters?|siblings?|kids|children|a family|grandkids|grandchildren)|tell me about your family|how many (people (are )?in your family|brothers|sisters|siblings|kids|children|grandkids)|(are you|r u) (married|an only child|the oldest|the youngest)|your (family|parents|mom|dad|mother|father|brother|sister|siblings|husband|wife|kids|grandkids)\b|do you live with your (parents|family)/,
+  r:[["I have an older brother! He loves basketball and he eats all my snacks. Do you have any siblings?","It's me, my mom, my brother, and my cat Mochi. My mom makes the best hot chocolate. What about your family?"],
+     ["Um, I have a little sister. She's in Ohio with my parents. I miss them. Do you have siblings?","Um, my family is in Ohio. I call my mom every Sunday. What about you?"],
+     ["Three brothers. Loud house. You?","Big family. Lots of brothers. You have siblings?"],
+     ["I have one sister. She says she's the funny one. She's wrong. Do you have any siblings?","My mom calls me every day from Texas. Every. Day. What's your family like?"],
+     ["Oh, I have two daughters and four grandkids, dear! And my husband Harold. What about your family, honey?","Oh, my grandkids are the light of my life, dear. Do you have brothers or sisters?"]]},
+ {id:'pets',ko:'반려동물',re:/do you have (a |any )?(pets?|dogs?|cats?|animals?|puppy|puppies|kitten|kittens|fish|hamster|bird)\b|what (kind of )?pets? do you have|tell me about your (pet|dog|cat|pets)|do you like (animals|pets)|have you (ever )?had a pet/,
+  r:[["Yes! A cat named Mochi. She's fluffy and white, and she sleeps on my sketchbook. Do you have any pets?","I have a cat! Mochi. She's a total diva. What about you? Any pets?"],
+     ["Um, I have a goldfish. His name is Bob. He swims in circles. Do you have a pet?","Um, just a goldfish. Bob. He's, um, a good listener. Do you have any pets?"],
+     ["No pets. No time. I have a cactus. You?","Just a cactus. Hard to kill. You have pets?"],
+     ["A corgi named Biscuit! Short legs, big attitude. He's the boss of me. Do you have any pets?","Yes. Biscuit, my corgi. He steals my socks. Do you have a pet?"],
+     ["Oh, two cats, Salt and Pepper, and a parrot named Captain, dear. He sings! Do you have any pets, honey?","Oh, yes, dear. Two cats and one very loud parrot. Do you have a pet?"]]},
+ {id:'travel',ko:'여행 경험',re:new RegExp("do you (like to |like |love |love to |enjoy |ever )?travel|have you (ever )?(traveled|travelled|been abroad|been overseas|been out of the country|been to (another|other|a lot of|many) countr)|where have you (traveled|travelled|been)\\??$|(best|"+F+") (place|trip|country|city|vacation) you'?ve (ever )?(been|visited|gone|been to)|your "+F+" (place|country|city|trip|vacation) (to visit|you'?ve been)|your best trip|been (abroad|overseas)|do you travel|have you (ever )?been to (japan|china|europe|paris|london|new york|canada|mexico|hawaii|california|florida|italy|france|spain|vietnam|thailand|australia|england|the us|america)"),
+  r:[["I went to Mexico City with my family. The art museums were amazing! Do you like to travel?","I love traveling, but I don't have much money. Mostly road trips! Where have you been?"],
+     ["Um, not much. I went to Chicago once. It was big. Have you traveled a lot?","Um, I don't travel much. It makes me nervous. Do you like to travel?"],
+     ["Not much. Camping once. You travel?","Drove to the Grand Canyon once. Big hole. You?"],
+     ["I went to New York to see comedy clubs. I laughed. They didn't laugh at me. Do you like to travel?","Road trips across Texas. Texas is big. It took forever. Where have you traveled?"],
+     ["Oh, my husband and I went to Italy for our anniversary, dear. So beautiful! Do you like to travel, honey?","Oh, I've been to Italy and Canada, dear. Where have you been, sweetie?"]]},
+ {id:'wanttogo',ko:'가 보고 싶은 곳',re:/where (do|would) you (want|like|love|wanna) to (go|travel|visit|live)|if you could (go|travel|live|visit) anywhere|(dream|bucket list) (trip|vacation|destination|place|country)|where would you (go|live|travel)|what country (do|would) you (want|like) to (visit|go)|anywhere you want to go/,
+  r:[["Japan! I want to see Kyoto and eat real mochi. Where do you want to go?","Paris, for the art museums! Where would you go if you could go anywhere?"],
+     ["Um, Japan. For the manga shops. Where would you like to go?","Um, Japan, I think. Or somewhere quiet with snow. What about you?"],
+     ["Spain. To watch soccer. You?","Barcelona. For the soccer. Yours?"],
+     ["Italy. To prove pineapple pizza is good. They won't agree. Where do you want to go?","The moon. Fewer people, no lines. Kidding. Italy. What about you?"],
+     ["Oh, Ireland, dear. Green hills and old songs. Where would you like to go, honey?","Oh, I'd love to see Ireland, sweetie. What's your dream trip?"]]},
+ {id:'season',ko:'좋아하는 계절·날씨',re:new RegExp("your "+F+" (season|weather|time of (the )?year|month)|do you like (summer|winter|spring|fall|autumn|the rain|snow|hot weather|cold weather|the cold|the heat)|(summer|winter|spring|fall) or (summer|winter|spring|fall)|what season do you like|what kind of weather do you like|which season"),
+  r:[["Fall! The colors are so pretty to paint. What's your favorite season?","I love fall. Pumpkin everything! What about you?"],
+     ["Um, winter. It's quiet, and I can stay inside. Do you like winter?","Um, I like snow. It snows a lot in Ohio. What's your favorite season?"],
+     ["Summer. Soccer season. You?","Summer. Hate the cold. You?"],
+     ["Fall. Halloween is my holiday. Pumpkin spice is my personality. What's your favorite season?","Not summer. Texas summers tried to cook me. What about you?"],
+     ["Oh, spring, dear. Everything grows in my garden! What's your favorite season, honey?","Oh, I love spring, sweetie. Flowers everywhere. Do you like spring?"]]},
+ {id:'language',ko:'외국어',re:/do you speak (any )?(other |another |a second |more than one )?(languages?|spanish|korean|french|chinese|japanese|german|italian)|how many languages|(can|do) you speak (korean|spanish|french|chinese|japanese|german|italian)|are you learning (a |any |another )?(language|korean|spanish|french|japanese|chinese)|do you know (any )?(korean|spanish|french|japanese|chinese)( words)?|what languages? do you speak/,
+  r:[["A little Spanish! I took it in high school. Do you speak any other languages?","Just English and a tiny bit of Spanish. How many languages do you speak?"],
+     ["Um, I'm learning a little Japanese. From anime. Does that count? What languages do you speak?","Um, only English. I know some Japanese words, though. Do you speak Korean?"],
+     ["English. Some Spanish. You?","Some Spanish. That's it. You?"],
+     ["English, Spanish, and sarcasm. I'm fluent in all three. How many do you speak?","I speak Spanish. My mom made sure. What languages do you speak?"],
+     ["Oh, a little Italian from my trip, dear. Grazie! What languages do you speak, honey?","Oh, just English, sweetie. But I'd love to learn a Korean word. Will you teach me one?"]]},
+ {id:'morningnight',ko:'아침형 vs 저녁형',re:/(are you|you'?re) (a |more of a |more )?(morning|night|evening) (person|people|type)|early bird|night owl|morning (person )?or (a )?night|do you (like|prefer) (mornings|nights|the morning)|what time do you (usually |normally )?(wake up|get up|go to bed|go to sleep|sleep)|when do you (usually )?(wake up|go to bed|sleep)/,
+  r:[["Morning person! I love the sunrise. Are you a morning person?","Mornings, for sure! I'm up at six with my sketchbook. What about you?"],
+     ["Um, night person. Definitely. I stay up late reading. Are you a night owl too?","Um, I'm not a morning person. Mornings are hard. What about you?"],
+     ["Morning. Have to be. You?","Morning. Up at five. You?"],
+     ["Night person. My jokes get better after ten p.m. What about you?","Night owl. Mornings are a scam. Are you a morning person?"],
+     ["Oh, morning, dear. I'm up at five every day. Are you an early bird, honey?","Oh, I'm up with the sun, sweetie. What about you?"]]},
+ {id:'cook',ko:'요리',re:/(can|do) you (cook|bake)|are you a good (cook|baker)|what do you (like to )?(cook|make|bake)( at home)?|do you (like|love|enjoy) (to )?(cook|cooking|bake|baking)|what'?s your best (dish|recipe|food)|what can you (cook|make)|your (signature|special) dish/,
+  r:[["I can make tacos and pancakes! That's it. Can you cook?","Kind of! I make really good pancakes. Do you like to cook?"],
+     ["Um, I can make instant ramen. Does that count? Can you cook?","Um, not really. I can make grilled cheese. What about you?"],
+     ["Eggs. Toast. That's it. You?","Basic stuff. No time. You cook?"],
+     ["I make a Texas chili that can wake the dead. Can you cook?","I can burn water. Kidding. I make chili. Do you cook?"],
+     ["Oh, yes, dear. Pies, soups, roasts, you name it! Do you like to cook, honey?","Oh, I've been cooking for fifty years, dear. My apple pie is famous. Can you cook?"]]},
+ {id:'color',ko:'좋아하는 색',re:new RegExp("your "+F+" colou?r|what colou?rs? do you (like|love)|what'?s your colou?r"),
+  r:[["Yellow! Like sunflowers. What's your favorite color?","Yellow, for sure. It's so happy. What about you?"],
+     ["Um, blue. Like, a dark blue. What's your favorite color?","Um, blue, I think. What's yours?"],
+     ["Green. You?","Black. Easy. Yours?"],
+     ["Orange. Like my corgi. What's your favorite color?","Orange. It's loud, like me. What's yours?"],
+     ["Oh, rose pink, dear. Like my roses. What's your favorite color, honey?","Oh, I love a soft pink, sweetie. What about you?"]]},
+ {id:'animal',ko:'좋아하는 동물',re:new RegExp("your "+F+" animal|what animals? do you (like|love)|if you (were|could be) (an|any) animal"),
+  r:[["Otters! They hold hands when they sleep. What's your favorite animal?","Cats, obviously. Then otters. What about you?"],
+     ["Um, penguins. They're kind of awkward, like me. What's your favorite animal?","Um, penguins. What's yours?"],
+     ["Dogs. You?","Dogs. Simple. Yours?"],
+     ["Corgis. It's not even close. What's your favorite animal?","A corgi, or a sloth. A sloth works less than me. Which animal do you like?"],
+     ["Oh, birds, dear. My parrot Captain is my best friend. What's your favorite animal, honey?","Oh, I love little birds, sweetie. What about you?"]]},
+ {id:'holiday',ko:'좋아하는 명절·기념일',re:new RegExp("your "+F+" (holiday|festival|day of the year)|(how|what) do you (usually )?(celebrate|do (for|on)) (christmas|thanksgiving|halloween|the holidays|holidays|new year'?s?)|do you (like|celebrate|love) (christmas|thanksgiving|halloween|the holidays|holidays)|(dressing|dress) up for halloween|what are you (doing|going to be) for (halloween|christmas|thanksgiving)|excited (for|about) (the holidays|christmas|halloween|thanksgiving)"),
+  r:[["Halloween! I make my own costume every year. What's your favorite holiday?","Halloween, for sure. Last year I was a sunflower. What holiday do you like?"],
+     ["Um, Thanksgiving. My mom's cooking is the best. What's your favorite holiday?","Um, Thanksgiving. I go home to Ohio. What about you?"],
+     ["New Year's. Day off. You?","New Year's. I sleep. Yours?"],
+     ["April Fools' Day. It's basically my birthday. What's your favorite holiday?","Halloween. My corgi dresses up as a hot dog. What's your favorite holiday?"],
+     ["Oh, Christmas, dear. I bake cookies for the whole street! What's your favorite holiday, honey?","Oh, Christmas, sweetie. All the grandkids come home. What about you?"]]},
+ {id:'birthday',ko:'생일',re:/when'?s your birthday|when is your birthday|your birthday\b|how do you celebrate your birthday|how old will you be/,
+  r:[["October! I always have a little Halloween party. When's your birthday?","In October! I want a cake with a cat on it. When's yours?"],
+     ["Um, March. I usually just eat cake at home. When's your birthday?","Um, in March. What about you?"],
+     ["July. You?","July. Don't really celebrate. Yours?"],
+     ["December. People forget it because of Christmas. I don't. When's yours?","Every day, if you bring cake. Kidding. December. When's your birthday?"],
+     ["Oh, in May, dear. My grandkids bake me a cake! When's your birthday, honey?","Oh, May, sweetie. And when is yours?"]]},
+ {id:'friends',ko:'친구',re:/what do you (usually |like to )?do with (your )?friends|(do you have|got) (a lot of |many |any )?friends( here)?|your best friend|do you hang out with (your )?friends|who do you hang out with|your friends\b/,
+  r:[["We go to museums and thrift shops! What do you do with your friends?","My best friend and I paint together on Sundays. What do you do with your friends?"],
+     ["Um, we play online games together. At night. What do you do with your friends?","Um, I don't have many friends here yet. Just a few. Do you have friends here?"],
+     ["Soccer. Then pizza. You?","Play soccer. Eat after. You?"],
+     ["My friends come to my open mic and pretend to laugh. Great friends. What do you do with your friends?","We go to the arcade and I win. Always. What do you do with your friends?"],
+     ["Oh, my book club ladies, dear. We talk more than we read! What do you do with your friends, honey?","Oh, my friends and I play bingo on Fridays, dear. What about you?"]]},
+ {id:'relax',ko:'쉬는 법·스트레스',re:/how do you (relax|unwind|de-?stress|deal with stress|chill|recharge|rest)|what do you do (when|if) you'?re (stressed|tired|bored|sad|upset)|(how|what) do you do to (relax|chill|rest)|do you (ever )?get stressed|what makes you (happy|relax)/,
+  r:[["I paint and listen to music! It always helps. How do you relax?","A long walk by the river. Then tacos. What do you do when you're stressed?"],
+     ["Um, lo-fi music and a comic book. That's my perfect night. How do you relax?","Um, I play a quiet game. It helps. What about you?"],
+     ["Sleep. Lots of sleep. You?","Soccer. Run it out. You?"],
+     ["I watch funny videos and walk my corgi. And I eat pizza. How do you relax?","I tell jokes. If nobody laughs, I laugh. What do you do?"],
+     ["Oh, a cup of tea in my garden, dear. How do you relax, honey?","Oh, I bake when I'm stressed, dear. Lots of pies! What helps you relax?"]]},
+ {id:'sleep',ko:'잠·피곤함',re:/how did you sleep|did you sleep (well|okay|ok|good|enough)|(are|r) (you|u) (tired|sleepy|exhausted)|get (enough|much|any) sleep|how much (sleep|did you sleep)|you look tired/,
+  r:[["I slept great! I'm a morning person, so I'm happy. Did you sleep well?","Like a baby! Eight hours. How about you?"],
+     ["Um, not really. I stayed up reading comics. Are you tired too?","Um, I'm a little sleepy. I had class early. Did you sleep well?"],
+     ["Five hours. Fine. You?","Tired. Double shift. You?"],
+     ["I slept like a baby. I woke up crying at three a.m. Kidding! How did you sleep?","My corgi slept on my face. So, not great. Did you sleep well?"],
+     ["Oh, I slept fine, dear. My parrot woke me at five, as always! Did you sleep well, honey?","Oh, a little tired, sweetie, but happy. Did you get enough sleep?"]]},
+ {id:'excited',ko:'기대되는 일',re:/what are you (looking forward to|excited (about|for))|(anything|something) (you'?re )?(looking forward to|exciting coming up|coming up)|what'?s (next|coming up) for you|are you excited (about|for) anything|what'?s the best part of your (day|week)/,
+  r:[["My concert this weekend! I'm so excited. What are you looking forward to?","Saturday's concert! I already picked my outfit. What about you?"],
+     ["Um, a new comic book comes out on Friday. What are you looking forward to?","Um, going home to Ohio for Thanksgiving. What about you?"],
+     ["Sunday. Day off. You?","My day off. Sleep. You?"],
+     ["Payday. Very exciting. Very short. What are you looking forward to?","My Thursday open mic. I have a new joke about pigeons. What are you excited about?"],
+     ["Oh, my grandkids are coming for dinner, dear! What are you looking forward to, honey?","Oh, my roses are about to bloom, sweetie. What about you?"]]},
+ {id:'jobbest',ko:'일의 좋은 점·힘든 점',re:/(what'?s|what is) the (best|worst|hardest|most fun|funniest|weirdest|favou?rite|toughest) (part|thing) (about|of) (your job|working here|being a barista|the job|this job|work)|(is|was) (it|this job|your job|working here) (hard|difficult|stressful|tiring|fun|easy)|(funniest|weirdest|craziest|strangest) (customer|order|thing)|do you (get|have|meet) (rude|weird|crazy|mean|funny) customers|(is it|it'?s) hard (to make|being a barista)|do you like (your )?(coworkers|boss|manager)/,
+  r:[["The best part is talking to people like you! The hard part is remembering every order. What do you think would be hard about this job?","I love meeting people! But the morning rush is crazy. Have you ever had a part-time job?"],
+     ["Um, the best part is latte art. The hard part is talking to customers. I get nervous. Do you get nervous talking to people?","Um, it's my first job, so everything is hard. But I like it. Do you have a job?"],
+     ["Best part: it's fast. Worst part: the morning rush. You work?","Fast-paced. I like that. Hard part? Rude people. You work?"],
+     ["The best part is my audience. The worst part is my audience doesn't laugh. Have you ever worked in a cafe?","A guy once ordered a coffee with no coffee. That was my weirdest order. Do you have a job?"],
+     ["Oh, the best part is people like you, dear. The hard part is my knees! Do you have a job, honey?","Oh, I love it, sweetie. I know every regular's order by heart. Do you have a part-time job?"]]},
+ {id:'social',ko:'SNS',re:/do you (use|have|like) (instagram|insta|tiktok|social media|youtube|twitter|snapchat|facebook|a youtube channel)|(are you|you) on (instagram|insta|tiktok|social media|snapchat|facebook)|can i follow you|what'?s your (instagram|insta|handle|tiktok|snapchat)/,
+  r:[["I post my paintings on Instagram! It's mostly art and Mochi. Do you use Instagram?","Yep, mostly for my art. And cat photos. What apps do you use?"],
+     ["Um, I don't really post. I just look. Do you post a lot?","Um, I watch YouTube a lot. That's it. What about you?"],
+     ["Not really. No time. You?","Barely. You?"],
+     ["My corgi has a TikTok. He's more famous than me. Do you use TikTok?","I post my latte art. Three likes. One is my mom. Do you post a lot?"],
+     ["Oh, my granddaughter set up a Facebook for me, dear. I mostly post my tomatoes! Do you use that, honey?","Oh, I'm not very good with phones, sweetie. Do you use social media a lot?"]]},
+ {id:'talent',ko:'잘하는 것·장기',re:/what are you (good at|best at|really good at|great at)|(do you have|any) (a |any )?(hidden |special )?talents?|what'?s your (talent|special skill|hidden talent)|what can you do really well/,
+  r:[["I'm good at drawing faces! I can draw you in two minutes. What are you good at?","Remembering faces! And drawing them. What's your special talent?"],
+     ["Um, puzzles. And coding. I'm not good at talking, though. What are you good at?","Um, I can solve a Rubik's cube. Kind of fast. What about you?"],
+     ["Making drinks fast. Really fast. You?","Speed. Ten drinks a minute. Your talent?"],
+     ["I can make a tiny bear in latte foam. And bad jokes. Lots of bad jokes. What are you good at?","I can talk for an hour about nothing. You've seen it. What's your talent?"],
+     ["Oh, baking, dear. And remembering everyone's name! What are you good at, honey?","Oh, I can make a pie with my eyes closed, sweetie. What's your talent?"]]},
+ {id:'superpower',ko:'만약에 질문(초능력 등)',re:/if you (could|had) (have )?(a|any|one) (superpower|wish|power)|what superpower|if you could (do|change|be) anything|if you (won|had) (a million dollars|the lottery|lots of money)|if you could (meet|eat|have) (anyone|anything|any)|(with|had) a million dollars/,
+  r:[["Teleporting! I'd go to Paris for lunch. What about you? What superpower would you want?","I'd want to paint with my mind. So fast! What would you pick?"],
+     ["Um, invisibility. So I don't have to talk to people. Sorry. What would you pick?","Um, maybe reading really fast. More comics. What about you?"],
+     ["Stopping time. More sleep. You?","Super speed. Already halfway there. You?"],
+     ["The power to make everyone laugh. Wait, I already have it. Mostly. What would you want?","Flying. No more traffic. Just me and the birds. What superpower would you want?"],
+     ["Oh, I'd want to make everyone feel at home, dear. What about you, honey?","Oh, I'd like to make my knees young again, sweetie! What would you wish for?"]]}
+];
+const TALK_OK=[["Ooh, I love that!","No way, that's so cool!","Ha, nice! Good to know."],["Oh, cool. That's nice.","Oh. Nice. I, um, like that.","Cool, cool."],["Nice.","Cool.","Ha, solid."],["Okay, I respect that.","Great answer. Ten points.","Noted. That's going in my novel."],["Oh, how lovely, dear!","Oh, isn't that nice, honey.","Well, good for you, sweetie."]];
+/* 나머지 15명(같은 성격 유형의 다른 바리스타): 자기 설정이 있는 질문은 따로 쓴 대답,
+   그 밖에는 기본 5명의 대답 중 '기본 바리스타만의 설정'(고양이 Mochi, 텍사스 등)이 없는 것만 씁니다. */
+const TALK_X={
+ jasmine:{sport:["I'm on the cheer team! Go Tigers! Do you play any sports?"],school:["Yes! I'm in college, and I'm on the cheer team! Are you a student? You look so smart!"],weekendplan:["We have a big game on Saturday! You should come! What are you doing this weekend?"],hobby:["Cheer practice, obviously! And dancing in my room. What do you do for fun?"]},
+ priya:{fromwhere:["I'm from India originally, but I grew up here! Where are you from?"],travel:["I love it! I've been to eight countries. Next is Japan in the spring! Where have you traveled?"],wanttogo:["Japan! I'm going in the spring. And then Peru! Where would you go?"],weekendplan:["I'm planning my Japan trip! So many maps. What are you doing this weekend?"]},
+ tyler:{sport:["Soccer! I play for the school team and practice every day. Do you play any sports?"],hobby:["Running and soccer, all day! What do you do for fun?"],weekendplan:["Big game on Saturday! What about you?"],school:["Yep! I play soccer for the school team. Are you a student?"],morning:["I went for a morning run! Five miles. What did you do this morning?"]},
+ hannah:{book:["Um, mysteries. I'm reading one right now. I can't guess the ending. Do you like reading?"],hobby:["Um, reading. Mostly reading. And tea. What do you like to do?"],favspot:["Um, here, after work. It's peaceful. Where do you like to go?"]},
+ ethan:{school:["Um, I'm a grad student. I study biology. Lots of bugs. Are you a student?"],sleep:["Um, not much. I stayed up writing a paper. Did you sleep well?"],dreamjob:["Um, a biology professor, maybe. If I ever finish my paper. What's your dream?"],today:["Um, I wrote my paper all morning. I'm tired. What have you been up to?"]},
+ nora:{jobbest:["It's my first day, so everything is hard! I spilled one cup already. Sorry! Do you have a job?"],today:["It's my first day! I'm so nervous. Sorry. How's your day?"]},
+ marcus:{live:["Take the 7 bus. Always late. You live close?"],afterwork:["Closing shift tonight. Late night. You?"],jobbest:["Best part? The rush. Worst part? No rush. You work?"]},
+ dana:{jobbest:["Best part: my team. Worst part: paperwork. You work?"],live:["Nearby. Short walk. You?"],dreamjob:["Running this shop is the dream. Five years now. Yours?"]},
+ kai:{sport:["Surfing. Every morning. You surf?"],hobby:["Surf. Then nap. You?"],weekendplan:["Beach. Big waves. You?"],morning:["Surfed at six. Good waves. You?"],season:["Summer. Warm water. You?"]},
+ mo:{talent:["Magic! Well, card tricks. The cards keep falling. What are you good at?"],hobby:["Magic tricks! I'm doing a show on Friday. What do you do for fun?"],weekendplan:["My magic show is on Friday! Then I practice all weekend. Any plans?"],dreamjob:["A real magician with a real stage. And a rabbit. What's your dream?"]},
+ lucy:{season:["Spring! Flowers, and no more winter. Fun fact: bees love spring too. What's your favorite season?"],animal:["Octopuses! They have three hearts. What's your favorite animal?"],talent:["Fun facts! Ask me anything. Well, almost anything. What are you good at?"]},
+ frank:{family:["I'm a dad of three, so I make bad jokes professionally. Do you have any siblings?"],cook:["I make pancakes for my kids every Sunday. They're flipping good. Get it? Can you cook?"],talent:["Dad jokes. I'm a professional. What are you good at?"]},
+ walter:{hobby:["I enjoy reading and fishing. Very slowly, both of them. What do you do for fun?"],jobbest:["I'm a retired English teacher, dear. I work here two days a week, for fun. Do you have a job?"],subject:["English, of course. I taught it for many years. What's your favorite subject?"],school:["Oh, I'm a retired English teacher now. Are you a student?"],book:["Oh, old novels, dear. I read them slowly, like fishing. Do you like to read?"]},
+ rosa:{cook:["Oh, I love cooking, my dear! Tamales and soup. Do you like to cook?"],favfood:["Tamales, my dear! I made them last night. What's your favorite food?"],family:["My daughter lives two blocks away, my dear. Do you have family here?"],live:["Oh, thirty years on this street, my dear. Do you live close?"],yesterday:["I made tamales last night, my dear! The whole street smelled amazing. What did you do?"]},
+ grace:{sleep:["I sleep eight hours, dear. I was a nurse for thirty years, so I know! Did you sleep well?"],jobbest:["I was a nurse for thirty years, dear. Now I make coffee. Much calmer! Do you have a job?"],relax:["A long walk every morning, dear, and my garden. And water! How do you relax?"],morning:["I took a long walk this morning, dear. Did you have breakfast?"]}};
+/* 15명용 '설정 없는' 기본 대답(성격 유형별). 자기 설정 대답(TALK_X)이 없고, 기본 5명 대답이 모두 걸러질 때 씁니다 */
+const TALK_GEN={
+ pets:["No pets yet, but I really want a puppy! Do you have any pets?","Um, no pets. My apartment is too small. Do you have one?","No pets. You?","No pets. My plants are my pets. They don't listen either. Do you have a pet?","Oh, not anymore, dear, but I love animals. Do you have a pet, honey?"],
+ family:["I have a big, loud family! I love them. What about your family?","Um, my family lives far away. I miss them. Do you have siblings?","Small family. You?","My family thinks I'm funny. They're wrong. Do you have siblings?","Oh, family is everything, dear. Tell me about yours, honey."],
+ fromwhere:["Not far from here! What about you? Where are you from?","Um, a small town. Not very exciting. Where are you from?","Not far. You?","From a place with worse coffee than this. Where are you from?","Oh, not far from here, dear. And where are you from, honey?"],
+ live:["Pretty close! Do you live nearby?","Um, not too far. Do you live around here?","Close. You?","Close enough to be late every day. Do you live nearby?","Oh, just a short walk, dear. Do you live close by?"],
+ school:["I'm done with school for now! Are you a student?","Um, I take some classes. Are you a student?","Not now. You in school?","I graduated from the school of life. Are you a student?","Oh, my school days were long ago, dear. Are you a student, honey?"],
+ catsdogs:["Dogs! I want to pet every dog I see. What about you?","Um, cats, I think. They're quiet. You?","Dogs. You?","Both. I'm very fair. Cats or dogs for you?","Oh, I love them both, dear. Which do you like, honey?"],
+ morning:["I had a big breakfast and came here! What did you do this morning?","Um, I just had toast. Did you eat breakfast?","Woke up. Came here. You?","I had coffee. Then more coffee. What did you have?","Oh, a cup of tea and some toast, dear. Did you have breakfast, honey?"],
+ lastweekend:["It was so fun! I hung out with my friends. How was your weekend?","Um, quiet. I stayed home. How was yours?","Worked. Rested. Yours?","I slept for twelve hours. Best weekend ever. How was yours?","Oh, a lovely quiet weekend, dear. And yours, honey?"],
+ weekendplan:["I'm going to see my friends! What are you doing this weekend?","Um, nothing big. Just resting. Do you have plans?","Working, mostly. You?","Big plans. Very big. I'm going to nap. What about you?","Oh, a quiet weekend at home, dear. Any plans, honey?"],
+ yesterday:["I watched a movie with friends! What did you do yesterday?","Um, I stayed home. What did you do?","Worked. You?","I did nothing, and I did it very well. What about you?","Oh, a quiet evening with a book, dear. And you?"]};
+const BASE_FACT=/Mochi|Biscuit|corgi|\bBob\b|goldfish|Salt|Pepper|Captain|parrot|Harold|grand(kid|son|daughter|children)|Texas|Ohio|Paper Kites|Taylor Swift|\bart\b|paint|sketch|skateboard|college|computer science|coding|soccer|cactus|open mic|comed|joke|my (brother|sister|mom|daughters|husband|neighbors|teacher|friends|best friend)|brothers|\bcats?\b|church|forty years|fifty years|aerobics|book club|Ella|webtoon|game|leaf|bear|chili|pecan|Mexico|Italy|Chicago|New York|Grand Canyon|library|bingo|ukulele|kazoo|piano|recipe|apple pie|taco|roses|garden|tomato|Kyoto|Paris|Spain|Barcelona|Ireland|Halloween|Thanksgiving|Christmas|April|October|March|July|December|\bMay\b|class|dog|bike|bus|car\b|walk here|minutes away|street|corner|grew up|born|Roman Holiday|Ghibli|Studio|shift|five thirty|at five|up at|Instagram|TikTok|Facebook|cart|gallery|cookbook|crossword|Rubik/;
+function talkPool(t,pi){const x=(TALK_X[S.pid]||{})[t.id];if(x)return x;if(!P[S.pid]||!P[S.pid].base)return t.r[pi];const ok=t.r[pi].filter(r=>!BASE_FACT.test(r));return ok.length?ok:TALK_GEN[t.id]?[TALK_GEN[t.id][pi]]:null}
+function talkOf(q,st){if(!q)return null;const pi=pidx(S.pid);for(const t of TALK){if(t.svc&&st==='order')continue;if(t.re.test(q)){if(!talkPool(t,pi))return null;return t}}return null}
+function talkQ(n,isQ,qt){if(qt)return qt;if(isQ||/^((so|and|okay|ok|well|hey|oh),? )?tell me (a little |more )?about your/.test(n))return n;return ''}
+function talkAns(t){const parts=(t.match(/[^.!?]+[.!?]*/g)||[]).map(x=>x.trim()).filter(Boolean);if(parts.length>1&&/\?$/.test(parts[parts.length-1]))parts.pop();return parts.join(' ')}
+const TALK_MORE=[["Ooh, tell me more! What do you like about it?","Wait, how did you get into that?","Ha, I love that! What else do you like?"],["Oh. Um, how come?","Um, how did you, um, start?","Oh. Do you, um, do that a lot?"],["Yeah? What else?","Nice. How come?","Oh yeah? Do you do that a lot?"],["Ooh, plot twist! Why though? Defend it!","Okay, I need the full story. Go!","Ha! And how did that start?"],["Oh? And how did you get started with that, dear?","Oh, tell me more, honey. What do you like about it?","Oh, how lovely. What else do you like, sweetie?"]];
+/* 되묻기 성향: 한 주제에서 이어 묻는 횟수. Maya·Dottie는 2번, Leo·Rico는 1번, Sam은 0번(대신 '너도 물어봐'). 15명도 같은 유형을 따름 */
+const TALK_FUN=[2,1,0,1,2];
+const ASK_ME=['Your turn. Ask me something.','Got questions? Go.','Ask away, I have a minute.'];
+const ASKED_FIRST=["Ha, I asked you first! ","Um, I asked first… ","You first. ","Nice try! You first. ","Oh, you first, dear. "];
+/* 대답하고(되묻기 포함이면 true를 돌려주고 사용자의 대답을 기다림) */
+async function talkSay(tk,st,pi,withQ){
+  S.talkSaid=S.talkSaid||{};S.talkLog=(S.talkLog||[]).concat(tk.id);
+  const prev=S.talkSaid[tk.id];
+  if(prev){await say(SAID_PRE[pi]+lc(talkAns(prev).replace(/^(Um, |Oh, )/,'')));S.selfSt='talk:'+tk.id;S.selfFresh=true;return false}
+  const r=pickNew(talkPool(tk,pi)||tk.r[pi]);S.talkSaid[tk.id]=r;
+  if(!withQ||!/\?$/.test(r)){await say(talkAns(r));S.selfSt='talk:'+tk.id;S.selfFresh=true;return false}
+  S.tq={id:tk.id,st,prevQ:S.q};await askQ(r);S.selfSt='talk:'+tk.id;S.selfFresh=true;return true}
+/* 바리스타가 되물은 질문에 사용자가 대답했을 때: 반응 → 원래 대화로 돌아감 */
+async function talkResolve(st,raw,n,isQ,fresh){
+  const t=S.tq;if(!t)return false;if(t.st!==st){S.tq=null;return false}
+  const pi=pidx(S.pid);const fu=fuOf(n);
+  if(fu==='back'||fu==='youfirst'){flag('talk:first');if(t.n){S.tq=null;S.q=t.prevQ;await selfTell(st,pi);await giveTurn(st,pi);return true}await say(ASKED_FIRST[pi]+lc(qPart(S.q.t)),S.q.t);return true}
+  if(fu&&!(fu==='react'&&/\b(me too|same)\b/.test(n))){if(await followUp(fu,st,raw,n,isQ,fresh))return true}
+  if(isQ&&!segsOf(raw).some(x=>!isQSeg(x))){S.tq=null;S.q=t.prevQ;return false}
+  flag('talk:ans');
+  const wc=wordsOf(n).length;
+  const plain=!(DUNNO.test(n)&&wc<=7)&&!NEGANS.test(n);
+  /* 대답이 쓸 만하면 한 번 더 이어서 묻는다(바리스타당 한 주제에 한 번만) */
+  if(plain&&(t.n||0)<TALK_FUN[pi]&&!isQ&&wc>=1&&wc<=14){
+    const af=actFollow(raw,n,pi)||pickNew(TALK_MORE[pi]);
+    S.tq={...t,n:(t.n||0)+1};
+    await say(fill(statementReact(n)||pickNew(TALK_OK[pi])));
+    await askQ(af);return true}
+  S.tq=null;S.q=t.prevQ;
+  const inv=plain&&!t.n&&pi===2&&!isQ?pick(ASK_ME):'';
+  const r=DUNNO.test(n)&&wc<=7?pickNew(DUNNO_R[pi]):NEGANS.test(n)?REACT_NO[pi]:(statementReact(n)||pickNew(TALK_OK[pi]));
+  await say(fill(r)+(inv?' '+inv:''));
+  const qt=isQ?qText(raw):'';const tk=qt?talkOf(qt,st):null;if(tk&&tk.id!==t.id)await talkSay(tk,st,pi,false);
+  if(st==='free'){await nextTopic();return true}
+  if(S.best[st])await advance();else await reask(st,raw);
+  return true}
 /* ---------- 무료 AI 도우미(규칙이 못 알아들은 질문에만) ----------
    · 규칙 대답이 먼저, 모르는 질문(unsureR 자리)에서만 Cloudflare Worker에 물어봅니다.
    · 점수·단계 판단에는 쓰지 않습니다. 느리거나 실패하거나 한도가 차면 원래 규칙 대답을 씁니다. */
@@ -1918,7 +2299,7 @@ const FREE_SELF={
  hangout:["The park by the river! I sketch there.","Um, the library. It's quiet.","Here, honestly.","The arcade. I'm the champion of air hockey.","Oh, my garden, dear. It's my happy place."]};
 const FREE_MAP={music:'chat3',food:'chat4',pets:'chat5',week:'chat6'};
 function saidPre(t){if(!t)return t;const pi=pidx(S.pid);S.ansSaid=S.ansSaid||[];if(S.ansSaid.includes(t))return SAID_PRE[pi]+lc(t.replace(/^(Um, )?me\?\s*/i,'').replace(/^(Honestly\?|Oh,)\s*/,''));S.ansSaid.push(t);return t}
-function moreOf(st){const p=P[S.pid],base=p.base||S.pid,pi=pidx(S.pid);if(!/^(greet|chat\d)$/.test(st||''))return null;if(p.base&&p.back[st]!==P[base].back[st])return null;return (SELF_MORE[base]||{})[st]||null}
+function moreOf(st){const p=P[S.pid],base=p.base||S.pid,pi=pidx(S.pid);if(!/^(greet|chat\d)$/.test(st||''))return null;if(S.moreRot&&S.moreRot[st]!==undefined)return S.moreRot[st];if(p.base&&p.back[st]!==P[base].back[st])return null;return (SELF_MORE[base]||{})[st]||null}
 async function askQ(text,key){S.q={st:S.free?'free':STAGES[S.idx],t:key||text};await say(text,key)}
 async function sayQ(text,key){if(/\?/.test(text))return askQ(text,key);return say(text,key)}
 /* 바리스타가 자기 이야기를 한다(첫 번째: back 대사, 두 번째: 자세한 이야기, 세 번째: 마무리) */
@@ -1995,10 +2376,13 @@ async function handleFree(raw){
   const p=P[S.pid],pi=pidx(S.pid);const n=norm(raw);if(!n)return;
   const fresh=S.selfFresh;S.selfFresh=false;
   S.log.push({who:'u',text:raw,st:'free'});markExpr();S.freeTurns++;koAttach(null);render();
-  if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){await endChat();return}
+  if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){S.tq=null;await endChat();return}
   const isQ=isQuestion(raw,n);const qt=qText(raw);const intent=matchIntent(qt||n);
+  if(S.tq&&await talkResolve('free',raw,n,isQ,fresh))return;
   {const fu=fuOf(n);if(fu&&await followUp(fu,'free',raw,n,isQ,fresh))return}
   if(isQ&&onlyQ(raw)&&(await detailQ('free',raw,n,qt,fresh)||await topicBack('free',raw,n,qt,isQ)))return;
+  const tk=!(intent&&intent.id==='howareyou')?talkOf(talkQ(n,isQ,qt),'free'):null;
+  if(tk){flag('talk:'+tk.id);if(await talkSay(tk,'free',pi,true))return;await nextTopic();return}
   const st=statementReact(n);
   if(BACK.test(n)&&!(intent&&intent.r)){await say(st||pick(p.react.chat1.concat(p.react.chat2)));await selfTell('free',pi)}
   else if(isCompli(n)&&!isQ)await say(COMPLI_R[pi]);
@@ -2019,6 +2403,7 @@ async function handle(raw){
   const wc=wordsOf(n).length;
   const isQ=isQuestion(raw,n);
   if(REPEAT.test(n)&&wc<=6){flag('repeat');const lq=[...S.log].reverse().find(m=>m.who==='b'&&/\?$/.test(m.text));await say("Sure! "+(lq?lq.text:fill(p.lines[st])));return}
+  if(S.tq&&await talkResolve(st,raw,n,isQ,fresh))return;
   if(st!=='close'){const fu=fuOf(n);if(fu&&await followUp(fu,st,raw,n,isQ,fresh))return;
     const qt0=qText(raw);if(CHAT.has(st)&&isQ&&onlyQ(raw)&&(await detailQ(st,raw,n,qt0,fresh)||await topicBack(st,raw,n,qt0,isQ)))return}
   const ok=stageMatch(st,n,raw,isQ);
@@ -2031,9 +2416,11 @@ async function handle(raw){
     let sc=scoreTurn(raw,n,st,S.lastB);
     if(S.asked[st]&&sc<60)sc=60;
     record(st,S.asked[st]?S.asked[st]+' / '+raw:raw,sc);
-    captureSlots(st,n);
+    captureSlots(st,n);memNote(st,raw);
     if(st==='close'){
-      if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='thanks'){await say(irText(qIntent,pi,qt));await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
+      const tkC=talkOf(talkQ(n,isQ,qt),st);
+      if(tkC){await talkSay(tkC,st,pi,false);await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
+      else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='thanks'){await say(irText(qIntent,pi,qt));await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
       else await say(isCompli(n)?COMPLI_R[pi]:LUCK.test(n)?LUCK_R[pi]:GOODLUCK.test(n)?GOODLUCK_R[pi]:COMEBACK.test(n)?COMEBACK_R[pi]:back||/you (too|2|to)$|have a|take care|good one|hope|cheers|\bta\b|stay (warm|dry|safe)/.test(n)?p.back.close:pick(["Of course!","Anytime!","You're welcome!"]));
       await advance();return;
     }
@@ -2049,19 +2436,23 @@ async function handle(raw){
     await say(fill(r));
     if(st==='order'&&S.slots.drinks)await say(pick(["So that's "+listJoin(S.slots.drinks.map(aOf))+". Got it!","Okay, "+['','one','two','three','four'][S.slots.drinks.length]+" drinks: "+listJoin(S.slots.drinks.map(aOf))+"."]));
     if(st==='order'&&S.food)await say("And a "+S.food+", got it!");
-    if(back){if(S.saidBack[st]){const m=moreOf(st);if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m)}}else await say(p.back[st]||p.back.greet)}
+    const tkO=!(qIntent&&qIntent.id==='howareyou')?talkOf(talkQ(n,isQ,qt),st):null;
+    if(tkO){S.okTalk=tkO.id;if(await talkSay(tkO,st,pi,CHAT.has(st)))return}
+    else if(back){if(S.saidBack[st]){const m=moreOf(st);if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m)}}else await say(p.back[st]||p.back.greet)}
     else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='howsay')await say(saidPre(irText(qIntent,pi,qt)));
     else if(isQ&&qt&&genQ(qt))await say(saidPre(genQ(qt)));
     else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(await aiOr(qt,pi))}
     await advance();return;
   }
-  if(st==='order'&&!findDrink(n)&&!(S.offer&&YES.test(n))){const ar=attrRec(n);if(ar){S.asked[st]=raw;flag('intent:attr');S.offer=ar.d;S.lastRec=ar.d;await say(ar.text);await say(pick(['Want to try it?','Should I make you one?','Want one?']));return}}
-  if(st==='order'&&S.offer&&REJECT.test(n)&&!findDrink(n)){S.offer=null;S.asked[st]=raw;flag('intent:reject');await say(pick(['No problem! ','Sure! ','Okay! '])+AVAIL_NONE[pi]);return}
-  if(st==='order'&&UNDECIDED.test(n)&&!findDrink(n)){
+  {const tk=!(intent&&intent.id==='howareyou')?talkOf(talkQ(n,isQ,qt),st):null;
+   if(tk&&!(st==='order'&&findDrink(n))){S.asked[st]=raw;flag('talk:'+tk.id);if(await talkSay(tk,st,pi,CHAT.has(st)))return;await reask(st,raw);return}}
+  if(st==='order'&&!S.scene&&!findDrink(n)&&!(S.offer&&YES.test(n))){const ar=attrRec(n);if(ar){S.asked[st]=raw;flag('intent:attr');S.offer=ar.d;S.lastRec=ar.d;await say(ar.text);await say(pick(['Want to try it?','Should I make you one?','Want one?']));return}}
+  if(st==='order'&&!S.scene&&S.offer&&REJECT.test(n)&&!findDrink(n)){S.offer=null;S.asked[st]=raw;flag('intent:reject');await say(pick(['No problem! ','Sure! ','Okay! '])+AVAIL_NONE[pi]);return}
+  if(st==='order'&&!S.scene&&UNDECIDED.test(n)&&!findDrink(n)){
     S.asked[st]=raw;flag('intent:undecided');S.lastRec=REC[pi];S.offer=REC[pi];
     await say(iRe('recommend').r[pi]);await say(pick(['Want to try it?','Should I make you one?']));return;
   }
-  if(st==='order'&&isQ&&AVAIL.test(n)&&!(intent&&intent.id==='teakinds')&&(findDrink(n)||!(intent&&intent.r))){
+  if(st==='order'&&!S.scene&&isQ&&AVAIL.test(n)&&!(intent&&intent.id==='teakinds')&&(findDrink(n)||!(intent&&intent.r))){
     S.asked[st]=raw;flag('avail');const d=findDrink(n);
     if(d){S.offer=d;await say(AVAIL_R[pi].replace('{d}',d).replace(/^./,c=>c.toUpperCase()))}
     else await say(AVAIL_NONE[pi]);
@@ -2131,14 +2522,18 @@ function renderStart(){
     <p class="muted">바리스타를 골라 영어로 주문하고 수다를 떨어 보세요. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
   </header>
   <button class="mestrip" id="prof">${u&&u.photo?`<img class="av sm" src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<span class="av sm">${u&&u.name?esc(u.name.slice(0,1)):'🙂'}</span>`}<span class="t"><span class="row" style="gap:6px"><b>${u?esc(u.name||'나'):'게스트'}</b>${lvBadge(pr.lv)}</span><small>${u?'기록이 계정에 저장돼요':AUTH.on?'구글로 로그인하면 다른 기기에서도 레벨이 이어져요':'레벨과 기록은 이 기기에 저장돼요'}</small></span><span class="go">내 프로필 ›</span></button>
+  ${dailyStrip()}
   <div class="chalbar"><span class="k">TODAY'S CHALLENGE · 쓰면 +${CHAL_BONUS} XP</span><span><b>${esc(ch.p)}</b> <span class="muted">${esc(ch.ko)}</span></span></div>
   <section style="display:flex;flex-direction:column;gap:10px">
     <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'바리스타 20명':'오늘의 바리스타 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
     <div class="personas">${(SHOWALL?GROUPS.flat():todays()).map(id=>{const p=P[id];return `<button class="pcard" data-p="${id}"><span class="role">${p.role}</span><span class="nm">${p.name}</span><span class="ds">${p.desc}</span><span class="say">“${esc(p.lines.greet)}”</span></button>`}).join('')}</div>
   </section>
   ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'바리스타'} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul></section>`:''}
+  ${reviewPanel()}
+  ${scenePanel()}
   <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 없습니다.</p>`}</section>`;
   app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
+  app.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>start(pick(todays()),b.dataset.sc));
   app.querySelector('#theme').onclick=()=>{setTheme(isDark()?'light':'dark');render()};
   app.querySelector('#info').onclick=()=>{INFO=true;render();scrollTo(0,0)};
   app.querySelector('#prof').onclick=()=>{PROFILE=true;render();scrollTo(0,0)};
@@ -2184,7 +2579,7 @@ function renderInfo(){
   <section class="panel">
     <h3>레벨</h3>
     <p class="muted" style="font-size:.88rem">대화를 끝까지 하면 그 대화의 점수(100점 만점)가 XP로 쌓입니다. XP가 기준을 넘고, 최근 3번 대화 평균도 기준 이상이면 다음 레벨로 올라갑니다. 한 번 운 좋게 잘 본 점수로는 올라가지 않도록 평균을 함께 봅니다. 레벨이 바뀌었는지는 영수증에서 알려 드려요.</p>
-    <ul class="list">${[1,2,3,4].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul>
+    <ul class="list">${[1,2,3,4,5,6].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul>
     <p class="muted" style="font-size:.88rem">날마다 바뀌는 ‘오늘의 도전 표현’을 대화 중에 쓰면 +${CHAL_BONUS} XP를 더 받습니다. 레벨이 올라도 내 프로필에서 낮은 레벨 말투를 골라 연습할 수 있어요.</p>
   </section>
   <section class="panel">
@@ -2196,11 +2591,12 @@ function renderInfo(){
 }
 function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang))}
 
-function start(pid){
+function start(pid,sceneId){
   S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:'',lv:talkLv(),hinted:{},heard:[],asides:[],q:null,saidK:[],saidBack:{},moreSaid:{},fuN:{},ansSaid:[],selfFresh:false,selfSt:null};
+  applyDaily(pid);applyScene(pid,sceneId);S.revDue=revDue(5);
   render();
   const L=stageLine('greet');
-  askQ(L.text,L.key).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
+  askQ((S.welcome?S.welcome+' '+(L.text.match(/[^.!?…]*\?\s*$/)||[L.text])[0].trim():L.text),L.key).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
 }
 function hintKey(st){return CHAT.has(st)&&st!=='greet'?'chat':st}
 function renderChat(){
@@ -2223,7 +2619,7 @@ function renderChat(){
     ${S.hintsOpen?`<div class="hints">
       ${S.hintNote?`<p class="note">${LANG==='ko'?'바리스타가 잘 못 알아들었어요. 아래 표현을 참고해서 다시 말해 보세요.':"The barista didn't catch that. Try again with one of these."}</p>`:''}
       ${(()=>{const c=todayChal(S.lv);return `<p class="chal">오늘의 도전 표현: <b>${esc(c.p)}</b> · 쓰면 +${CHAL_BONUS} XP</p>`})()}
-      ${(()=>{const q=S.hk&&QH[S.hk],base=q?QH[S.hk].h:HINTS[hk],lv=S.lv||2;if(lv<3)return base;if(q)return base.slice(0,lv>=4?2:3);const nat=LV_HINTS[hk]||[];return lv>=4?nat.slice(0,2):nat.slice(0,2).concat(base.slice(0,2))})().map(([en,ko,enx])=>`<div class="chip"><div class="t"><b>${esc(en)}</b><small>${esc(LANG==='ko'&&(S.lv||2)<3?ko:enx)}</small></div><div class="acts"><button data-use="${esc(en)}">쓰기</button><button data-save="${esc(en)}" data-ko="${esc(ko)}">${savedList().some(x=>x.en===en)?'저장됨':'저장'}</button></div></div>`).join('')}
+      ${(()=>{const q=S.hk&&QH[S.hk],base=q?QH[S.hk].h:HINTS[hk],lv=S.lv||2;if(lv<3)return base;if(q)return base.slice(0,lv>=5?1:lv>=4?2:3);const nat=LV_HINTS[hk]||[];return lv>=5?nat.slice(0,1):lv>=4?nat.slice(0,2):nat.slice(0,2).concat(base.slice(0,2))})().map(([en,ko,enx])=>`<div class="chip"><div class="t"><b>${esc(en)}</b><small>${esc(LANG==='ko'&&(S.lv||2)<3?ko:enx)}</small></div><div class="acts"><button data-use="${esc(en)}">쓰기</button><button data-save="${esc(en)}" data-ko="${esc(ko)}">${savedList().some(x=>x.en===en)?'저장됨':'저장'}</button></div></div>`).join('')}
     </div>`:''}
     <div id="kofind" class="hints" hidden></div>
     ${S.expr&&!S.done&&S.ph&&S.ph.startsWith('위 표현')?`<div class="muted" style="font-size:13px;margin:0 0 6px;line-height:1.5">${esc(S.expr.ko||'')}<br>표현 : <b>${esc(S.expr.p)}</b></div>`:''}
@@ -2356,15 +2752,250 @@ const TIPK={chat3:"좋아하는 음악을 말하고 'What about you?'로 되물�
 const TIPE={chat3:"Name the music you like, then ask 'What about you?'",chat4:"Say what you ate and how it tasted, then ask 'Have you tried it?'",chat5:"Add the pet's name or a detail, then ask 'Do you have any pets?'",chat6:"Say the good thing and why, then ask 'How about your week?'"};
 Object.assign(MODEL,MOD);Object.values(P).forEach(p=>{if(p.model)Object.assign(p.model,MOD)});
 Object.assign(STAGE_TIP.ko,TIPK);Object.assign(STAGE_TIP.en,TIPE);
+/* ================= 3년·하루 3판용 시스템 =================
+   1) 매 판 잡담 질문 4개를 질문 풀(40개)에서 바꿔 끼움  2) 바리스타가 이름·지난 대답을 기억(단골 단계)
+   3) 날짜·시간대 이벤트  4) 주마다 이어지는 바리스타 근황  5) 연속 출석·하루 3판 목표·기념 배지
+   ROT_ON=false 로 두면 예전과 똑같이 동작합니다(시험용). 설명서: plan/long-term-systems.md */
+const ROT_ON=true;
+const ROT_ST=['chat3','chat4','chat5','chat6'],ROT_DEF={chat3:'music',chat4:'food',chat5:'pets',chat6:'week'};
+const DAILY_GOAL=3;
+/* [talk 의도 id, 바리스타가 손님에게 묻는 말, 손님 모범 답] */
+const DT=[
+ ['lastweekend',"How was your weekend?","It was fun! I hung out with my friends and watched a movie. How was your weekend?"],
+ ['weekendplan',"Do you have any plans for the weekend?","I'm going to see a movie with my friends. What about you?"],
+ ['afterwork',"What are you doing after this?","I'm going to study at the library. What about you?"],
+ ['yesterday',"What did you do yesterday?","I studied for a test and played a game. What did you do?"],
+ ['morning',"What did you have for breakfast?","I had toast and milk. What about you?"],
+ ['lunch',"What did you have for lunch?","I had kimbap. It was really good. What did you have?"],
+ ['dessert',"Do you have a sweet tooth? What's your favorite dessert?","I love ice cream. Do you like sweets?"],
+ ['movie',"What's your favorite movie?","I love animated movies. What about you?"],
+ ['tvshow',"Are you watching any shows these days?","I'm watching a K-drama. Do you watch any shows?"],
+ ['book',"Do you like to read? What are you reading?","I mostly read webtoons. Do you like to read?"],
+ ['games',"Do you play video games?","Yes, I play a lot of mobile games. Do you play games?"],
+ ['instrument',"Do you play any instruments?","I played the piano when I was little. Do you play anything?"],
+ ['sport',"Do you play any sports?","I play badminton with my friends. Do you play sports?"],
+ ['hobby',"What do you like to do for fun?","I like drawing and listening to music. What about you?"],
+ ['subject',"What's your favorite subject at school?","I like English because it's fun. What's your favorite subject?"],
+ ['dreamjob',"What do you want to be in the future?","I want to be a designer. What do you want to be?"],
+ ['travel',"Have you traveled anywhere fun?","I went to Jeju last summer. Have you been there?"],
+ ['wanttogo',"If you could go anywhere, where would you go?","I'd go to New York. Where would you go?"],
+ ['season',"What's your favorite season?","I love fall. The weather is perfect. What about you?"],
+ ['language',"Do you speak any other languages?","I speak a little Japanese. Do you speak any other languages?"],
+ ['morningnight',"Are you a morning person or a night person?","I'm a night person. I stay up late. What about you?"],
+ ['cook',"Can you cook anything?","I can make ramen and fried rice. Can you cook?"],
+ ['color',"What's your favorite color?","I love blue. It's so calm. What's your favorite color?"],
+ ['animal',"What's your favorite animal?","I love cats. They're so cute. What about you?"],
+ ['holiday',"What's your favorite holiday?","I love New Year's. I get money from my family. What about you?"],
+ ['birthday',"When's your birthday?","It's in May. When is your birthday?"],
+ ['friends',"What do you do with your friends?","We eat tteokbokki and sing at karaoke. What about you?"],
+ ['relax',"How do you relax after a long day?","I listen to music and take a walk. How do you relax?"],
+ ['sleep',"Did you sleep well last night?","Not really. I stayed up late. Did you sleep well?"],
+ ['excited',"What are you looking forward to this week?","I'm looking forward to the weekend. What about you?"],
+ ['talent',"What are you really good at?","I'm good at drawing. What are you good at?"],
+ ['superpower',"If you had a superpower, what would it be?","I'd want to fly. What would you pick?"],
+ ['catsdogs',"Are you a cat person or a dog person?","I'm a dog person. Are you?"],
+ ['coffeetea',"Are you a coffee person or a tea person?","I like tea better. What about you?"],
+ ['family',"Do you have any brothers or sisters?","I have a younger brother. Do you have siblings?"],
+ ['fromwhere',"Where are you from?","I'm from Seoul. Where are you from?"],
+ ['live',"Do you live near here?","I live about ten minutes away. Do you live nearby?"],
+ ['today',"What have you been up to today?","I had class and then I came here. What about you?"],
+ ['whatsnew',"What's new with you?","I started learning guitar. What's new with you?"]
+];
+const PRE_Q=[["Ooh, okay! ","Okay, quick question! "],["Um, ","Um, one question: "],["Quick one: ","Okay, next: "],["Okay, serious question: ","Important question: "],["Tell me, dear: ","Now, tell me, sweetie: "]];
+const MAYBE_LC=[0,1,1,1,1];
+const NEWS_KEYS=['lines','back','react','follow','expect','model'];
+const ORIGP={};Object.keys(P).forEach(id=>{const p=P[id],o={};NEWS_KEYS.forEach(f=>{if(p[f])o[f]=Object.assign({},p[f])});ORIGP[id]=o});
+const ORIG_TIPS={ko:Object.assign({},STAGE_TIP.ko),en:Object.assign({},STAGE_TIP.en)},ORIG_MODEL=Object.assign({},MODEL);
+/* 기억 저장소: {name, facts:{주제:{raw,at}}, visits:{바리스타id:횟수}} */
+function memGet(){const m=store.get('stc.mem',null);return m&&m.facts?m:{name:'',facts:{},visits:{}}}
+function memSet(m){store.set('stc.mem',m)}
+function rng(seed){let a=seed>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function shuf(arr,seed){const r=rng(seed*7919+13),a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const WELCOME=[
+ {again:"Oh hey, {n}! You're back!",reg:"{n}! My favorite regular!",friend:"{n}!! My friend! I missed you!"},
+ {again:"Oh, um, hi again, {n}.",reg:"Oh, {n}. Hi. Good to see you.",friend:"Oh! {n}! Hi! I, um, saved your usual seat."},
+ {again:"{n}! Back again?",reg:"Hey, {n}. The usual?",friend:"Good to see you, {n}!"},
+ {again:"{n}! You came back! The jokes worked.",reg:"{n}! My favorite customer. Don't tell the others.",friend:"{n}, my friend! I saved my best joke for you."},
+ {again:"Well, hello again, {n}, sweetie!",reg:"Oh, {n}, dear! Right on time.",friend:"Oh, {n}, my dear friend! Come in, come in!"}];
+const RECALL_PRE=["Oh wait, I remember! ","Um, I remember something. ","Hey, ","Plot twist: I remember! ","Oh, I remember, dear. "];
+const RECALL_BACK=["Aww, I'm good! Thanks for asking.","Um, I'm okay. Thanks.","Good. Busy.","Great! Coffee and bad jokes, as usual.","Oh, I'm well, dear. Thank you."];
+const DAYPART=[["Wow, you're up late!","Um, it's pretty late. Are you okay?","Late night, huh?","Night owl! I respect it.","Oh dear, it's so late! You should sleep soon."],["Good evening! Coffee for dinner?","Um, good evening.","Evening rush.","Good evening! Coffee for dinner, great choice.","Good evening, dear."]];
+const EVENTS=[
+ {id:'halloween',topic:'holiday',on:d=>d.m===10&&d.d>=24,l:["Happy almost-Halloween! I'm dressed as a sunflower in my head.","Um, it's almost Halloween. I'm, um, not good at costumes.","Halloween week. Candy everywhere.","Halloween week! My corgi's hot dog costume is ready.","Almost Halloween, dear! I baked pumpkin cookies."]},
+ {id:'thanks',topic:'holiday',on:d=>d.m===11&&d.d>=20&&d.d<=30,l:["It's almost Thanksgiving! So much food!","Um, it's almost Thanksgiving. I miss my mom's cooking.","Thanksgiving week. Insane rush.","Thanksgiving week! I'm thankful for coffee. And you.","Almost Thanksgiving, dear! I'm baking six pies."]},
+ {id:'xmas',topic:'holiday',on:d=>d.m===12&&d.d>=18&&d.d<=26,l:["It's Christmas week! I love the lights!","Um, it's almost Christmas. It's pretty here at night.","Christmas week. Busy.","Christmas week! I'm wearing a reindeer hat under my apron.","Merry Christmas week, dear! I'm baking cookies."]},
+ {id:'newyear',topic:'holiday',on:d=>(d.m===12&&d.d>=29)||(d.m===1&&d.d<=3),l:["Happy New Year season! New year, new coffee!","Um, happy new year, I guess. New year, same me.","New Year. Day one of the rush.","Happy New Year! My resolution is to tell better jokes. It's not going well.","Happy New Year, dear! Another year, another pie."]},
+ {id:'valentine',topic:'friends',on:d=>d.m===2&&d.d>=10&&d.d<=14,l:["It's Valentine's week! Everyone's so cute!","Um, it's Valentine's week. So many couples.","Valentine's week. Lines are longer.","Valentine's week! I'm single and I'm fine. And I have coffee.","Valentine's week, dear! So many sweet couples."]},
+ {id:'exam',topic:'relax',on:d=>(d.m===4&&d.d>=20)||(d.m===5&&d.d<=2)||(d.m===6&&d.d>=18)||(d.m===7&&d.d<=3)||(d.m===10&&d.d>=18&&d.d<=23)||(d.m===12&&d.d>=8&&d.d<=17),l:["It's exam season, right? You've got this!","Um, it's exam season. Lots of students here.","Exam season. Everyone's here with laptops.","Exam season! The library is full, so everyone comes here to cry. Welcome!","Exam season, dear. Don't forget to eat."]},
+ {id:'vacation',topic:'travel',on:d=>(d.m===7&&d.d>=22)||(d.m===8&&d.d<=25),l:["It's summer break! Finally!","Um, it's summer break. It's, um, quiet.","Summer break. Slower mornings.","Summer break! I'm working. Like a hero.","Summer break, dear! Everyone's out and about."]},
+ {id:'school',topic:'subject',on:d=>d.m===3&&d.d>=2&&d.d<=9,l:["New semester! New start!","Um, it's the start of the school year. A bit scary.","New semester. Rush hour all week.","New semester! Fresh notebooks, fresh jokes.","New school year, dear! So many new faces."]},
+ {id:'cherry',topic:'season',on:d=>d.m===4&&d.d<=15,l:["The cherry blossoms are out! So pretty!","Um, the flowers are out. It's nice.","Flowers are out. Traffic's bad.","The cherry blossoms are out! They're prettier than my jokes.","The blossoms are out, dear! It's my favorite week."]},
+ {id:'rain',topic:'season',on:d=>(d.m===6&&d.d>=25)||(d.m===7&&d.d<=20),l:["It's so rainy lately!","Um, it's been raining a lot.","Rainy season. Wet floors.","Rainy season! My socks have given up.","So much rain lately, dear. Stay dry."]},
+ {id:'fall',topic:'season',on:d=>d.m===10&&d.d>=8&&d.d<=17,l:["The leaves are changing! It's so pretty!","Um, the leaves are turning. I like it.","Fall's here. Pumpkin latte season.","Fall is here! Pumpkin spice is my personality.","The leaves are turning, dear. My favorite time."]},
+ {id:'cold',topic:'season',on:d=>(d.m===1&&d.d>=10)||(d.m===2&&d.d<=5)||(d.m===12&&d.d>=10&&d.d<=17),l:["It's freezing! Perfect hot chocolate weather!","Um, it's really cold. Warm drinks are nice.","Freezing out there.","It's freezing! Even my jokes are frozen.","Bundle up, dear, it's freezing!"]}];
+function eventOf(dt){const d={m:dt.getMonth()+1,d:dt.getDate()};return EVENTS.find(e=>e.on(d))||null}
+/* 8주마다 한 바퀴 도는 바리스타 근황(주마다 이어지는 이야기) */
+const STORY={
+ maya:["I'm entering a painting in a student art show! I'm so nervous.","I'm painting a sunset over the ocean for the show. It's taking forever!","I finished my painting! Now I have to pick a frame. Frames are so expensive.","The art show is this weekend! Please wish me luck.","I got an honorable mention at the art show! Okay, I cried a little.","A little gallery asked to hang my painting for a month! Is this real?","I sold my first painting! For twenty dollars. Best day ever.","I'm starting a new painting. A big one this time. Wish me luck again!"],
+ leo:["Um, I'm okay. I made my first latte leaf today. It looked like a blob.","Um, my leaf looks like a leaf now. Kind of.","Um, a customer said my coffee was the best. I almost cried.","Um, I talked to three customers today. That's a new record.","Um, my boss asked me to train the new person. Me! Can you believe it?","Um, I finished a game I was making. Only five people played it. It's okay.","Um, I went to a comic convention alone. I was brave!","Um, I got a small raise. Fifty cents. I'm rich."],
+ sam:["Busy. Soccer league starts this week.","Lost our first game. Two-nothing. Rough.","Won! Three-one. I scored one.","Pulled a muscle. Not playing this week.","Back on the field. Felt great.","Semi-finals this week. Big one.","Lost the semi-finals. Next year.","Day off! Slept for ten hours. Worth it."],
+ rico:["Honestly? I wrote a new joke about pigeons. I'm excited.","I tried the pigeon joke on stage. One person laughed. Progress.","My corgi Biscuit learned a new trick! He plays dead. Dramatically.","I got three laughs at the open mic! A new record.","I'm opening for a real comedian next week! Don't tell my knees.","The big show was last night! I was shaking. The crowd laughed. Twice.","Biscuit got a haircut and now he thinks he's a movie star.","I'm writing a new set. All about coffee. Obviously."],
+ dottie:["Oh, I planted new tomatoes, dear. Fingers crossed.","Oh, the tomato plants are growing, dear! An inch a day.","Oh, my grandson hit a home run, dear! I screamed in the stands.","Oh, Captain the parrot learned a new song, dear. He sings it at five a.m.","Oh, the first red tomato showed up, dear! I cried a little.","Oh, I baked pies for the whole street, dear. They're all gone.","Oh, my daughters visited, dear. The house is so loud and I love it.","Oh, I'm making tomato sauce, dear. The whole house smells wonderful."]};
+function weekNo(){return Math.floor(dayNum/7)}
+const STORY2={
+ maya:["I'm applying to an art school! I'm so nervous about the portfolio.","I'm picking ten paintings for my portfolio. It's so hard to choose!","I finished my portfolio! Now I just have to mail it. Deep breath.","I mailed my portfolio! Now I check the mailbox every five minutes.","I got an interview with the art school! Wish me luck!","The interview went okay! I talked about Mochi for ten minutes. Oops.","I got in!! I'm still shaking. I screamed in the middle of the street.","I'm taking a summer art class first. Time to learn something new!"],
+ leo:["Um, a new coworker started. I showed her how to use the machine. Me!","Um, I made a friend at work. We talk about comics at lunch.","Um, I'm building a new game. It has a cat in it. I like the cat.","Um, I posted my game online. Twelve people played it. Twelve!","Um, someone wrote me a nice comment about my game. I read it ten times.","Um, my boss said I could close the shop alone. That's a big deal.","Um, I gave a customer my own drink recommendation. They loved it.","Um, I'm learning to say hi first. It's, um, hard but I'm trying."],
+ sam:["Off-season. Playing indoor soccer now. Different game, same sweat.","Got promoted to shift lead. More work, same pay. Ha.","New training for the team. My legs hurt.","Tournament this weekend. Big one.","We made the finals! First time in three years.","Won the finals! Four-two. Best day in a while.","Took a real vacation. Two days. Mostly slept.","New season starts soon. Ready."],
+ rico:["Honestly? I'm writing a new bit about parking tickets. It's painful and funny.","I tried the parking bit on stage. Five laughs! Parking is universal.","Biscuit learned to open the fridge. He's smarter than my roommate.","A club asked me to do a ten-minute set! My knees are shaking already.","I did my ten minutes! I forgot one joke, but no one noticed.","I'm teaching Biscuit to bow. He mostly just lies down. Same thing.","My mom flew in to watch my show. She laughed at everything. Biased audience.","New year, new material. All about coffee shops. Write what you know."],
+ dottie:["Oh, the garden is sleeping for the winter, dear. I'm planning next year's flowers.","Oh, I'm knitting scarves for the grandkids, dear. Four of them! My fingers are tired.","Oh, Captain learned to say my name, dear. He says it all day long.","Oh, I made a cherry pie for the church sale, dear. It sold in ten minutes.","Oh, the first spring flowers are up, dear! I cried a little in the garden.","Oh, Harold fixed the garden fence, dear. It only took him three weeks.","Oh, my granddaughter taught me a video call, dear. I waved at the screen for ten minutes.","Oh, I'm teaching the girl next door to bake, dear. Her first pie was lopsided and perfect."]};
+function tierOf(v){return v>=15?'friend':v>=5?'reg':'again'}
+function shortFact(raw){const w=String(raw||'').replace(/["“”]/g,'').trim().split(/\s+/);return w.length>9?w.slice(0,9).join(' ')+'…':w.join(' ')}
+function applyDaily(pid){
+  for(const id in P){const o=ORIGP[id],p=P[id];for(const f in o)if(p[f])Object.assign(p[f],o[f])}
+  Object.assign(STAGE_TIP.ko,ORIG_TIPS.ko);Object.assign(STAGE_TIP.en,ORIG_TIPS.en);Object.assign(MODEL,ORIG_MODEL);
+  S.rot={};S.moreRot={};S.welcome='';S.storyOn=false;
+  if(!ROT_ON)return;
+  const p=P[pid],pi=pidx(pid),m=memGet(),n=store.get('stc.rotN',0);store.set('stc.rotN',n+1);
+  const now=new Date(),ev=eventOf(now);
+  /* 1) 질문 풀에서 4개 고르기: 한 바퀴(약 10판)마다 순서를 다시 섞음. 이벤트 철이면 첫 질문을 이벤트 주제로 */
+  const ok=DT.filter(d=>{const t=TALK.find(x=>x.id===d[0]);return t&&talkPool(t,pi)});
+  const len=ok.length,cyc=Math.floor(n*4/len),off=(n*4)%len,order=shuf(ok,cyc+1);
+  const seq=[];for(let i=0;seq.length<4&&i<len*2;i++){const c=order[(off+i)%len];if(!seq.includes(c))seq.push(c)}
+  if(ev&&ev.topic){const d=ok.find(x=>x[0]===ev.topic);if(d){const i=seq.indexOf(d);if(i>0)seq.splice(i,1);if(i!==0){seq.unshift(d);seq.length=4}}}
+  ROT_ST.forEach((s,k)=>{const d=seq[k];if(!d)return;const t=TALK.find(x=>x.id===d[0]),pool=talkPool(t,pi);
+    const pre=PRE_Q[pi][(n+k)%2];p.lines[s]=pre+(pi===0?d[1]:lc(d[1]));
+    p.back[s]=talkAns(pool[0])||pool[0];
+    p.react[s]=TALK_OK[pi];p.follow[s]=TALK_MORE[pi][0];p.expect[s]=/./;
+    if(p.model)p.model[s]=d[2];MODEL[s]=d[2];
+    STAGE_TIP.ko[s]="대답을 하고 'What about you?'처럼 되물어 보세요.";STAGE_TIP.en[s]="Answer, then ask back: 'What about you?'";
+    S.rot[s]=d[0];S.moreRot[s]=pool[1]&&pool[1]!==pool[0]?(talkAns(pool[1])||null):null});
+  /* 2) 이름·단골 단계·지난 대답 기억 */
+  const vis=(m.visits||{})[pid]||0,tot=Object.values(m.visits||{}).reduce((a,b)=>a+b,0),nm=m.name||'friend';
+  if(m.name&&tot>0){S.welcome=WELCOME[pi][tierOf(vis||Math.floor(tot/3))].replace('{n}',nm)}
+  const keys=Object.keys(m.facts||{}).filter(k=>m.facts[k]&&m.facts[k].raw&&!/\?/.test(m.facts[k].raw)&&m.facts[k].raw.split(/\s+/).length>=2);
+  if(tot>0&&keys.length){const k=keys[Math.floor(rng(n+99)()*keys.length)],f=m.facts[k];
+    p.lines.chat2=RECALL_PRE[pi]+(pi===2?'last':'Last')+' time you said "'+shortFact(f.raw)+'". How is that going?';
+    p.back.chat2=RECALL_BACK[pi];p.expect.chat2=/./;S.moreRot.chat2=null;S.recallOn=true}else S.recallOn=false;
+  /* 3) 날짜·시간대 이야기 */
+  const h=now.getHours(),dp=(h>=22||h<5)?DAYPART[0][pi]:(h>=18?DAYPART[1][pi]:'');
+  const evl=ev?ev.l[pi]:dp;if(evl)S.welcome=(S.welcome?S.welcome+' ':'')+evl;
+  /* 4) 주마다 이어지는 근황(기본 5명) */
+  if(STORY[pid]){p.back.greet=(weekNo()%16<8?STORY[pid]:STORY2[pid])[weekNo()%8];S.moreRot.greet=null;S.storyOn=true}
+}
+/* 대화 중 손님이 한 대답을 기억에 저장 */
+function memNote(st,raw){if(!ROT_ON||!S||!raw)return;const id=(S.rot&&S.rot[st])||ROT_DEF[st];if(!id)return;
+  const wc=String(raw).trim().split(/\s+/).length;if(wc<2||wc>16||/\?/.test(raw))return;
+  const m=memGet();m.facts[id]={raw:String(raw).trim(),at:Date.now()};const ks=Object.keys(m.facts);if(ks.length>40){ks.sort((a,b)=>m.facts[a].at-m.facts[b].at);delete m.facts[ks[0]]}memSet(m)}
+function memFinish(){if(!ROT_ON||!S)return;const m=memGet();if(S.slots&&S.slots.name&&S.slots.name!=='friend')m.name=S.slots.name;m.visits=m.visits||{};m.visits[S.pid]=(m.visits[S.pid]||0)+1;memSet(m)}
+/* 연속 출석·하루 목표·배지 */
+function dkey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function daysGet(){return store.get('stc.days',{})}
+function daysAdd(){const d=daysGet(),k=dkey();d[k]=(d[k]||0)+1;store.set('stc.days',d)}
+function sceneCount(){return new Set(gamesList().map(g=>g.sc).filter(Boolean)).size}
+function streakInfo(){const d=daysGet();let c=0;const t=new Date();if(!d[dkey(t)])t.setDate(t.getDate()-1);while(d[dkey(t)]>0){c++;t.setDate(t.getDate()-1)}
+  const goalDays=Object.values(d).filter(v=>v>=DAILY_GOAL).length;return {streak:c,today:d[dkey()]||0,goalDays,total:gamesList().length,scenes:sceneCount()}}
+const BADGES=[
+ ['p1','첫 대화',i=>i.total>=1],['p10','대화 10번',i=>i.total>=10],['p30','대화 30번',i=>i.total>=30],['p100','대화 100번',i=>i.total>=100],['p300','대화 300번',i=>i.total>=300],['p500','대화 500번',i=>i.total>=500],['p1000','대화 1,000번',i=>i.total>=1000],['p2000','대화 2,000번',i=>i.total>=2000],['p3000','대화 3,000번',i=>i.total>=3000],
+ ['s3','3일 연속',i=>i.streak>=3],['s7','7일 연속',i=>i.streak>=7],['s30','30일 연속',i=>i.streak>=30],['s100','100일 연속',i=>i.streak>=100],['s365','1년 연속',i=>i.streak>=365],['s730','2년 연속',i=>i.streak>=730],['s1095','3년 연속',i=>i.streak>=1095],
+ ['sc1','장면 연습 첫 도전',i=>i.scenes>=1],['sc4','장면 4곳 해 봄',i=>i.scenes>=4],['sc8','장면 8곳 모두',i=>i.scenes>=8],['lv5','레벨 5 도달',i=>myProg().lv>=5],['lv6','레벨 6 도달',i=>myProg().lv>=6],
+ ['g10','하루 3판 10일 달성',i=>i.goalDays>=10],['g100','하루 3판 100일 달성',i=>i.goalDays>=100],['g365','하루 3판 365일 달성',i=>i.goalDays>=365]];
+function badgesNow(){const i=streakInfo();return BADGES.filter(b=>b[2](i)).map(b=>b[0])}
+function badgeNames(ids){return BADGES.filter(b=>ids.includes(b[0])).map(b=>b[1])}
+/* ================= 장면(장소 바꾸기) · 복습 엮기 ================= */
+/* 장면: 인사·(1)·(2)·이름·마무리 5단계의 문장과 힌트를 장소에 맞게 바꾸고, 가운데 잡담 6개는 그대로 이어집니다 */
+const SCENES=[
+ {id:'airport',em:'✈',ko:'공항 입국 심사',who:'입국 심사관',
+  lines:{greet:"Next, please. Hello! How are you today?",order:"Okay. What's the purpose of your visit?",size:"And how long are you going to stay?",name:"Got it. And what's your name? Can you spell it for me?",close:"All right, you're all set. Welcome, {name}!",end:"Enjoy your stay. Next, please!"},
+  labels:{order:'방문 목적',size:'머무는 기간'},simple:{order:"Why are you here? Travel or school?",size:"How many days or weeks?"},
+  alt:{order:["what's the purpose of your visit?","are you here for travel or school?","why are you visiting?"],size:["how long are you staying?","how many days are you staying?","when are you leaving?"]},
+  why:{order:"I ask everyone this one.",size:"So I can put the dates in the system."},
+  hints:{order:[["I'm here for a school trip.","학교 여행으로 왔어요.","Say the purpose."],["I'm visiting my cousin.","사촌을 만나러 왔어요.","Say who or what."],["Just traveling. It's my first time here.","여행이에요. 여기는 처음이에요.","Add one detail."]],size:[["About two weeks.","2주쯤이요.","Short and clear."],["I'm staying for ten days.","열흘 머물 거예요.","A full sentence."],["Until the end of August.","8월 말까지요.","Give an end point."]]},
+  models:{order:"I'm here to visit my cousin and see the city. This is my first time in the U.S.",size:"I'm staying for about two weeks. Is that okay?"}},
+ {id:'lunch',em:'🍝',ko:'학교 급식실',who:'급식실 직원',
+  lines:{greet:"Hi there! Lunch time! How's your day going?",order:"What would you like today? We have pasta, pizza, and a salad bar.",size:"Do you want a small or a large portion?",name:"What's your name? I need it for the lunch card.",close:"Here you go, {name}! Enjoy your lunch.",end:"See you tomorrow! Don't forget your tray."},
+  labels:{order:'메뉴 고르기',size:'양'},simple:{order:"Pasta, pizza, or salad?",size:"Small or large?"},
+  alt:{order:["what would you like today?","pasta, pizza, or salad?","what do you want for lunch?"],size:["small or large?","how big a portion do you want?","a little or a lot?"]},
+  why:{order:"So I can put the right food on your tray.",size:"Some kids are really hungry!"},
+  hints:{order:[["I'll have the pasta, please.","파스타 주세요.","Use 'I'll have'."],["Can I get the pizza and a salad?","피자랑 샐러드 주실 수 있나요?","Ask for two things."],["What's the best one today?","오늘 뭐가 제일 맛있어요?","Ask for a pick."]],size:[["A large, please. I'm starving.","큰 걸로 주세요. 배고파요.","Size + a reason."],["Small is fine.","작은 걸로 괜찮아요.","A relaxed answer."],["Just a little, please.","조금만 주세요.","Another way to say small."]]},
+  models:{order:"I'll have the pizza and a small salad, please. Is the pizza any good?",size:"A large, please. I'm starving after gym class!"}},
+ {id:'clothes',em:'👕',ko:'옷 가게',who:'가게 직원',
+  lines:{greet:"Hi! Welcome in. How are you doing today?",order:"What are you looking for today?",size:"What size do you wear? Small, medium, or large?",name:"Do you want to try it on? The fitting room is right there. What's your name for the room?",close:"Looks great, {name}! That one's perfect on you.",end:"Thanks for shopping with us. Come back soon!"},
+  labels:{order:'찾는 옷',size:'사이즈'},simple:{order:"What do you want to buy? A shirt? Pants?",size:"Small, medium, or large?"},
+  alt:{order:["what are you looking for?","are you looking for a shirt or pants?","what can I help you find?"],size:["what size do you wear?","small, medium, or large?","what's your size?"]},
+  why:{order:"So I can show you the right section.",size:"So I can bring the right one."},
+  hints:{order:[["I'm looking for a jacket.","재킷을 찾고 있어요.","The most natural opener."],["Do you have this in blue?","이거 파란색 있어요?","Ask about a color."],["I'm just looking, thanks.","그냥 둘러보는 중이에요, 고마워요.","A polite way to say no help yet."]],size:[["I'm a medium.","저는 미디엄이에요.","Short and clear."],["Medium, I think. Can I try it on?","미디엄일 것 같아요. 입어 봐도 돼요?","Answer, then ask."],["Do you have a bigger size?","더 큰 사이즈 있어요?","Ask for another size."]]},
+  models:{order:"I'm looking for a jacket. Do you have this one in blue?",size:"I'm a medium, I think. Can I try it on?"}},
+ {id:'clinic',em:'🏥',ko:'병원 접수',who:'접수 직원',
+  lines:{greet:"Hello. Please come in. How are you feeling today?",order:"So, what brings you in today?",size:"How long have you felt this way?",name:"Okay. Can I get your name for the chart?",close:"All right, {name}. The doctor will see you soon.",end:"Take care, and feel better soon."},
+  labels:{order:'증상 말하기',size:'언제부터'},simple:{order:"What hurts? Or what is wrong?",size:"Since when? One day? One week?"},
+  alt:{order:["what brings you in today?","what seems to be the problem?","what's wrong?"],size:["how long have you felt this way?","since when?","when did it start?"]},
+  why:{order:"So the doctor knows what to check.",size:"It helps the doctor choose the right test."},
+  hints:{order:[["I have a sore throat.","목이 아파요.","Say the symptom."],["I've had a headache since yesterday.","어제부터 머리가 아파요.","Symptom + when."],["I think I caught a cold.","감기에 걸린 것 같아요.","Say what you think it is."]],size:[["Since yesterday.","어제부터요.","Short and clear."],["For about three days.","한 3일째예요.","Use 'for' + time."],["It started this morning.","오늘 아침에 시작됐어요.","Say when it started."]]},
+  models:{order:"I have a sore throat and a little fever. I think I caught a cold.",size:"It started three days ago, and it's getting worse."}},
+ {id:'hotel',em:'🏨',ko:'호텔 체크인',who:'프런트 직원',
+  lines:{greet:"Good evening! Welcome. How was your trip?",order:"Do you have a reservation with us?",size:"And how many nights are you staying?",name:"Great. What's the name on the reservation?",close:"Here's your key, {name}. You're in room 305.",end:"Enjoy your stay. Breakfast starts at seven."},
+  labels:{order:'예약 확인',size:'며칠 묵을지'},simple:{order:"Did you book a room? Yes or no?",size:"How many nights?"},
+  alt:{order:["do you have a reservation?","did you book a room with us?","is there a reservation?"],size:["how many nights are you staying?","how long are you staying?","how many days?"]},
+  why:{order:"So I can find your room in the computer.",size:"So I can set your check-out date."},
+  hints:{order:[["Yes, I have a reservation.","네, 예약했어요.","Simple and clear."],["I booked a room online.","온라인으로 예약했어요.","Say how you booked."],["No, do you have any rooms left?","아니요, 남은 방 있어요?","Answer, then ask."]],size:[["Just two nights.","이틀 밤이요.","Short and clear."],["We're staying for three nights.","3박 묵을 거예요.","A full sentence."],["Until Sunday. Is breakfast included?","일요일까지요. 조식 포함인가요?","Answer, then ask."]]},
+  models:{order:"Yes, I booked a room online for two people. Is it a quiet room?",size:"We're staying for three nights. Is breakfast included?"}},
+ {id:'library',em:'📚',ko:'도서관 대출증',who:'사서',
+  lines:{greet:"Hi! Welcome to the library. How's it going?",order:"Are you here to borrow a book, or to sign up for a library card?",size:"How many books would you like to borrow today?",name:"Can I get your name for the card?",close:"All set, {name}! Your books are due in two weeks.",end:"Happy reading! See you soon."},
+  labels:{order:'용건',size:'빌릴 권수'},simple:{order:"Do you want a book or a card?",size:"How many books?"},
+  alt:{order:["are you here to borrow a book?","do you want a library card?","what can I help you with?"],size:["how many books today?","how many books do you want?","one book or more?"]},
+  why:{order:"Different desks help with different things.",size:"You can borrow up to five."},
+  hints:{order:[["I'd like to sign up for a library card.","도서관 카드를 만들고 싶어요.","Use 'I'd like to'."],["I want to borrow this book.","이 책을 빌리고 싶어요.","Say what you want."],["Do you have any books about space?","우주에 대한 책 있어요?","Ask for a topic."]],size:[["Just two, please.","두 권만요.","Short and polite."],["Three books, please.","세 권 주세요.","A number + please."],["Can I borrow five?","다섯 권 빌려도 돼요?","Ask about the limit."]]},
+  models:{order:"I'd like to sign up for a library card. Do I need an ID?",size:"Just three books, please. How long can I keep them?"}},
+ {id:'restaurant',em:'🍽',ko:'식당 주문',who:'식당 직원',
+  lines:{greet:"Hi, welcome in! How are you this evening?",order:"Okay. What would you like to eat tonight?",size:"Would you like a small or a regular portion?",name:"And what name should I put on the table?",close:"Perfect, {name}. Your food will be out soon.",end:"Enjoy your meal!"},
+  labels:{order:'음식 주문',size:'양'},simple:{order:"What do you want to eat?",size:"Small or regular?"},
+  alt:{order:["what would you like to eat?","are you ready to order?","what can I get you?"],size:["small or regular?","how big a portion?","a small one or a regular one?"]},
+  why:{order:"So the kitchen can start cooking.",size:"Some dishes are really big."},
+  hints:{order:[["I'll have the chicken, please.","치킨으로 주세요.","Use 'I'll have'."],["Can I get the pasta without cheese?","치즈 빼고 파스타 주실 수 있나요?","Ask for a change."],["What do you recommend?","뭐 추천하세요?","Ask for a pick."]],size:[["A regular is fine.","보통 크기면 돼요.","A relaxed answer."],["Small, please. I'm not that hungry.","작은 걸로요. 별로 안 배고파요.","Size + a reason."],["Is the regular big?","보통 크기는 큰가요?","Answer with a question."]]},
+  models:{order:"I'll have the chicken pasta, please. Can I get it without cheese?",size:"A regular is fine. Is it big enough to share?"}},
+ {id:'subway',em:'🚇',ko:'지하철 표 사기',who:'안내 직원',
+  lines:{greet:"Hi there! Need some help? How are you today?",order:"Where are you trying to go?",size:"Do you want a one-way ticket or a round trip?",name:"Okay. Do you want to put your name on the card? What's your name?",close:"Here's your ticket, {name}. Take the green line.",end:"Have a safe trip!"},
+  labels:{order:'가는 곳',size:'표 종류'},simple:{order:"Where do you want to go?",size:"One-way or round trip?"},
+  alt:{order:["where are you going?","where do you want to go?","what's your stop?"],size:["one-way or round trip?","do you need a round trip?","just one way?"]},
+  why:{order:"So I can tell you which line to take.",size:"A round trip is cheaper."},
+  hints:{order:[["I'm trying to get to the museum.","박물관에 가려고 해요.","Use 'I'm trying to get to'."],["How do I get to City Hall?","시청에 어떻게 가요?","Ask the way."],["Which line goes to the airport?","공항 가는 건 몇 호선이에요?","Ask for the line."]],size:[["A round trip, please.","왕복이요.","Short and polite."],["One-way is fine.","편도면 돼요.","A relaxed answer."],["How much is a round trip?","왕복은 얼마예요?","Answer with a question."]]},
+  models:{order:"I'm trying to get to the museum. Which line should I take?",size:"A round trip, please. How much is it?"}}
+];
+const ORIG_HINTS={};['order','size'].forEach(k=>ORIG_HINTS[k]=HINTS[k]);
+const ORIG_SC={ko:Object.assign({},STAGE_KO),en:Object.assign({},STAGE_EN),simple:Object.assign({},SIMPLE_T),alt:{order:ALT_SHORT.order,size:ALT_SHORT.size},why:{order:WHY_T.order,size:WHY_T.size}};
+function restoreScene(){HINTS.order=ORIG_HINTS.order;HINTS.size=ORIG_HINTS.size;Object.assign(STAGE_KO,ORIG_SC.ko);Object.assign(STAGE_EN,ORIG_SC.en);Object.assign(SIMPLE_T,ORIG_SC.simple);ALT_SHORT.order=ORIG_SC.alt.order;ALT_SHORT.size=ORIG_SC.alt.size;WHY_T.order=ORIG_SC.why.order;WHY_T.size=ORIG_SC.why.size}
+function applyScene(pid,sid){restoreScene();S.scene=null;const sc=SCENES.find(x=>x.id===sid);if(!sc)return;S.scene=sc;S.welcome='';
+  const p=P[pid],pi=pidx(pid);Object.assign(p.lines,sc.lines);
+  ['order','size','name'].forEach(s=>{p.react[s]=TALK_OK[pi]});
+  if(p.model){p.model.order=sc.models.order;p.model.size=sc.models.size}MODEL.order=sc.models.order;MODEL.size=sc.models.size;
+  STAGE_KO.order=sc.labels.order;STAGE_KO.size=sc.labels.size;STAGE_EN.order='Task 1';STAGE_EN.size='Task 2';
+  SIMPLE_T.order=sc.simple.order;SIMPLE_T.size=sc.simple.size;ALT_SHORT.order=sc.alt.order;ALT_SHORT.size=sc.alt.size;WHY_T.order=[sc.why.order,sc.why.order,sc.why.order,sc.why.order,sc.why.order];WHY_T.size=[sc.why.size,sc.why.size,sc.why.size,sc.why.size,sc.why.size];
+  HINTS.order=sc.hints.order;HINTS.size=sc.hints.size;
+  ['order','size'].forEach(s=>{STAGE_TIP.ko[s]="질문에 답하고, 한 가지를 더 덧붙이거나 되물어 보세요.";STAGE_TIP.en[s]="Answer, then add one more detail or ask back."})}
+function sceneToday(){return SCENES[((dayNum%SCENES.length)+SCENES.length)%SCENES.length]}
+function scenePanel(){const t=sceneToday();return `<section class="panel"><h3>장소 바꿔 연습하기</h3><p class="muted" style="font-size:.85rem">오늘의 장면은 ${t.em} <b>${esc(t.ko)}</b>입니다. 시작 부분만 그 장소에 맞게 바뀌고, 가운데 수다는 그대로 이어져요.</p><div class="row" style="gap:6px;flex-wrap:wrap">${SCENES.map(c=>`<button class="btn${c.id===t.id?' primary':''}" data-sc="${c.id}">${c.em} ${esc(c.ko)}</button>`).join('')}</div></section>`}
+/* 복습: 저장한 표현을 1·3·7·14·30·60일 간격으로 다시 쓰게 함 */
+const REV_DAYS=[1,3,7,14,30,60];
+function revGet(){return store.get('stc.rev',{})}
+function revDue(max){const r=revGet(),now=Date.now(),out=[];for(const s of savedList()){const st=r[s.en]||{box:0,due:(s.at||now)+86400000};if(st.box>=REV_DAYS.length)continue;if(st.due<=now)out.push({en:s.en,ko:s.ko,box:st.box,due:st.due})}return out.sort((a,b)=>a.due-b.due).slice(0,max||3)}
+function revFrags(en){return String(en).split('...').map(x=>norm(x.replace(/[…]/g,'')).trim()).filter(x=>x.length>=3)}
+function revCheck(){if(!S||S.revChecked)return [];S.revChecked=true;const due=S.revDue||[],hits=[];const r=revGet();
+  for(const d of due){const fr=revFrags(d.en);if(!fr.length)continue;if(S.log.some(m=>m.who==='u'&&fr.every(f=>norm(m.text).includes(f)))){const st=r[d.en]||{box:0};st.box=Math.min(REV_DAYS.length,(st.box||0)+1);st.due=Date.now()+(REV_DAYS[Math.min(st.box,REV_DAYS.length)-1]||60)*86400000;r[d.en]=st;hits.push(d.en)}}
+  if(hits.length)store.set('stc.rev',r);return hits}
+function reviewPanel(){const d=revDue(3);if(!d.length)return '';return `<section class="panel"><h3>오늘의 복습 <span class="num muted">${d.length}</span></h3><p class="muted" style="font-size:.85rem">전에 저장한 표현입니다. 오늘 대화에서 한 번 써 보세요. 쓰면 다음 복습이 더 뒤로 밀려요.</p><ul class="list">${d.map(x=>`<li><span class="en">${esc(x.en)}</span><span class="muted">${esc(String(x.ko).split('.')[0])}</span></li>`).join('')}</ul></section>`}
+function dailyStrip(){const i=streakInfo(),dots=Array.from({length:DAILY_GOAL},(_,k)=>k<i.today?'●':'○').join(' ');
+  return `<div class="chalbar"><span class="k">TODAY · 하루 ${DAILY_GOAL}판 목표</span><span><b>${dots}</b> <span class="muted">${i.today>=DAILY_GOAL?'오늘 목표 달성!':'오늘 '+i.today+'/'+DAILY_GOAL+'판'}</span> · <b>${i.streak}</b><span class="muted">일 연속 · 총 ${i.total}판</span></span></div>`}
 /* ================= 레벨 시스템 (로그인 없이도 이 기기에 저장됨) ================= */
 /* 레벨은 대화 기록(games)만 보고 매번 처음부터 다시 계산합니다. 그래서 두 기기의 기록을 합쳐도 XP가 두 번 더해지지 않습니다. */
 const LV={1:{ko:'새내기',en:'Newbie',talk:'짧고 또박또박 말해요. 힌트를 마음껏 볼 수 있어요.'},
  2:{ko:'단골',en:'Regular',talk:'지금처럼 자연스러운 속도로 말해요. 힌트도 그대로예요.'},
  3:{ko:'현지인',en:'Local',talk:'gonna·kinda 같은 줄임말과 관용구를 섞어 말해요. 힌트는 영어 설명, 열면 그 단계 −5점.'},
- 4:{ko:'원어민 느낌',en:'Native vibes',talk:'빠르게 수다 떨고 농담도 섞어요. 힌트는 2개만, 열면 그 단계 −10점.'}};
-const LV_XP={2:150,3:400,4:800};   // 그 레벨이 되려면 모아야 하는 XP
-const LV_AVG={2:30,3:50,4:70};      // 그리고 최근 3번 평균이 이 점수 이상이어야 올라갑니다(운 방지). 30=덧붙임, 50=되묻기에 가까움, 70=대화를 이끄는 편
-const HINT_COST={1:0,2:0,3:5,4:10};
+ 4:{ko:'원어민 느낌',en:'Native vibes',talk:'빠르게 수다 떨고 농담도 섞어요. 힌트는 2개만, 열면 그 단계 −10점.'},
+ 5:{ko:'동네 친구',en:'Neighbor',talk:'관용구와 속어를 많이 섞어 아주 빠르게 말해요. 말을 흘리고 농담으로 받아치기도 해요. 힌트는 1개, 열면 그 단계 −15점.'},
+ 6:{ko:'수다 대장',en:'Chatterbox',talk:'원어민끼리 하듯 빈정거림과 농담이 많고 말이 빨라요. 힌트는 1개, 열면 그 단계 −20점.'}};
+const LV_XP={2:150,3:400,4:800,5:1500,6:3000};   // 그 레벨이 되려면 모아야 하는 XP
+const LV_AVG={2:30,3:50,4:70,5:80,6:88};      // 그리고 최근 3번 평균이 이 점수 이상이어야 올라갑니다(운 방지). 30=덧붙임, 50=되묻기에 가까움, 70=대화를 이끄는 편
+const HINT_COST={1:0,2:0,3:5,4:10,5:15,6:20};
 const CHAL_BONUS=10;
 const avgOf=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;
 function gamesList(){let g=store.get('stc.games',null);
@@ -2373,17 +3004,17 @@ function gamesList(){let g=store.get('stc.games',null);
   return g}
 function progOf(games){let xp=0,lv=1,best=0,chal=0;const rec=[];
   for(const g of games){xp+=g.s+(g.b||0);rec.push(g.s);best=Math.max(best,g.s);if(g.b)chal++;
-    const r3=rec.slice(-3);while(lv<4&&xp>=LV_XP[lv+1]&&r3.length>=3&&avgOf(r3)>=LV_AVG[lv+1])lv++}
+    const r3=rec.slice(-3);while(lv<6&&xp>=LV_XP[lv+1]&&r3.length>=3&&avgOf(r3)>=LV_AVG[lv+1])lv++}
   return {xp,lv,best,chal,n:games.length,recent:rec.slice(-3),avg3:avgOf(rec.slice(-3))}}
 function myProg(){return progOf(gamesList())}
 function talkLv(){const p=myProg();if(window.__TEST_LV)return window.__TEST_LV;const c=store.get('stc.talkLv',null);return c&&c>=1&&c<=p.lv?c:p.lv}
 function lvBadge(lv){return `<span class="lvb lv${lv}">Lv${lv} ${LV[lv].ko}</span>`}
-function nextNeed(pr){if(pr.lv>=4)return '최고 레벨입니다. 바리스타와 마음껏 수다 떨어 보세요.';
+function nextNeed(pr){if(pr.lv>=6)return '최고 레벨입니다. 바리스타와 마음껏 수다 떨어 보세요.';
   const need=LV_XP[pr.lv+1]-pr.xp, okAvg=pr.recent.length>=3&&pr.avg3>=LV_AVG[pr.lv+1];
   const a=need>0?`XP ${need} 더`:'XP 충분';
   const b=pr.recent.length<3?`대화 ${3-pr.recent.length}번 더(평균 계산용)`:okAvg?`최근 3번 평균 ${pr.avg3}점, 통과`:`최근 3번 평균 ${pr.avg3}점 → ${LV_AVG[pr.lv+1]}점 이상 필요`;
   return `Lv${pr.lv+1} ${LV[pr.lv+1].ko}까지: ${a} · ${b}`}
-function xpBar(pr){const lo=pr.lv>1?LV_XP[pr.lv]:0,hi=pr.lv<4?LV_XP[pr.lv+1]:pr.xp||1;const pct=pr.lv>=4?100:Math.max(0,Math.min(100,(pr.xp-lo)/(hi-lo)*100));
+function xpBar(pr){const lo=pr.lv>1?LV_XP[pr.lv]:0,hi=pr.lv<6?LV_XP[pr.lv+1]:pr.xp||1;const pct=pr.lv>=6?100:Math.max(0,Math.min(100,(pr.xp-lo)/(hi-lo)*100));
   return `<div class="pb" aria-label="경험치"><i style="width:${pct}%"></i></div><div class="pl" style="font-weight:600"><span>XP ${pr.xp}</span><span class="muted">${pr.lv<4?'다음 레벨 '+hi:'MAX'}</span></div>`}
 
 /* ---------- 오늘의 도전 표현 (날마다 바뀜, 쓰면 +10 XP) ---------- */
@@ -2442,10 +3073,13 @@ const ASIDE={3:{
  name:[{t:"Love it.",k:[["love it","좋다, 맘에 들어"]]},{t:"Sweet.",k:[["sweet","좋아, 잘됐다"]]}],
  chat:[{t:"Okay, low-key, I've been dying to ask.",k:[["low-key","은근히, 살짝"],["dying to","~하고 싶어 죽겠다"]]},{t:"Wait, hold up.",k:[["hold up","잠깐만"]]},{t:"Ha, okay, okay. Next question, no pressure.",k:[["no pressure","부담 갖지 마"]]},{t:"Real quick, and be honest.",k:[["real quick","아주 잠깐, 빨리"]]}],
  close:[{t:"And boom, done!",k:[["boom","짠!, 딱!(완성했을 때)"]]},{t:"Okay, you're good to go!",k:[["good to go","준비 다 됐어, 가도 돼"]]}]}};
+const SWAP5=[[/\bvery\b/gi,'super','super','아주(속어)'],[/\bof course\b/gi,'for sure','for sure','당연하지, 물론'],[/\bI think\b/g,'I feel like','I feel like','내 생각엔, ~인 것 같아'],[/\ba lot of\b/gi,'tons of','tons of','엄청 많은'],[/\bthank you so much\b/gi,'thanks a ton','thanks a ton','정말 고마워'],[/\bI'?m tired\b/gi,"I'm beat","I'm beat",'나 완전 지쳤어'],[/\bvery good\b/gi,'legit good','legit good','진짜 좋아']];
+ASIDE[5]={greet:[{t:"Ugh, it's been a total circus today. Hold on, I'm still catching my breath.",k:[["total circus","완전 난장판"],["catching my breath","숨 돌리다"]]},{t:"Man, I'm running on fumes today.",k:[["running on fumes","에너지가 바닥인 채로 버티다"]]}],order:[{t:"Hit me with your best order.",k:[["hit me with","~를 말해 봐"]]},{t:"No pressure, but the line's, like, forever.",k:[["no pressure, but","부담은 아닌데"]]}],size:[{t:"Easy peasy.",k:[["easy peasy","식은 죽 먹기"]]},{t:"Say no more.",k:[["say no more","더 말 안 해도 알겠어"]]}],name:[{t:"Got it, got it.",k:[["got it, got it","알겠어 알겠어"]]},{t:"Ooh, fancy.",k:[["fancy","멋지다(살짝 놀리는 말)"]]}],chat:[{t:"Okay, real talk, I've been dying to ask this all day.",k:[["real talk","진지하게 말하자면"],["dying to","~하고 싶어 죽겠다"]]},{t:"Wait, wait, wait. Quick one.",k:[["wait, wait, wait","잠깐만 잠깐만"]]},{t:"Plot twist, I'm curious.",k:[["plot twist","반전이네"]]}],close:[{t:"And we're done. Easy as pie.",k:[["easy as pie","아주 쉬운"]]},{t:"Boom. Nailed it.",k:[["nailed it","완벽하게 해냈다"]]}]};
+ASIDE[6]={greet:[{t:"Okay, so, don't judge me, but I just spilled a whole latte on myself. Ten out of ten morning.",k:[["don't judge me","흉보지 마"],["ten out of ten","완벽한(비꼬는 말)"]]},{t:"Oh, you know, living the dream. By dream I mean caffeine.",k:[["living the dream","(비꼬며) 꿈같은 삶이지"]]}],order:[{t:"Surprise me. Actually, don't. Just kidding.",k:[["surprise me","알아서 놀래 줘 봐"]]},{t:"Okay, okay, I'm all ears.",k:[["I'm all ears","귀 기울여 듣고 있어"]]}],size:[{t:"Look at you, making decisions.",k:[["look at you","어머 대단한데(놀리는 말)"]]},{t:"Bold choice. I respect it.",k:[["bold choice","대담한 선택이네"]]}],name:[{t:"Love that. I'll mess it up anyway.",k:[["mess it up","망치다, 틀리다"]]},{t:"Nice, spelled right, probably.",k:[["probably","아마도(빈정대는 말)"]]}],chat:[{t:"Okay, plot twist, I have a hot take.",k:[["hot take","솔직하고 논란될 만한 의견"]]},{t:"Hang on, hang on, I need to know.",k:[["hang on","잠깐만"]]},{t:"Not to be nosy, but I'm totally nosy.",k:[["not to be nosy, but","참견은 아니지만"]]}],close:[{t:"Aaand done. You're welcome.",k:[["you're welcome","(농담조로) 고맙다고 해도 돼"]]},{t:"Another happy customer. I'm basically a legend.",k:[["basically a legend","거의 전설이지(농담)"]]}]};
 function heard(k,ko){if(!S)return;S.heard=S.heard||[];if(!S.heard.some(h=>h[0]===k))S.heard.push([k,ko])}
 function levelize(t){const lv=S&&S.lv||2;if(lv===2)return t;
   if(lv===1)return t.replace(/\b(\w+)…\s*\1\b/gi,'$1').replace(/,\s*(?:um+|uh+),\s*/gi,' ').replace(/\b(?:um+|uh+),?\s*(?:…\s*)?/gi,'').replace(/,\s*like,\s*/g,' ').replace(/(\w)…\s*(\w)/g,'$1 $2').replace(/…/g,'.').replace(/\s+([,.!?])/g,'$1').replace(/,\s*,/g,',').replace(/(^|[.!?]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\s{2,}/g,' ').trim();
-  let o=t;for(const [re,to,k,ko] of (lv>=4?SWAP3.concat(SWAP4):SWAP3)){re.lastIndex=0;if(re.test(o)){re.lastIndex=0;o=to.includes('$')?o.replace(re,to):o.replace(re,m=>/^[A-Z]/.test(m)?to.charAt(0).toUpperCase()+to.slice(1):to);heard(k,ko)}}
+  let o=t;for(const [re,to,k,ko] of (lv>=5?SWAP3.concat(SWAP4,SWAP5):lv>=4?SWAP3.concat(SWAP4):SWAP3)){re.lastIndex=0;if(re.test(o)){re.lastIndex=0;o=to.includes('$')?o.replace(re,to):o.replace(re,m=>/^[A-Z]/.test(m)?to.charAt(0).toUpperCase()+to.slice(1):to);heard(k,ko)}}
   return o}
 function stageLine(st){const base=fill(P[S.pid].lines[st]);const lv=S.lv||2;
   if(lv===1&&LV1_CLEAR[st]&&wordsOf(norm(base)).length<=3)return {text:base+' '+LV1_CLEAR[st],key:base};
@@ -2475,7 +3109,7 @@ const NATIVE={greet:["Not too bad! Just got outta class, so I'm kinda fried. You
 
 /* ---------- 영수증: 레벨 결과 + 원어민은 이렇게 말해요 ---------- */
 function receiptLevel(){const R=S.result;if(!R)return '';const up=R.after.lv>R.before.lv;
-  return `<section class="panel lvres">
+  return `${S.revHits&&S.revHits.length?`<section class="panel lvres"><div class="lvup">복습 성공 ${S.revHits.length}개</div><p style="font-size:.88rem">${S.revHits.map(esc).join('<br>')}</p><p class="muted" style="font-size:.82rem">다음 복습 날짜가 뒤로 밀렸어요.</p></section>`:''}${S.newBadges&&S.newBadges.length?`<section class="panel lvres"><div class="lvup">새 배지! ${esc(S.newBadges.join(', '))}</div></section>`:''}<section class="panel lvres">
     ${up?`<div class="lvup">레벨 업! ${lvBadge(R.after.lv)}</div><p style="font-size:.9rem">이제 바리스타가 ${esc(LV[R.after.lv].talk)}</p><div class="dash"></div>`:''}
     <div class="row" style="justify-content:space-between"><h3>오늘 얻은 XP</h3><span class="gain num">+${R.gain}</span></div>
     <p style="font-size:.88rem">${R.hit?`오늘의 도전 표현 <b>${esc(R.chal.p)}</b> 성공! 보너스 +${CHAL_BONUS} XP가 들어 있어요.`:`<span class="muted">오늘의 도전 표현 <b>${esc(R.chal.p)}</b>을(를) 다음 대화에서 써 보세요. 예: ${esc(R.chal.ex)} (+${CHAL_BONUS} XP)</span>`}</p>
@@ -2493,9 +3127,59 @@ function receiptNative(){
   </section>`}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-nsave]');if(b){saveChunk2(b.dataset.nsave,b.dataset.nko);b.textContent='저장됨'}});
 
-/* ---------- 로그인: 지금은 사용하지 않음 (보관본: extras/google-login.js). 기록은 이 기기(localStorage)에만 저장 ---------- */
-const AUTH={on:false,ready:true,user:null,busy:false,err:'',sync:''};
-function syncNow(){}function signIn(){}function signOutNow(){}
+/* ================= 구글 로그인 + 기록 동기화 (Firebase 무료 플랜) ================= */
+/* 로그인은 선택입니다. 로그인하지 않아도 레벨·기록은 이 기기(localStorage)에 저장됩니다.
+   로그인하면 이 기기 기록과 계정 기록을 합쳐(같은 대화는 한 번만) 다른 기기에서도 이어집니다.
+   아래 값은 Firebase 콘솔 > 프로젝트 설정 > 내 앱 > 웹 앱의 'firebaseConfig'를 그대로 붙여 넣는 곳입니다.
+   웹 앱 설정값은 원래 공개되는 값이라 여기 적어도 괜찮습니다(비밀키 아님). 접근은 Firestore 보안 규칙이 막아 줍니다. */
+const FIREBASE_CONFIG=null;
+const FB_VER='10.12.2';
+const AUTH={on:!!FIREBASE_CONFIG,ready:false,user:null,busy:false,err:'',sync:''};
+let FB=null;   // {signIn, signOut, load(uid), save(uid,data)}
+function mergeGames(a,b){const m=new Map();[...(a||[]),...(b||[])].forEach(g=>{if(g&&g.at&&!m.has(g.at))m.set(g.at,g)});return [...m.values()].sort((x,y)=>x.at-y.at)}
+function mergeMem(a,b){a=a||{};b=b||{};const facts={};for(const k of new Set([...Object.keys(a.facts||{}),...Object.keys(b.facts||{})])){const x=(a.facts||{})[k],y=(b.facts||{})[k];facts[k]=!x?y:!y?x:(x.at||0)>=(y.at||0)?x:y}
+  const visits={};for(const k of new Set([...Object.keys(a.visits||{}),...Object.keys(b.visits||{})]))visits[k]=Math.max((a.visits||{})[k]||0,(b.visits||{})[k]||0);return {name:a.name||b.name||'',facts,visits}}
+function mergeDays(a,b){const o=Object.assign({},a||{});for(const k in (b||{}))o[k]=Math.max(o[k]||0,b[k]);return o}
+function syncData(extra){return Object.assign({name:AUTH.user.name||'',photo:AUTH.user.photo||'',talkLv:store.get('stc.talkLv',null),mem:store.get('stc.mem',null),days:store.get('stc.days',{}),rotN:store.get('stc.rotN',0),updated:Date.now()},extra)}
+function mergeSaved(a,b){const out=[];[...(a||[]),...(b||[])].forEach(x=>{if(x&&x.en&&!out.some(y=>y.en===x.en))out.push(x)});return out.sort((x,y)=>(y.at||0)-(x.at||0))}
+async function syncNow(){
+  if(!FB||!AUTH.user)return;AUTH.sync='동기화 중…';rerenderIdle();
+  try{const remote=await FB.load(AUTH.user.uid)||{};
+    const games=mergeGames(gamesList(),remote.games),saved=mergeSaved(savedList(),remote.saved);
+    store.set('stc.games',games);store.set('stc.saved',saved);
+    store.set('stc.mem',mergeMem(store.get('stc.mem',null),remote.mem));store.set('stc.days',mergeDays(store.get('stc.days',{}),remote.days));store.set('stc.rotN',Math.max(store.get('stc.rotN',0),remote.rotN||0));
+    if(remote.talkLv&&!store.get('stc.talkLv',null))store.set('stc.talkLv',remote.talkLv);
+    await FB.save(AUTH.user.uid,syncData({games,saved}));
+    AUTH.sync='저장됨 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){AUTH.sync='동기화하지 못했습니다. 인터넷 연결을 확인해 주세요. (기록은 이 기기에 안전하게 남아 있어요)'}
+  rerenderIdle();
+}
+function rerenderIdle(){if(!S||S.receipt)render()}   // 대화 중에는 화면을 다시 그리지 않음
+async function fbInit(){
+  if(window.STC_FB_TEST){FB=window.STC_FB_TEST;AUTH.on=true}   // 시험용 가짜 로그인
+  else if(FIREBASE_CONFIG){
+    try{const base='https://www.gstatic.com/firebasejs/'+FB_VER+'/';
+      const [A,U,F]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
+      const fapp=A.initializeApp(FIREBASE_CONFIG),auth=U.getAuth(fapp),db=F.getFirestore(fapp);
+      FB={onUser:cb=>U.onAuthStateChanged(auth,u=>cb(u?{uid:u.uid,name:u.displayName,photo:u.photoURL}:null)),
+        signIn:()=>U.signInWithPopup(auth,new U.GoogleAuthProvider()),
+        signOut:()=>U.signOut(auth),
+        load:async uid=>{const d=await F.getDoc(F.doc(db,'users',uid));return d.exists()?d.data():null},
+        save:(uid,data)=>F.setDoc(F.doc(db,'users',uid),data)};
+    }catch(e){AUTH.err='로그인 기능을 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.';AUTH.ready=true;rerenderIdle();return}
+  }else{AUTH.ready=true;return}
+  FB.onUser(u=>{AUTH.user=u;AUTH.ready=true;AUTH.busy=false;if(u)syncNow();else{AUTH.sync='';rerenderIdle()}});
+}
+async function signIn(){if(!FB||AUTH.busy)return;AUTH.busy=true;AUTH.err='';render();
+  try{await FB.signIn()}catch(e){const c=(e&&e.code)||'';AUTH.busy=false;
+    AUTH.err=/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':/popup-blocked/.test(c)?'팝업이 막혔어요. 브라우저 주소창의 팝업 허용을 켜고 다시 눌러 주세요.':/unauthorized-domain/.test(c)?'이 주소는 아직 로그인 허용 목록에 없어요. (Firebase 승인된 도메인 확인 필요)':'로그인하지 못했어요. 카카오톡·인스타그램 안에서 열었다면 크롬이나 사파리로 열어 주세요.';render()}}
+async function signOutNow(){if(!FB||!AUTH.user)return;
+  /* 같이 쓰는 컴퓨터일 수 있으니, 계정에 저장이 끝난 뒤 이 기기의 기록을 지웁니다(계정에는 그대로 남음) */
+  let ok=false;try{await FB.save(AUTH.user.uid,syncData({games:gamesList(),saved:savedList()}));ok=true}catch(e){}
+  if(!ok){AUTH.err='계정에 저장하지 못해서 로그아웃을 멈췄어요. 인터넷 연결을 확인하고 다시 눌러 주세요.';render();return}
+  try{await FB.signOut()}catch(e){}
+  ['stc.games','stc.saved','stc.history','stc.talkLv','stc.mem','stc.days','stc.rotN'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});store.set('stc.games',[]);
+  AUTH.user=null;AUTH.sync='';AUTH.err='';render()}
 /* ---------- 내 프로필 ---------- */
 let PROFILE=false;
 function renderProfile(){
@@ -2510,10 +3194,15 @@ function renderProfile(){
     </div>
   </header>
   <section class="panel">
+    <div class="row" style="justify-content:space-between"><h3>로그인</h3>${u?`<button class="btn" id="logout">로그아웃</button>`:AUTH.on?`<button class="btn primary gbtn" id="login" ${AUTH.busy||!AUTH.ready?'disabled':''}>${AUTH.busy?'로그인 중…':'구글로 로그인'}</button>`:''}</div>
+    <p class="muted" style="font-size:.85rem">${!AUTH.on?'구글 로그인은 아직 준비 중이에요. 그동안에도 레벨과 기록은 이 기기에 저장됩니다.':u?(AUTH.sync||'기록이 계정에 저장됩니다.')+' 다른 휴대폰이나 컴퓨터에서 로그인해도 레벨, 바리스타가 기억하는 내용, 출석 기록이 이어져요.':'로그인하면 지금 기기의 기록과 합쳐져서 다른 기기에서도 이어집니다. 기존 기록은 사라지지 않아요. 로그아웃하면 이 기기에서는 기록이 지워지고 계정에만 남습니다.'}</p>
+    ${AUTH.err?`<p class="note" style="font-size:.85rem;color:var(--error-dark)">${esc(AUTH.err)}</p>`:''}
+  </section>
+  <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>내 레벨</h3>${lvBadge(pr.lv)}</div>
     <div class="prog">${xpBar(pr)}</div>
     <p class="muted" style="font-size:.85rem">${nextNeed(pr)}</p>
-    <div class="row" style="justify-content:space-between;margin-top:4px"><span style="font-size:.85rem;font-weight:700">바리스타 말투</span><div class="seg" role="group" aria-label="바리스타 말투 난이도">${[1,2,3,4].filter(l=>l<=pr.lv).map(l=>`<button data-tl="${l}" aria-pressed="${tl===l}">Lv${l}</button>`).join('')}</div></div>
+    <div class="row" style="justify-content:space-between;margin-top:4px"><span style="font-size:.85rem;font-weight:700">바리스타 말투</span><div class="seg" role="group" aria-label="바리스타 말투 난이도">${[1,2,3,4,5,6].filter(l=>l<=pr.lv).map(l=>`<button data-tl="${l}" aria-pressed="${tl===l}">Lv${l}</button>`).join('')}</div></div>
     <p class="muted" style="font-size:.85rem">Lv${tl} ${LV[tl].ko}: ${LV[tl].talk}${pr.lv>1?' 올라간 레벨까지는 언제든 골라서 연습할 수 있어요.':''}</p>
   </section>
   <section class="stats">
@@ -2522,9 +3211,10 @@ function renderProfile(){
     <div><b class="num">${pr.recent.length?pr.avg3:'–'}</b><span>최근 3번 평균</span></div>
     <div><b class="num">${pr.chal}</b><span>도전 표현 성공</span></div>
   </section>
+  <section class="panel"><h3>연속 출석·배지</h3>${(()=>{const i=streakInfo(),b=badgesNow();return `<p style="font-size:.9rem"><b>${i.streak}</b>일 연속 · 오늘 ${i.today}/${DAILY_GOAL}판 · 하루 ${DAILY_GOAL}판 달성 ${i.goalDays}일 · 총 ${i.total}판</p>${b.length?`<p style="font-size:.88rem">${badgeNames(b).map(x=>`<span class="badge">${esc(x)}</span>`).join(' ')}</p>`:`<p class="muted" style="font-size:.85rem">첫 대화를 마치면 배지가 생겨요.</p>`}`})()}<p class="muted" style="font-size:.82rem">바리스타가 내 이름과 지난 대답을 기억해요(이 기기에 저장).</p></section>
   <section class="panel"><h3>오늘의 도전 표현</h3><p><b>${esc(chal.p)}</b> <span class="muted">${esc(chal.ko)}</span></p><p class="muted" style="font-size:.85rem">예: ${esc(chal.ex)} · 대화 중에 쓰면 +${CHAL_BONUS} XP</p></section>
   <section class="panel"><h3>최근 기록</h3>${recent.length?`<ul class="list">${recent.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'바리스타'} · ${new Date(h.at).toLocaleDateString('ko-KR')}${h.b?' · 도전 성공':''}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 끝까지 한 대화가 없어요. 바리스타를 골라 첫 대화를 해 보세요.</p>`}</section>
-  <section class="panel"><h3>레벨 안내</h3><ul class="list">${[1,2,3,4].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul></section>`;
+  <section class="panel"><h3>레벨 안내</h3><ul class="list">${[1,2,3,4,5,6].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul></section>`;
   app.querySelector('#back').onclick=()=>{PROFILE=false;render();scrollTo(0,0)};
   const li=app.querySelector('#login');if(li)li.onclick=signIn;
   const lo=app.querySelector('#logout');if(lo)lo.onclick=signOutNow;
@@ -2532,6 +3222,7 @@ function renderProfile(){
 }
 
 render();
+fbInit();
 </script>
 
 </body>
