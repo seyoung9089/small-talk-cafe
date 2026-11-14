@@ -37,4 +37,4 @@ service cloud.firestore {
 **서비스 계정 키(JSON 파일)나 비밀번호는 보내지 마세요.** 필요 없습니다.
 
 ## 코드에 넣는 곳
-`index.html`에서 `const FIREBASE_CONFIG=null;`의 `null` 자리에 복사한 `{ ... }`를 넣으면 로그인 버튼이 켜집니다.
+지금 사이트에는 로그인 코드가 빠져 있습니다. 다시 켤 때는 `extras/google-login.js` 맨 위 설명대로 index.html에 넣고, `FIREBASE_CONFIG`의 `null` 자리에 복사한 `{ ... }`를 넣습니다.

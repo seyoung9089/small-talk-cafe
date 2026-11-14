@@ -1978,10 +1978,6 @@ function renderInfo(){
     <p class="muted" style="font-size:.88rem">날마다 바뀌는 ‘오늘의 도전 표현’을 대화 중에 쓰면 +${CHAL_BONUS} XP를 더 받습니다. 레벨이 올라도 내 프로필에서 낮은 레벨 말투를 골라 연습할 수 있어요.</p>
   </section>
   <section class="panel">
-    <h3>로그인은 꼭 해야 하나요?</h3>
-    <p class="muted" style="font-size:.88rem">아니요. 로그인하지 않아도 레벨과 기록이 이 기기에 저장됩니다. 구글로 로그인하면 기록이 계정에 저장돼서 다른 휴대폰이나 컴퓨터에서도 이어집니다. 로그인할 때 이 기기의 기록과 계정 기록을 합쳐 드려요.</p>
-  </section>
-  <section class="panel">
     <h3>점수는 언제 보이나요?</h3>
     <p class="muted" style="font-size:.88rem">대화 중에는 점수를 보여 주지 않습니다. 대화가 끝나면 영수증에서 단계마다 가장 잘한 답 하나로 계산해 100점 만점 평균으로 보여 드립니다. 다른 사람과 비교하지 않고 내 지난 기록과만 비교합니다.</p>
   </section>`;
@@ -2287,56 +2283,9 @@ function receiptNative(){
   </section>`}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-nsave]');if(b){saveChunk2(b.dataset.nsave,b.dataset.nko);b.textContent='저장됨'}});
 
-/* ================= 구글 로그인 + 기록 동기화 (Firebase 무료 플랜) ================= */
-/* 로그인은 선택입니다. 로그인하지 않아도 레벨·기록은 이 기기(localStorage)에 저장됩니다.
-   로그인하면 이 기기 기록과 계정 기록을 합쳐(같은 대화는 한 번만) 다른 기기에서도 이어집니다.
-   아래 값은 Firebase 콘솔 > 프로젝트 설정 > 내 앱 > 웹 앱의 'firebaseConfig'를 그대로 붙여 넣는 곳입니다.
-   웹 앱 설정값은 원래 공개되는 값이라 여기 적어도 괜찮습니다(비밀키 아님). 접근은 Firestore 보안 규칙이 막아 줍니다. */
-const FIREBASE_CONFIG=null;
-const FB_VER='10.12.2';
-const AUTH={on:!!FIREBASE_CONFIG,ready:false,user:null,busy:false,err:'',sync:''};
-let FB=null;   // {signIn, signOut, load(uid), save(uid,data)}
-function mergeGames(a,b){const m=new Map();[...(a||[]),...(b||[])].forEach(g=>{if(g&&g.at&&!m.has(g.at))m.set(g.at,g)});return [...m.values()].sort((x,y)=>x.at-y.at)}
-function mergeSaved(a,b){const out=[];[...(a||[]),...(b||[])].forEach(x=>{if(x&&x.en&&!out.some(y=>y.en===x.en))out.push(x)});return out.sort((x,y)=>(y.at||0)-(x.at||0))}
-async function syncNow(){
-  if(!FB||!AUTH.user)return;AUTH.sync='동기화 중…';rerenderIdle();
-  try{const remote=await FB.load(AUTH.user.uid)||{};
-    const games=mergeGames(gamesList(),remote.games),saved=mergeSaved(savedList(),remote.saved);
-    store.set('stc.games',games);store.set('stc.saved',saved);
-    if(remote.talkLv&&!store.get('stc.talkLv',null))store.set('stc.talkLv',remote.talkLv);
-    await FB.save(AUTH.user.uid,{name:AUTH.user.name||'',photo:AUTH.user.photo||'',games,saved,talkLv:store.get('stc.talkLv',null),updated:Date.now()});
-    AUTH.sync='저장됨 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-  }catch(e){AUTH.sync='동기화하지 못했습니다. 인터넷 연결을 확인해 주세요. (기록은 이 기기에 안전하게 남아 있어요)'}
-  rerenderIdle();
-}
-function rerenderIdle(){if(!S||S.receipt)render()}   // 대화 중에는 화면을 다시 그리지 않음
-async function fbInit(){
-  if(window.STC_FB_TEST){FB=window.STC_FB_TEST;AUTH.on=true}   // 시험용 가짜 로그인
-  else if(FIREBASE_CONFIG){
-    try{const base='https://www.gstatic.com/firebasejs/'+FB_VER+'/';
-      const [A,U,F]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
-      const fapp=A.initializeApp(FIREBASE_CONFIG),auth=U.getAuth(fapp),db=F.getFirestore(fapp);
-      FB={onUser:cb=>U.onAuthStateChanged(auth,u=>cb(u?{uid:u.uid,name:u.displayName,photo:u.photoURL}:null)),
-        signIn:()=>U.signInWithPopup(auth,new U.GoogleAuthProvider()),
-        signOut:()=>U.signOut(auth),
-        load:async uid=>{const d=await F.getDoc(F.doc(db,'users',uid));return d.exists()?d.data():null},
-        save:(uid,data)=>F.setDoc(F.doc(db,'users',uid),data)};
-    }catch(e){AUTH.err='로그인 기능을 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.';AUTH.ready=true;rerenderIdle();return}
-  }else{AUTH.ready=true;return}
-  FB.onUser(u=>{AUTH.user=u;AUTH.ready=true;AUTH.busy=false;if(u)syncNow();else{AUTH.sync='';rerenderIdle()}});
-}
-async function signIn(){if(!FB||AUTH.busy)return;AUTH.busy=true;AUTH.err='';render();
-  try{await FB.signIn()}catch(e){const c=(e&&e.code)||'';AUTH.busy=false;
-    AUTH.err=/popup-closed|cancelled-popup/.test(c)?'로그인 창이 닫혔어요. 다시 눌러 주세요.':/popup-blocked/.test(c)?'팝업이 막혔어요. 브라우저 주소창의 팝업 허용을 켜고 다시 눌러 주세요.':/unauthorized-domain/.test(c)?'이 주소는 아직 로그인 허용 목록에 없어요. (Firebase 승인된 도메인 확인 필요)':'로그인하지 못했어요. 카카오톡·인스타그램 안에서 열었다면 크롬이나 사파리로 열어 주세요.';render()}}
-async function signOutNow(){if(!FB||!AUTH.user)return;
-  /* 같이 쓰는 컴퓨터일 수 있으니, 계정에 저장이 끝난 뒤 이 기기의 기록을 지웁니다(계정에는 그대로 남음) */
-  let ok=false;try{await FB.save(AUTH.user.uid,{name:AUTH.user.name||'',photo:AUTH.user.photo||'',games:gamesList(),saved:savedList(),talkLv:store.get('stc.talkLv',null),updated:Date.now()});ok=true}catch(e){}
-  if(!ok){AUTH.err='계정에 저장하지 못해서 로그아웃을 멈췄어요. 인터넷 연결을 확인하고 다시 눌러 주세요.';render();return}
-  try{await FB.signOut()}catch(e){}
-  ['stc.games','stc.saved','stc.history','stc.talkLv'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});store.set('stc.games',[]);
-  AUTH.user=null;AUTH.sync='';AUTH.err='';render()}
-
-
+/* ---------- 로그인: 지금은 사용하지 않음 (보관본: extras/google-login.js). 기록은 이 기기(localStorage)에만 저장 ---------- */
+const AUTH={on:false,ready:true,user:null,busy:false,err:'',sync:''};
+function syncNow(){}function signIn(){}function signOutNow(){}
 /* ---------- 내 프로필 ---------- */
 let PROFILE=false;
 function renderProfile(){
@@ -2347,14 +2296,9 @@ function renderProfile(){
     <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">My profile</span><button class="btn themebtn" id="back">← 처음으로</button></div>
     <div class="me">
       ${u&&u.photo?`<img class="av" src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<span class="av">${u&&u.name?esc(u.name.slice(0,1)):'🙂'}</span>`}
-      <div style="min-width:0"><h1 style="font-size:1.4rem">${u?esc(u.name||'이름 없음'):'게스트'}</h1><p class="muted" style="font-size:.85rem">${u?'구글 계정으로 로그인됨':'로그인하지 않아도 이 기기에 기록이 저장돼요.'}</p></div>
+      <div style="min-width:0"><h1 style="font-size:1.4rem">${u?esc(u.name||'이름 없음'):'게스트'}</h1><p class="muted" style="font-size:.85rem">레벨과 기록은 이 기기에 저장돼요.</p></div>
     </div>
   </header>
-  <section class="panel">
-    <div class="row" style="justify-content:space-between"><h3>로그인</h3>${u?`<button class="btn" id="logout">로그아웃</button>`:AUTH.on?`<button class="btn primary gbtn" id="login" ${AUTH.busy||!AUTH.ready?'disabled':''}>${AUTH.busy?'로그인 중…':'구글로 로그인'}</button>`:''}</div>
-    <p class="muted" style="font-size:.85rem">${!AUTH.on?'구글 로그인은 아직 준비 중이에요. 그동안에도 레벨과 기록은 이 기기에 저장됩니다.':u?(AUTH.sync||'기록이 계정에 저장됩니다.')+' 다른 휴대폰이나 컴퓨터에서 로그인해도 레벨이 이어져요.':'로그인하면 지금 기기의 기록과 합쳐져서 다른 기기에서도 이어집니다. 기존 기록은 사라지지 않아요. 로그아웃하면 이 기기에서는 기록이 지워지고 계정에만 남습니다.'}</p>
-    ${AUTH.err?`<p class="note" style="font-size:.85rem;color:var(--error-dark)">${esc(AUTH.err)}</p>`:''}
-  </section>
   <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>내 레벨</h3>${lvBadge(pr.lv)}</div>
     <div class="prog">${xpBar(pr)}</div>
@@ -2378,7 +2322,6 @@ function renderProfile(){
 }
 
 render();
-fbInit();
 </script>
 
 </body>
