@@ -195,7 +195,7 @@ function setTheme(t){document.documentElement.dataset.theme=t;store.set('stc.the
 
 /* ---------- personas ---------- */
 const P={
-maya:{name:'Maya',role:'수다쟁이',desc:'리액션이 크고 질문을 많이 던지는 대학생 바리스타',
+maya:{name:'Maya',role:'수다쟁이',desc:'리액션이 크고 질문을 많이 던지는 대학생 스몰메이트',
  lines:{greet:"Hi! Welcome in! How's your day going so far?",order:"So, what can I get started for you today?",size:"Love that choice! What size do you want? Small, medium, or large?",name:"Perfect. And can I get a name for the cup?",chat1:"So are you a student around here? You totally look like you're on a study break.",chat2:"Okay, last question, I promise. Any fun plans for the weekend?",close:"Here's your {size} {drink}, {name}! Careful, it's hot!",end:"Bye! Come back and tell me how the weekend went!"},
  react:{greetPos:["Yay, love to hear that!","Oh nice, that makes me happy!"],greetNeg:["Aw, no! Well, coffee fixes everything, right?","Oh no, I'm sorry! Let's make it better."],order:["Ooh, good pick!","Yes! That's one of my favorites."],size:["Got it!","Okay, perfect."],name:["Cute name!","Nice to meet you, {name}!"],chat1:["Oh, that's so cool!","No way, that's awesome!"],chat2:["Ahh, that sounds so fun!","Honestly? That sounds perfect."]},
  follow:{greet:"Oh yeah? Anything exciting happen today?",chat1:"Oh really? Tell me more! What do you like about it?",chat2:"Ooh, like what? I need ideas!"},
@@ -203,7 +203,7 @@ maya:{name:'Maya',role:'수다쟁이',desc:'리액션이 크고 질문을 많이
  clarify:["Sorry, it's kind of loud in here! What was that?","Wait, say that one more time?"],giveup:"No worries! Let's keep going.",
  expect:{chat1:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|student|school|college|work|study|grade|senior|junior|sophomore|freshman)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|hike|hiking|walk|walking|run|running|gym|travel|traveling|write|writing|art|anime|yoga|bike|biking|skate|skateboarding|tennis|baseball|volleyball|dancing|singing|cooking|baking|knitting|garden|gardening|games|gaming|plans?|nothing|not really|maybe|yes|yeah|no|going|gonna|beach|movies?|friends|study|chill|relax|sleep|party|game|concert|shopping|homework)\b/},
  model:{chat1:"Yeah! I'm a high school student. I just moved here from Korea, actually. Do you go to school around here too?",chat2:"Not really, but I might go to the beach with my friends. What about you?"}},
-leo:{name:'Leo',role:'수줍음',desc:'말이 짧고 조심스러운 신입 바리스타. 내가 대화를 이끌어야 합니다',
+leo:{name:'Leo',role:'수줍음',desc:'말이 짧고 조심스러운 신입 스몰메이트. 내가 대화를 이끌어야 합니다',
  lines:{greet:"Oh, um, hi. Welcome. How… how are you today?",order:"What can I, um, get for you?",size:"Okay. And what size? We have small, medium, and large.",name:"Can I get a name for the order? Sorry, it's policy.",chat1:"Um, is this your first time here? I don't think I've seen you before.",chat2:"Do you, um, come here to study? It's pretty quiet in the mornings.",close:"Here's your {size} {drink}, {name}. I, um, drew a little leaf on it.",end:"Okay, bye. Have a nice day."},
  react:{greetPos:["Oh, that's good. Nice.","Cool, cool."],greetNeg:["Oh no. I hope it gets better.","Sorry to hear that."],order:["Oh, nice. Good choice."],size:["Okay."],name:["Okay, {name}. Got it."],chat1:["Oh, cool. Welcome, I guess."],chat2:["Oh, nice. That's… that's nice."]},
  follow:{greet:"Oh. Um, is it a busy day for you?",chat1:"Oh. How did you, um, find this place?",chat2:"Oh. What do you usually do here?"},
@@ -219,7 +219,7 @@ sam:{name:'Sam',role:'바쁨',desc:'아침 러시에 정신없는 베테랑. 짧
  clarify:["Sorry, what was that?","Come again?"],giveup:"All good! Moving on.",
  expect:{chat1:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|live|near|nearby|close|moved|blocks?|downtown|street)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|busy|kind of|not really|school|class|work|test|exam|free|chill)\b/},
  model:{chat1:"Yeah, I live a few blocks away. I just moved here last month. Do you live nearby too?",chat2:"Kind of! I have two classes and a club meeting. How about you?"}},
-rico:{name:'Rico',role:'농담꾼',desc:'모든 대답에 농담을 섞는 바리스타. 웃으면서 받아칠 기회가 많습니다',
+rico:{name:'Rico',role:'농담꾼',desc:'모든 대답에 농담을 섞는 스몰메이트. 웃으면서 받아칠 기회가 많습니다',
  lines:{greet:"Welcome to the best coffee shop on this block! Also the only one. How's your day going?",order:"What can I brew for you today?",size:"And what size? Small, medium, or 'I have three exams today'?",name:"Name for the cup? I promise I'll spell it wrong only a little.",chat1:"So what brings you in today, besides my amazing personality?",chat2:"Okay, very important question. Cats or dogs?",close:"One {size} {drink} for {name}! Spelled perfectly, if I do say so myself.",end:"See ya! Don't forget to tip your local comedian!"},
  react:{greetPos:["Love that. Keep that energy!","Nice! My day just got better too."],greetNeg:["Oof. Well, you came to the right place."],order:["Excellent choice. Very sophisticated."],size:["Wise decision."],name:["{name}! Great name. Way better than mine."],chat1:["Ha! Respect."],chat2:["Correct answer. I'm kidding, there's no wrong answer. Mostly."]},
  follow:{greet:"Just good? Come on, give me the highlight of your day!",chat1:"That's it? I need more details for my novel!",chat2:"Okay, but why? Defend your answer!"},
@@ -227,7 +227,7 @@ rico:{name:'Rico',role:'농담꾼',desc:'모든 대답에 농담을 섞는 바�
  clarify:["Sorry, the espresso machine was screaming. What was that?","One more time? My ears are still waking up."],giveup:"No problem! Let's pretend that went great.",
  expect:{chat1:/\b(maybe|kind of|sort of|study|studying|coffee|caffeine|study|studying|test|exam|break|friends?|meet|work|just|need|tired|you|personality)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|cats?|dogs?|both|neither|puppy|kitten)\b/},
  model:{chat1:"Honestly, I just needed caffeine before my math test. And maybe a joke. Got any?",chat2:"Dogs, for sure! I have a dog back in Korea. Do you have any pets?"}},
-dottie:{name:'Dottie',role:'다정함',desc:'동네 사람을 다 아는 할머니 바리스타. 천천히, 따뜻하게 묻습니다',
+dottie:{name:'Dottie',role:'다정함',desc:'동네 사람을 다 아는 할머니 스몰메이트. 천천히, 따뜻하게 묻습니다',
  lines:{greet:"Well, hello there, sweetie! How are you doing today?",order:"What can I make for you, hon?",size:"And what size would you like, dear?",name:"And what's your name, sweetheart?",chat1:"Are you new in town? I don't think I've seen your face before.",chat2:"So what do you like to do for fun, honey?",close:"Here's your {size} {drink}, {name}. I made it with love.",end:"Take care now, sweetie. Come back and see me!"},
  react:{greetPos:["Oh, that's wonderful to hear!"],greetNeg:["Oh, bless your heart. It'll get better, I promise."],order:["Oh, good choice, dear."],size:["Alright, sweetie."],name:["What a lovely name, {name}."],chat1:["Oh, how nice!"],chat2:["Oh, isn't that lovely!"]},
  follow:{greet:"Oh? Tell me, what's on your mind today, dear?",chat1:"Oh? And how do you like it so far?",chat2:"Oh, that's nice. How did you get into that?"},
@@ -241,43 +241,43 @@ const PIDS=['maya','leo','sam','rico','dottie'];
 const BASENAME={maya:'Maya',leo:'Leo',sam:'Sam',rico:'Rico',dottie:'Dottie'};
 function mk(base,name,role,desc,L,B,F,C,G,R){const b=P[base];return {base,name,role,desc,lines:{...b.lines,...L},back:{...b.back,...B},follow:{...b.follow,...F},clarify:C,giveup:G,react:{...b.react,...R},expect:b.expect,model:b.model}}
 Object.assign(P,{
-jasmine:mk('maya','Jasmine','응원단장','뭐든 칭찬하고 응원해 주는 에너지 넘치는 바리스타',
+jasmine:mk('maya','Jasmine','응원단장','뭐든 칭찬하고 응원해 주는 에너지 넘치는 스몰메이트',
  {greet:"Heyyy! Welcome! You look amazing today! How are you?",order:"Okay, what are we drinking today?",size:"Ooh, yes! Small, medium, or large?",name:"And what name should I write on your cup? I'll make it super cute!",chat1:"So, are you a student? You look so smart!",chat2:"Okay, last one! What are you doing this weekend? Tell me everything!",close:"Here you go! One {size} {drink} for {name}! You're going to have an awesome day!",end:"Bye bye! You're doing great, okay? Come back soon!"},
  {greet:"Aw, thanks for asking! I'm super good. I led our cheer practice this morning!",chat1:"Me? I'm on the cheer team at the college! Go Tigers!",chat2:"I have a big game on Saturday! You should come!",close:"Aw, you're the best! You too!"},
  {greet:"Aww, tell me more! What made it good?",chat1:"Ooh, I want to hear more! What's your favorite class?",chat2:"Wait, that sounds fun! Who are you going with?"},
  ["Sorry, I couldn't hear you over the blender! Say it again?","Wait, can you say that one more time? I want to hear everything!"],"No worries! You're doing great anyway!",
  {greetPos:["Yay! That's the best!","Love that for you!"],greetNeg:["Aw, no! You've got this, okay?"],order:["Ooh, great choice!","Amazing pick!"],size:["Perfect!","You got it!"],name:["{name}! I love that name!"],chat1:["That's so cool!","You're so smart!"],chat2:["That sounds so fun!","Yes! Have a blast!"]}),
-priya:mk('maya','Priya','여행 덕후','세계 여행 이야기를 좋아하고, 어디서 왔는지 꼭 물어보는 바리스타',
+priya:mk('maya','Priya','여행 덕후','세계 여행 이야기를 좋아하고, 어디서 왔는지 꼭 물어보는 스몰메이트',
  {greet:"Hi there! Welcome! How's your day going so far?",order:"What can I get started for you?",size:"Nice! And what size? Small, medium, or large?",name:"Great. What's your name for the cup?",chat1:"So where are you from? I love meeting people from other countries!",chat2:"Do you have any travel plans? I'm always planning my next trip!",close:"Here's your {size} {drink}, {name}! Safe travels today!",end:"Bye! Send me a postcard sometime!"},
  {greet:"I'm great! I just booked a trip to Japan, so I'm super happy.",chat1:"Me? I'm from India originally, but I grew up here. I miss my grandma's cooking!",chat2:"I'm going to Japan in the spring! I can't wait.",close:"Thank you! Safe travels to you too!"},
  {greet:"Oh yeah? What's making it a good day?",chat1:"Oh, tell me more! What's your hometown like?",chat2:"Ooh, where would you go if you could go anywhere?"},
  ["Sorry, the grinder was loud! Can you say that again?","Oops, I missed that. One more time?"],"No problem! Let's keep going.",
  {greetPos:["Great to hear!","Awesome, that's a good start!"],greetNeg:["Oh no. I hope your day gets better."],order:["Ooh, nice choice!","Good one!"],size:["Okay, great!"],name:["Nice to meet you, {name}!"],chat1:["Wow, that's so interesting!","Oh, I'd love to go there someday!"],chat2:["Oh, that sounds amazing!","Ooh, I'm jealous!"]}),
-tyler:mk('maya','Tyler','운동 선수','운동 얘기에 신나는 에너지 넘치는 바리스타',
+tyler:mk('maya','Tyler','운동 선수','운동 얘기에 신나는 에너지 넘치는 스몰메이트',
  {greet:"Hey, welcome in! What's up? How's your day?",order:"What are we getting, champ?",size:"Nice! Small, medium, or large? Go big!",name:"Name for the cup?",chat1:"Do you play any sports? You look like an athlete.",chat2:"Got any plans this weekend? I have a big game!",close:"{size} {drink} for {name}! Go get 'em!",end:"Later! Keep working hard!"},
  {greet:"I'm pumped! I just finished a morning run.",chat1:"Me? I play soccer for the school team. I practice every day.",chat2:"We have a big game on Saturday. I can't wait!",close:"Thanks! You too, champ!"},
  {greet:"Nice! What did you do today?",chat1:"Cool! What's your favorite sport?",chat2:"Nice! What are you going to do?"},
  ["Sorry, the music's loud! What did you say?","Say that again, I couldn't hear."],"All good! Let's keep it moving.",
  {greetPos:["Let's go! Great to hear!"],greetNeg:["Ah, tough day. You've got this."],order:["Solid choice.","Strong pick."],size:["Big move.","You got it."],name:["Got it, {name}!"],chat1:["That's awesome!","Nice!"],chat2:["Sweet!","That's gonna be fun."]}),
-hannah:mk('leo','Hannah','조용한 독서가','책을 좋아하고 작은 목소리로 말하는 바리스타',
+hannah:mk('leo','Hannah','조용한 독서가','책을 좋아하고 작은 목소리로 말하는 스몰메이트',
  {greet:"Oh, hi. Welcome. How is your day going?",order:"What would you like? Take your time.",size:"Okay. Small, medium, or large?",name:"And, um, what's your name?",chat1:"Oh, sorry, I was reading. Do you like books?",chat2:"Um, do you come here to study or to read?",close:"Here's your {size} {drink}, {name}. Enjoy.",end:"Okay. Bye. Have a nice day."},
  {greet:"I'm good. It's quiet, so I can read a little. Thank you.",chat1:"Me? Yes. I read a lot. I'm reading a mystery book right now.",chat2:"I like reading here after work. It's peaceful.",close:"Thank you. You too."},
  {greet:"Oh. Um, was it a quiet day?",chat1:"Oh. What kind of books do you like?",chat2:"Oh. What are you studying?"},
  ["Sorry, I didn't hear you. Could you say it again?","Um, sorry. Once more, please?"],"That's okay. Let's go on.",
  {greetPos:["Oh, that's nice.","Good, good."],greetNeg:["Oh. I'm sorry. I hope tomorrow is better."],order:["Oh, I like that one.","Good choice."],size:["Okay."],name:["Okay, {name}. Got it."],chat1:["Oh, nice.","Oh, interesting."],chat2:["Oh, that sounds nice."]}),
-ethan:mk('leo','Ethan','졸린 대학원생','늘 졸려 보이지만 마음은 따뜻한 대학원생 바리스타',
+ethan:mk('leo','Ethan','졸린 대학원생','늘 졸려 보이지만 마음은 따뜻한 대학원생 스몰메이트',
  {greet:"Hey. Welcome. Sorry, I'm a little tired. How are you?",order:"What can I get you?",size:"What size? Small, medium, large?",name:"And your name?",chat1:"Are you a student too? Sorry, I only see students at this hour.",chat2:"Do you have a lot of homework? I have a thesis. Ugh.",close:"{size} {drink} for {name}. Have a good one.",end:"Okay, see you. I need a nap."},
  {greet:"Tired. I stayed up writing. But I'm okay.",chat1:"Me? I'm a grad student. I study biology. I work here to pay rent.",chat2:"I have to finish a paper. I haven't slept much.",close:"Thanks. You too."},
  {greet:"Hm. Did you sleep well?",chat1:"Oh. What are you studying?",chat2:"Oh. When is it due?"},
  ["Sorry, my brain is slow today. Can you say that again?","Hm? Sorry, what?"],"Okay. Let's move on.",
  {greetPos:["Good. Glad to hear that."],greetNeg:["Same. Let's survive together."],order:["Good choice. I drink that too."],size:["Okay."],name:["Got it, {name}."],chat1:["Oh, cool."],chat2:["Ah. Good luck."]}),
-nora:mk('leo','Nora','긴장한 신입','오늘이 첫 출근이라 계속 사과하는 신입 바리스타',
+nora:mk('leo','Nora','긴장한 신입','오늘이 첫 출근이라 계속 사과하는 신입 스몰메이트',
  {greet:"Hi! Oh, sorry, welcome! It's my first day. How are you?",order:"Um, what can I get you? Sorry, I'm still learning the menu.",size:"Okay! Small, medium, or large? I think that's right.",name:"Um, can I have your name? Sorry, my manager says I have to ask.",chat1:"Sorry, is this your first time here? It's mine, too! I mean, my first day.",chat2:"Um, do you come here a lot? Do you have any tips for me?",close:"Here's your {size} {drink}, {name}. I hope it's right! Sorry if it isn't!",end:"Thank you so much! Bye! You were so nice to me."},
  {greet:"I'm nervous, but okay! Thank you for asking.",chat1:"Me? It's my first day! I spilled one cup already.",chat2:"My tip is… um… please be nice to the new barista. Ha!",close:"Aw, thank you! You too!"},
  {greet:"Oh, um, is it a busy day for you?",chat1:"Oh! Um, how did you find this place?",chat2:"Oh, um, what's your favorite drink here?"},
  ["Sorry! I'm so sorry, I didn't catch that. Again, please?","Oh no, sorry. Could you say it again?"],"Sorry! Let's… um, keep going.",
  {greetPos:["Oh, good! That's nice.","Great, great."],greetNeg:["Oh no, sorry to hear that."],order:["Oh, good! I know how to make that one!"],size:["Okay!"],name:["Okay, {name}! Got it. I hope I spell it right."],chat1:["Oh, nice!","Oh, welcome!"],chat2:["Oh, thank you! That helps."]}),
-marcus:mk('sam','Marcus','러시아워 대장','줄이 길수록 신나는, 번개처럼 빠른 바리스타',
+marcus:mk('sam','Marcus','러시아워 대장','줄이 길수록 신나는, 번개처럼 빠른 스몰메이트',
  {greet:"Morning! Next in line! How's it going?",order:"What can I get started?",chat1:"Taking the bus today?",chat2:"Long day ahead?",close:"{size} {drink} for {name}! Go crush it.",end:"Thanks! Who's next?"},
  {greet:"Busy! Forty cups since six. But I love it.",chat1:"I take the 7 bus every day. It's always late.",chat2:"Yeah. Closing shift tonight, so late night.",close:"Thanks! You too!"},
  {greet:"Yeah? What's up with you?",chat1:"Oh yeah? Where to?",chat2:"Yeah? What's first?"},
@@ -289,25 +289,25 @@ dana:mk('sam','Dana','매니저','일 처리가 빠른 점장. 말은 짧지만 
  {greet:"Good to hear. Anything special today?",chat1:"Oh yeah? Which area?",chat2:"Yeah? Anything fun?"},
  ["Sorry, could you repeat that?","Pardon? It's noisy in here."],"No problem. Let's move on.",
  {greetPos:["Great!","Good to hear."],greetNeg:["Sorry to hear that. Hope it gets better."],order:["Great, coming up."],size:["Sure."],name:["Got it, {name}."],chat1:["Nice."],chat2:["Sounds good."]}),
-kai:mk('sam','Kai','느긋한 서퍼','파도만 기다리는 느긋한 바리스타. 말이 짧고 편안합니다',
+kai:mk('sam','Kai','느긋한 서퍼','파도만 기다리는 느긋한 스몰메이트. 말이 짧고 편안합니다',
  {greet:"Hey. What's up? How's your day?",order:"What'll it be?",chat1:"You surf?",chat2:"Got plans after this?",close:"{size} {drink} for {name}. Enjoy, my friend.",end:"Later. Stay cool."},
  {greet:"Chill. The waves were good this morning.",chat1:"Me? I surf every morning before work.",chat2:"Going to the beach. Waves are big today.",close:"Thanks. You too."},
  {greet:"Cool. What's good today?",chat1:"Cool, cool. Tell me more.",chat2:"Nice. What kind of plans?"},
  ["Sorry, what? The grinder's loud.","Say that again?"],"No stress. Let's keep going.",
  {greetPos:["Cool.","Nice, nice."],greetNeg:["Ah. It'll pass. Like a wave."],order:["Good pick."],size:["Cool."],name:["Nice, {name}."],chat1:["Cool."],chat2:["Sweet."]}),
-mo:mk('rico','Mo','마술사 지망생','주문마다 마술을 보여 주려는 바리스타',
+mo:mk('rico','Mo','마술사 지망생','주문마다 마술을 보여 주려는 스몰메이트',
  {greet:"Welcome! Pick a card, any card! Just kidding. How's your day?",order:"What can I make appear for you today?",size:"And what size? Small, medium, or large? Abracadabra!",name:"Name for the cup? Watch closely!",chat1:"Do you like magic? I'm learning a new trick.",chat2:"Okay, pick a number from one to ten! I'll guess it.",close:"Ta-da! One {size} {drink} for {name}! No cards needed.",end:"And now… I disappear! Bye!"},
  {greet:"Magical! I learned a new card trick this morning.",chat1:"Me? I'm a magician. Well, a student magician. The cards keep falling.",chat2:"Seven. Wait, was it seven? Ha. I'm doing a show on Friday!",close:"Thanks! Abracadabra, you too!"},
  {greet:"Just good? I need more magic than that!",chat1:"Oh, come on, give me a little more!",chat2:"Ooh, why that number? Tell me the secret!"},
  ["The coffee machine made a magic sound! What did you say?","Poof! I lost your words. Can you say it again?"],"Time for a magic trick: let's skip this part!",
  {greetPos:["Magic! I love it.","Wonderful!"],greetNeg:["Oh no. Let me make it better. With coffee magic."],order:["Excellent! Watch this.","Perfect choice."],size:["Poof! Done."],name:["{name}! What a great name for a magic show."],chat1:["Ha! Nice.","Very cool."],chat2:["Amazing!","Ha, I knew it!"]}),
-lucy:mk('rico','Lucy','퀴즈 좋아하는 바리스타','엉뚱한 상식을 알려 주는 퀴즈 좋아하는 바리스타',
+lucy:mk('rico','Lucy','퀴즈 좋아하는 스몰메이트','엉뚱한 상식을 알려 주는 퀴즈 좋아하는 스몰메이트',
  {greet:"Welcome! Fun fact: coffee beans are really seeds! How's your day?",order:"What can I get you?",size:"Size? Small, medium, or large? Fun fact: large is the most popular!",name:"Name for the cup? Fun fact: I love learning names.",chat1:"Quick quiz: what's your favorite season?",chat2:"Another quiz: would you rather have free coffee for a year or free pizza?",close:"One {size} {drink} for {name}! Fun fact: you're my favorite customer today.",end:"Bye! Fun fact: you're awesome. Come back soon!"},
  {greet:"Great! I just learned that octopuses have three hearts.",chat1:"Spring is my favorite! Flowers, and no more winter.",chat2:"Free coffee, obviously. I'm a barista!",close:"Thanks! Fun fact: you too!"},
  {greet:"Just good? Tell me one fun fact about your day!",chat1:"Why? Tell me your reason!",chat2:"Hmm, interesting! Why that one?"},
  ["Sorry, bonus round! Can you say that again?","The grinder was loud! One more time?"],"No problem! Let's skip to the next question.",
  {greetPos:["Awesome!","Great! That's a good fact."],greetNeg:["Oh no. Fun fact: bad days end."],order:["Excellent! Fun fact: that's popular.","Great choice."],size:["Perfect."],name:["{name}! Great name."],chat1:["Interesting answer!","Ooh, nice!"],chat2:["Ha! Good choice."]}),
-frank:mk('rico','Frank','아저씨 개그','썰렁한 말장난을 던지는 바리스타. 웃어 주면 좋아합니다',
+frank:mk('rico','Frank','아저씨 개그','썰렁한 말장난을 던지는 스몰메이트. 웃어 주면 좋아합니다',
  {greet:"Hey there! Welcome! How are you? I'm brew-tiful today. Get it?",order:"What can I get you? I'd say 'the usual,' but I just met you.",size:"What size? Small, medium, or large? I'm a large, personally.",name:"Name for the cup? Don't worry, I won't mess it up. Probably.",chat1:"So, what do you do? Please say something funnier than my jokes.",chat2:"Okay, serious question: why did the coffee call the police?",close:"One {size} {drink} for {name}! It's a latte fun!",end:"See you later! Don't forget: espresso yourself!"},
  {greet:"I'm doing great! I've been telling coffee jokes all morning.",chat1:"Me? I'm a dad of three, so I make bad jokes professionally.",chat2:"It got mugged! Get it? Mugged?",close:"Thanks! Have a brew-tiful day!"},
  {greet:"Just good? Come on, I need more than that!",chat1:"That's it? Give me a little more!",chat2:"Haha, why? Tell me why!"},
@@ -505,7 +505,7 @@ function scoreTurn(raw,n,stage,lastB){
   return 10;
 }
 const TIPS={
- ko:{0:"이 단계는 바리스타가 알아듣지 못해 넘어갔어요. 아래 모범 답을 소리 내어 읽어 보세요.",10:"이유나 정보를 하나 덧붙여 보세요. 예: '... I just finished school.'",30:"질문을 되돌려 보세요. 예: 'How about you?'",60:"상대 말에 반응하고(Oh, nice!) 이야기를 한 문장 더 풀어 보세요.",100:"대화를 이끌었어요. 이 느낌 그대로 가면 됩니다."},
+ ko:{0:"이 단계는 스몰메이트가 알아듣지 못해 넘어갔어요. 아래 모범 답을 소리 내어 읽어 보세요.",10:"이유나 정보를 하나 덧붙여 보세요. 예: '... I just finished school.'",30:"질문을 되돌려 보세요. 예: 'How about you?'",60:"상대 말에 반응하고(Oh, nice!) 이야기를 한 문장 더 풀어 보세요.",100:"대화를 이끌었어요. 이 느낌 그대로 가면 됩니다."},
  en:{0:"The barista couldn't follow, so this step was skipped. Read the model answer out loud.",10:"Add one more detail, like '... I just finished school.'",30:"Bounce the question back: 'How about you?'",60:"React first (Oh, nice!) and add one more sentence.",100:"You led the conversation. Keep it up."}};
 const STAGE_TIP={
  ko:{order:"주문한 뒤 하나 더 물어보세요. 예: 'Actually, what do you recommend?'",size:"사이즈를 말하고 짧게 하나 더 물어보세요. 예: 'Is it pretty sweet?'",name:"철자를 불러 주거나 이름에 대해 한마디 덧붙여 보세요. 예: 'It's a Korean name.'",close:"좋은 하루 인사나 다시 오겠다는 말을 덧붙여 보세요. 예: 'I'll come back next week!'"},
@@ -532,7 +532,7 @@ const TIER_NAME={ko:{0:'넘어감',10:'통함',30:'덧붙임',60:'되묻기',100
 /* ---------- hint chunks per stage ---------- */
 const HINTS={
  greet:[["Pretty good, thanks!","꽤 좋아요, 고마워요! 가장 흔한 대답입니다.","The most common reply."],["I just finished ...","방금 ~를 끝냈어요. 정보를 하나 덧붙일 때 씁니다.","Add one detail about your day."],["Not bad, a little tired though.","나쁘지 않은데 좀 피곤해요. 솔직하면서도 친근한 대답입니다.","Honest but friendly."],["How about you?","당신은요? 질문을 되돌려 대화를 이어 갑니다.","Bounce the question back."],["Kind of tired, honestly.","솔직히 좀 피곤해요.","Honest answer."],["Can't complain!","불평할 게 없어요! 잘 지낸다는 뜻의 관용 표현입니다.","Means 'doing fine'."],["It's been a long day.","긴 하루였어요.","Share how your day went."]],
- order:[["Can I get a ..., please?","~ 주시겠어요? 가장 자연스러운 주문 표현입니다.","The most natural way to order."],["I'd like an iced latte.","아이스 라떼로 할게요.","Another polite way to order."],["What do you recommend?","뭐 추천하세요? 고민될 때 바리스타에게 묻습니다.","Ask the barista to choose."],["Actually, can I make that iced?","아, 그거 아이스로 바꿔도 될까요?","Change your order politely."],["Could I get a ... with oat milk?","귀리 우유로 ~ 주실 수 있나요?","Ask for a swap politely."],["What's your most popular drink?","제일 인기 있는 음료가 뭐예요?","Ask for the popular pick."],["For here, please.","여기서 마실게요.","Dine in or 'to go'."]],
+ order:[["Can I get a ..., please?","~ 주시겠어요? 가장 자연스러운 주문 표현입니다.","The most natural way to order."],["I'd like an iced latte.","아이스 라떼로 할게요.","Another polite way to order."],["What do you recommend?","뭐 추천하세요? 고민될 때 스몰메이트에게 묻습니다.","Ask the barista to choose."],["Actually, can I make that iced?","아, 그거 아이스로 바꿔도 될까요?","Change your order politely."],["Could I get a ... with oat milk?","귀리 우유로 ~ 주실 수 있나요?","Ask for a swap politely."],["What's your most popular drink?","제일 인기 있는 음료가 뭐예요?","Ask for the popular pick."],["For here, please.","여기서 마실게요.","Dine in or 'to go'."]],
  size:[["A medium, please.","미디엄으로 주세요.","Size + please."],["Small is fine.","스몰이면 돼요.","A relaxed answer."],["Is it pretty sweet?","많이 단가요? 사이즈를 말하고 하나 더 물어볼 수 있습니다.","Add a quick question."],["Which size do you recommend?","어떤 사이즈를 추천하세요?","Ask for advice."],["The biggest one, please.","제일 큰 걸로 주세요.","Go big."]],
  name:[["It's Seyoung.","It's + 이름. 'My name is'보다 카페에서 더 자연스럽습니다.","Shorter than 'My name is'."],["S-E-Y-O-U-N-G.","철자를 불러 줍니다. 이름이 낯설 때 유용합니다.","Spell it out."],["It's a Korean name.","한국 이름이에요. 대화거리를 만들어 줍니다.","Gives them something to talk about."],["It's pronounced like...","발음은 ~처럼 해요.","Help them say it."],["You can call me ...","~라고 불러 주세요.","Offer a nickname."]],
  chat:[["Yeah! / Not really.","네! / 그렇진 않아요. 먼저 짧게 답합니다.","Answer short first."],["Actually, I just moved here from Korea.","사실 한국에서 막 이사 왔어요. 정보를 덧붙입니다.","Add a detail."],["Oh, that's so cool!","오, 멋지네요! 상대 말에 반응합니다.","React to what they said."],["What about you?","당신은요? 질문을 되돌립니다.","Bounce it back."],["That reminds me of...","그러고 보니 ~가 생각나요.","Link to a memory."],["Me too!","저도요! 공감 표현입니다.","Show you agree."],["Honestly, I'm not sure.","솔직히 잘 모르겠어요.","Be honest."]],
@@ -1621,12 +1621,12 @@ async function reask(st,raw){
 }
 const IDEAS={
  greet:["예: 오늘 기분이 어떤지 말하고, 상대에게도 물어보기","예: 시험이 끝나서 홀가분하다고 말해 보기","예: 조금 피곤하지만 괜찮다고 말해 보기","예: 날씨가 좋아서 기분이 좋다고 말해 보기","예: 바빴지만 좋은 하루였다고 말해 보기","예: 아침에 늦잠 자서 허둥댔다고 말하기","예: 오늘 처음으로 커피를 마신다고 말하기","예: 비가 와서 우산을 챙겼다고 말하기","예: 주말이라 여유롭다고 말하기","예: 방금 학원이 끝났다고 말하기","예: 친구랑 약속이 있어서 설렌다고 말하기","예: '그냥 그래요'라고 솔직하게 말하고 이유 덧붙이기","예: 월요일이라 좀 힘들다고 말하기","예: 오늘 날씨가 너무 춥다고 말하기","예: 어제 늦게 자서 졸리다고 말하기","예: 새 학기라서 긴장된다고 말하기"],
- order:["예: 아이스 바닐라 라떼를 주문해 보기","예: 바리스타에게 추천 메뉴 물어보기","예: 카페 라떼가 있는지 물어보기","예: 너무 달지 않은 음료가 있는지 물어보기","예: 따뜻한 차를 주문해 보기","예: 귀리 우유로 바꿀 수 있는지 물어보기","예: 디카페인으로 주문해 보기","예: 시럽을 반만 넣어 달라고 부탁하기","예: 샷을 하나 추가해 달라고 말하기","예: 친구 것까지 두 잔 주문하기","예: 오늘의 커피가 뭔지 물어보기","예: 시원하고 상큼한 음료 있는지 물어보기","예: 휘핑크림 빼 달라고 말하기","예: 아이스 아메리카노 한 잔 주문하기","예: 머핀이나 쿠키 같은 간식도 같이 주문하기","예: 초콜릿이 들어간 음료가 있는지 물어보기","예: 먹고 갈지 포장할지 말하며 주문하기","예: 뭐가 제일 인기 있는지 물어보기"],
+ order:["예: 아이스 바닐라 라떼를 주문해 보기","예: 스몰메이트에게 추천 메뉴 물어보기","예: 카페 라떼가 있는지 물어보기","예: 너무 달지 않은 음료가 있는지 물어보기","예: 따뜻한 차를 주문해 보기","예: 귀리 우유로 바꿀 수 있는지 물어보기","예: 디카페인으로 주문해 보기","예: 시럽을 반만 넣어 달라고 부탁하기","예: 샷을 하나 추가해 달라고 말하기","예: 친구 것까지 두 잔 주문하기","예: 오늘의 커피가 뭔지 물어보기","예: 시원하고 상큼한 음료 있는지 물어보기","예: 휘핑크림 빼 달라고 말하기","예: 아이스 아메리카노 한 잔 주문하기","예: 머핀이나 쿠키 같은 간식도 같이 주문하기","예: 초콜릿이 들어간 음료가 있는지 물어보기","예: 먹고 갈지 포장할지 말하며 주문하기","예: 뭐가 제일 인기 있는지 물어보기"],
  size:["예: 미디엄으로 달라고 하기","예: 제일 큰 사이즈로 달라고 하기","예: 사이즈를 말하고 얼음 적게 부탁하기","예: 작은 사이즈면 된다고 말하기","예: 라지와 미디엄의 차이를 물어보기","예: 사이즈를 말하고 컵에 이름 써 달라고 하기","예: '스몰이면 충분해요'라고 말하고 이유 덧붙이기","예: 큰 걸로 해서 오래 마시겠다고 말하기","예: 사이즈를 고르고 가격이 얼마인지 물어보기","예: 미디엄으로 하고 빨대도 달라고 하기"],
  name:["예: 내 이름을 말하고 철자 불러 주기","예: 이름을 말하고 한국 이름이라고 덧붙이기","예: 친구들이 부르는 별명 알려 주기","예: 이름이 발음하기 어렵다고 말하고 쉬운 별명 알려 주기","예: 이름을 말하고 뜻을 한마디로 설명하기","예: 영어 이름이 따로 있다고 말하기","예: '제 이름은 좀 길어요'라고 웃으며 말하기","예: 이름을 말하고 '발음 맞게 하셨어요'라고 칭찬하기"],
  chat:["예: 짧게 대답하고 이유 하나 덧붙이기","예: 대답한 뒤 '당신은요?'라고 되묻기","예: 한국에서 왔다고 말해 보기","예: 상대 말에 '오, 멋지다!'라고 반응하기","예: 요즘 빠져 있는 것 이야기하기","예: 어제 본 영화나 드라마 이야기하기","예: 주말에 한 일 말하기","예: 좋아하는 음식 한 가지 말하기","예: 요즘 배우고 있는 걸 말하기","예: 키우는 반려동물이 있다고 말하기","예: 오늘 학교에서 있었던 일 하나 말하기","예: '저도 그래요!'라고 공감하고 이유 덧붙이기","예: 잘 모르겠다고 솔직히 말하고 다시 물어보기","예: '좀 더 천천히 말해 줄래요?'라고 부탁하기","예: 어제 저녁에 뭘 했는지 말하기","예: 좋아하는 운동이나 취미 말하기","예: 영어 공부 중이라고 말하기","예: 이번 방학 계획 말하기"],
  close:["예: 고맙다고 하고 좋은 하루 보내라고 하기","예: 다음 주에 또 오겠다고 말하기","예: 음료 맛있어 보인다고 말하기","예: '대화 즐거웠어요'라고 말하기","예: '다음에 또 얘기해요'라고 인사하기","예: 오늘 영어로 말해서 뿌듯하다고 말하기","예: '수고하세요'에 해당하는 인사하기","예: '당신도 좋은 하루요!'라고 받아치기","예: '맛있게 마실게요'라고 말하기","예: 이제 공부하러 가야 한다고 말하기"],
- free:["예: 질문에 답하고 하나 더 덧붙이기","예: 바리스타에게 좋아하는 음식 물어보기","예: 근처에 갈 만한 곳 물어보기","예: 오늘 있었던 일 하나 이야기하기","예: 대답하고 '너는 어때?'라고 되묻기","예: 이제 가 봐야 한다고 인사하기","예: 주말에 뭐 하는지 물어보기","예: 좋아하는 영화나 노래 물어보기","예: 어릴 때 꿈이 뭐였는지 물어보기","예: 여행 가고 싶은 곳 말하기","예: 이 카페의 인기 메뉴 물어보기","예: 한국에 대해 하나 알려 주기","예: 요즘 스트레스 푸는 방법 물어보기","예: 내가 좋아하는 계절 이야기하기","예: 반려동물이 있는지 물어보기","예: 최근에 웃었던 일 이야기하기","예: '정말요? 더 말해 주세요!'라고 호기심 보이기","예: 다음 주 계획 이야기하기","예: 좋아하는 가수나 배우 물어보기","예: 아침형인지 저녁형인지 이야기하기"]};
+ free:["예: 질문에 답하고 하나 더 덧붙이기","예: 스몰메이트에게 좋아하는 음식 물어보기","예: 근처에 갈 만한 곳 물어보기","예: 오늘 있었던 일 하나 이야기하기","예: 대답하고 '너는 어때?'라고 되묻기","예: 이제 가 봐야 한다고 인사하기","예: 주말에 뭐 하는지 물어보기","예: 좋아하는 영화나 노래 물어보기","예: 어릴 때 꿈이 뭐였는지 물어보기","예: 여행 가고 싶은 곳 말하기","예: 이 카페의 인기 메뉴 물어보기","예: 한국에 대해 하나 알려 주기","예: 요즘 스트레스 푸는 방법 물어보기","예: 내가 좋아하는 계절 이야기하기","예: 반려동물이 있는지 물어보기","예: 최근에 웃었던 일 이야기하기","예: '정말요? 더 말해 주세요!'라고 호기심 보이기","예: 다음 주 계획 이야기하기","예: 좋아하는 가수나 배우 물어보기","예: 아침형인지 저녁형인지 이야기하기"]};
 const EXPR={
  greet:[{p:"I'm feeling ...",m:"오늘 기분을 말할 때: I'm feeling pretty good.",re:/feeling/i},{p:"I just ...",m:"방금 한 일: I just finished class.",re:/\bi just\b/i},{p:"kind of",m:"'조금, 약간': I'm kind of tired.",re:/kind of|sort of/i},{p:"It's been a ... day",m:"'~한 하루였어요': It's been a long day.",re:/been a\b.*\bday/i},{p:"How about you?",m:"되묻기",re:/how about you|and you|what about you/i}],
  order:[{p:"Can I get ...?",m:"주문할 때 가장 흔한 틀: Can I get a latte?",re:/can i (get|have)/i},{p:"I'd like ...",m:"정중한 주문: I'd like an iced tea.",re:/i'?d like|i would like/i},{p:"with ... instead of ...",m:"'~ 대신 ~로': with oat milk instead of regular.",re:/instead of/i},{p:"Could you make it ...?",m:"'~하게 해 주실래요?': Could you make it less sweet?",re:/could you (make|add)/i},{p:"What's ... like?",m:"'~는 어떤 맛이에요?': What's the mocha like?",re:/what'?s .* like|what is .* like/i},{p:"I'll have ...",m:"'~로 할게요': I'll have the same.",re:/i'?ll (have|take|go with)/i}],
@@ -2176,7 +2176,7 @@ const TALK=[
 ];
 const TALK_OK=[["Ooh, I love that!","No way, that's so cool!","Ha, nice! Good to know."],["Oh, cool. That's nice.","Oh. Nice. I, um, like that.","Cool, cool."],["Nice.","Cool.","Ha, solid."],["Okay, I respect that.","Great answer. Ten points.","Noted. That's going in my novel."],["Oh, how lovely, dear!","Oh, isn't that nice, honey.","Well, good for you, sweetie."]];
 /* 나머지 15명(같은 성격 유형의 다른 바리스타): 자기 설정이 있는 질문은 따로 쓴 대답,
-   그 밖에는 기본 5명의 대답 중 '기본 바리스타만의 설정'(고양이 Mochi, 텍사스 등)이 없는 것만 씁니다. */
+   그 밖에는 기본 5명의 대답 중 '기본 스몰메이트만의 설정'(고양이 Mochi, 텍사스 등)이 없는 것만 씁니다. */
 const TALK_X={
  jasmine:{sport:["I'm on the cheer team! Go Tigers! Do you play any sports?"],school:["Yes! I'm in college, and I'm on the cheer team! Are you a student? You look so smart!"],weekendplan:["We have a big game on Saturday! You should come! What are you doing this weekend?"],hobby:["Cheer practice, obviously! And dancing in my room. What do you do for fun?"]},
  priya:{fromwhere:["I'm from India originally, but I grew up here! Where are you from?"],travel:["I love it! I've been to eight countries. Next is Japan in the spring! Where have you traveled?"],wanttogo:["Japan! I'm going in the spring. And then Peru! Where would you go?"],weekendplan:["I'm planning my Japan trip! So many maps. What are you doing this weekend?"]},
@@ -2517,18 +2517,18 @@ function renderStart(){
   const hist=gamesList().slice(-5).reverse(), saved=savedList(), pr=myProg(), u=AUTH.user, ch=todayChal();
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:8px">
-    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
-    <h1>Small Talk Café</h1>
-    <p class="muted">바리스타를 골라 영어로 주문하고 수다를 떨어 보세요. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Everyday places · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
+    <h1>Small Talk</h1>
+    <p class="muted">카페, 호텔, 병원 같은 장소에서 영어로 말해 보세요. 스몰메이트를 골라 카페 대화를 하거나, 아래에서 장소를 바꿔 연습할 수 있습니다. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
   </header>
   <button class="mestrip" id="prof">${u&&u.photo?`<img class="av sm" src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<span class="av sm">${u&&u.name?esc(u.name.slice(0,1)):'🙂'}</span>`}<span class="t"><span class="row" style="gap:6px"><b>${u?esc(u.name||'나'):'게스트'}</b>${lvBadge(pr.lv)}</span><small>${u?'기록이 계정에 저장돼요':AUTH.on?'구글로 로그인하면 다른 기기에서도 레벨이 이어져요':'레벨과 기록은 이 기기에 저장돼요'}</small></span><span class="go">내 프로필 ›</span></button>
   ${dailyStrip()}
   <div class="chalbar"><span class="k">TODAY'S CHALLENGE · 쓰면 +${CHAL_BONUS} XP</span><span><b>${esc(ch.p)}</b> <span class="muted">${esc(ch.ko)}</span></span></div>
   <section style="display:flex;flex-direction:column;gap:10px">
-    <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'바리스타 20명':'오늘의 바리스타 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
+    <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'스몰메이트 20명':'오늘의 스몰메이트 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
     <div class="personas">${(SHOWALL?GROUPS.flat():todays()).map(id=>{const p=P[id];return `<button class="pcard" data-p="${id}"><span class="role">${p.role}</span><span class="nm">${p.name}</span><span class="ds">${p.desc}</span><span class="say">“${esc(p.lines.greet)}”</span></button>`}).join('')}</div>
   </section>
-  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'바리스타'} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul></section>`:''}
+  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'스몰메이트'} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul></section>`:''}
   ${reviewPanel()}
   ${scenePanel()}
   <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 없습니다.</p>`}</section>`;
@@ -2549,19 +2549,19 @@ function renderInfo(){
   </header>
   <section class="panel">
     <h3>어떤 곳인가요?</h3>
-    <p class="muted" style="font-size:.88rem">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 시험 영어가 아니라 실제로 쓰는 말을 연습하는 곳이라, 영어로 자유롭게 입력하면 됩니다.</p>
+    <p class="muted" style="font-size:.88rem">미국 동네 카페에서 주문하고 스몰메이트와 스몰토크를 나누거나, 호텔·병원·식당 같은 장소를 골라 연습합니다. 시험 영어가 아니라 실제로 쓰는 말을 연습하는 곳이라, 영어로 자유롭게 입력하면 됩니다.</p>
   </section>
   <section class="panel">
     <h3>대화 순서 (${STAGES.length}단계)</h3>
     <p class="muted" style="font-size:.88rem">${STAGES.map(x=>STAGE_KO[x]).join(' → ')}</p>
   </section>
   <section class="panel">
-    <h3>바리스타</h3>
-    <p class="muted" style="font-size:.88rem">바리스타 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다. 홈의 ‘20명 전체 보기’로 아무나 고를 수도 있습니다.</p>
+    <h3>스몰메이트</h3>
+    <p class="muted" style="font-size:.88rem">스몰메이트 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다. 홈의 ‘20명 전체 보기’로 아무나 고를 수도 있습니다.</p>
   </section>
   <section class="panel">
     <h3>힌트와 단어 뜻</h3>
-    <p class="muted" style="font-size:.88rem">막히면 ‘힌트 보기’로 쓸 만한 표현을 볼 수 있고, 바리스타 말의 단어를 누르면 뜻이 나옵니다. 뜻을 볼 때마다 그 단계 점수가 5점 줄어듭니다. 힌트에서 ‘저장’을 누른 표현은 홈의 ‘저장한 표현’에 모입니다.</p>
+    <p class="muted" style="font-size:.88rem">막히면 ‘힌트 보기’로 쓸 만한 표현을 볼 수 있고, 스몰메이트 말의 단어를 누르면 뜻이 나옵니다. 뜻을 볼 때마다 그 단계 점수가 5점 줄어듭니다. 힌트에서 ‘저장’을 누른 표현은 홈의 ‘저장한 표현’에 모입니다.</p>
   </section>
   <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>힌트 설명 언어</h3>${langToggle()}</div>
@@ -2606,7 +2606,7 @@ function renderChat(){
   const hk=S.free?'chat':hintKey(st);
   app.innerHTML=`
   <div class="bar">
-    <div class="who"><span class="eyebrow">${p.role}</span><h2>${p.name}</h2></div>
+    <div class="who"><span class="eyebrow">${S.scene?S.scene.em+' '+esc(S.scene.ko)+' · '+esc(S.scene.who):p.role}</span><h2>${p.name}</h2></div>
     <button class="btn" id="quit">처음으로</button>
   </div>
   <div class="prog" aria-label="진행 단계"><div class="pl"><span>${(()=>{const s=STAGES[Math.min(S.idx,STAGES.length-1)];const ch=STAGES.filter(x=>/^chat\d$/.test(x));return /^chat\d$/.test(s)?(LANG==='ko'?'잡담':'Small talk')+' '+(ch.indexOf(s)+1)+' / '+ch.length:(LANG==='ko'?STAGE_KO[s]:STAGE_EN[s])})()}</span><span class="muted">${Math.min(S.idx+1,STAGES.length)} / ${STAGES.length}</span></div><div class="pb"><i style="width:${S.done?100:Math.min(S.idx,STAGES.length-1)/(STAGES.length-1)*100}%"></i></div></div>
@@ -2617,7 +2617,7 @@ function renderChat(){
   <div class="composer">
     ${S.done?`<button class="btn primary" id="toReceipt">영수증 받기</button>`:S.ended&&!S.busy?`<div class="row"><button class="btn primary" id="more">더 이야기하기</button><button class="btn" id="stop">대화 마치기</button></div>`:S.ended?'':`
     ${S.hintsOpen?`<div class="hints">
-      ${S.hintNote?`<p class="note">${LANG==='ko'?'바리스타가 잘 못 알아들었어요. 아래 표현을 참고해서 다시 말해 보세요.':"The barista didn't catch that. Try again with one of these."}</p>`:''}
+      ${S.hintNote?`<p class="note">${LANG==='ko'?(S.scene?S.scene.who:'스몰메이트')+'가 잘 못 알아들었어요. 아래 표현을 참고해서 다시 말해 보세요.':(S.scene?"The staff member":"The small mate")+" didn't catch that. Try again with one of these."}</p>`:''}
       ${(()=>{const c=todayChal(S.lv);return `<p class="chal">오늘의 도전 표현: <b>${esc(c.p)}</b> · 쓰면 +${CHAL_BONUS} XP</p>`})()}
       ${(()=>{const q=S.hk&&QH[S.hk],base=q?QH[S.hk].h:HINTS[hk],lv=S.lv||2;if(lv<3)return base;if(q)return base.slice(0,lv>=5?1:lv>=4?2:3);const nat=LV_HINTS[hk]||[];return lv>=5?nat.slice(0,1):lv>=4?nat.slice(0,2):nat.slice(0,2).concat(base.slice(0,2))})().map(([en,ko,enx])=>`<div class="chip"><div class="t"><b>${esc(en)}</b><small>${esc(LANG==='ko'&&(S.lv||2)<3?ko:enx)}</small></div><div class="acts"><button data-use="${esc(en)}">쓰기</button><button data-save="${esc(en)}" data-ko="${esc(ko)}">${savedList().some(x=>x.en===en)?'저장됨':'저장'}</button></div></div>`).join('')}
     </div>`:''}
@@ -2677,7 +2677,7 @@ function renderReceipt(){
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Your receipt</span><h1>오늘의 대화</h1><p class="muted">단계마다 가장 잘한 답 하나로 계산했습니다. 다른 사람과 비교하지 않고, 내 지난 기록과만 비교합니다.</p></header>
   <div class="receipt">
-    <div class="hd"><b>SMALL TALK CAFÉ</b><span>barista: ${p.name.toUpperCase()} (${p.role})</span><span>${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+    <div class="hd"><b>${S.scene?'SMALL TALK · '+esc(S.scene.ko):'SMALL TALK CAFÉ'}</b><span>${S.scene?'staff':'small mate'}: ${p.name.toUpperCase()} (${S.scene?S.scene.who:p.role})</span><span>${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div>
     <div class="dash"></div>
     ${STAGES.map(s=>{const b=S.best[s]||{text:'—',score:0};const lk=S.looked[s]?S.looked[s].length:0,hc=hintCost(s);return `<div class="line">
       <div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><span class="tier s${b.score}">${TN[b.score]} ${lk||hc?`${b.score} − ${lk*PENALTY+hc} = ${adj(s)}`:b.score}</span></div>
@@ -2694,8 +2694,8 @@ function renderReceipt(){
   </div>
   ${receiptLevel()}
   ${receiptNative()}
-  <div class="row"><button class="btn primary" id="again">${p.name}와 다시 하기</button><button class="btn" id="home">다른 바리스타 고르기</button></div>`;
-  app.querySelector('#again').onclick=()=>start(S.pid);
+  <div class="row"><button class="btn primary" id="again">${p.name}와 다시 하기</button><button class="btn" id="home">${S.scene?'처음으로 돌아가기':'다른 스몰메이트 고르기'}</button></div>`;
+  app.querySelector('#again').onclick=()=>start(S.pid,S.scene&&S.scene.id);
   app.querySelector('#home').onclick=()=>{S=null;render()};
 }
 function logToBottom(){const l=document.getElementById('log');if(l)l.scrollTop=l.scrollHeight}
@@ -2754,7 +2754,7 @@ Object.assign(MODEL,MOD);Object.values(P).forEach(p=>{if(p.model)Object.assign(p
 Object.assign(STAGE_TIP.ko,TIPK);Object.assign(STAGE_TIP.en,TIPE);
 /* ================= 3년·하루 3판용 시스템 =================
    1) 매 판 잡담 질문 4개를 질문 풀(40개)에서 바꿔 끼움  2) 바리스타가 이름·지난 대답을 기억(단골 단계)
-   3) 날짜·시간대 이벤트  4) 주마다 이어지는 바리스타 근황  5) 연속 출석·하루 3판 목표·기념 배지
+   3) 날짜·시간대 이벤트  4) 주마다 이어지는 스몰메이트 근황  5) 연속 출석·하루 3판 목표·기념 배지
    ROT_ON=false 로 두면 예전과 똑같이 동작합니다(시험용). 설명서: plan/long-term-systems.md */
 const ROT_ON=true;
 const ROT_ST=['chat3','chat4','chat5','chat6'],ROT_DEF={chat3:'music',chat4:'food',chat5:'pets',chat6:'week'};
@@ -3009,7 +3009,7 @@ function progOf(games){let xp=0,lv=1,best=0,chal=0;const rec=[];
 function myProg(){return progOf(gamesList())}
 function talkLv(){const p=myProg();if(window.__TEST_LV)return window.__TEST_LV;const c=store.get('stc.talkLv',null);return c&&c>=1&&c<=p.lv?c:p.lv}
 function lvBadge(lv){return `<span class="lvb lv${lv}">Lv${lv} ${LV[lv].ko}</span>`}
-function nextNeed(pr){if(pr.lv>=6)return '최고 레벨입니다. 바리스타와 마음껏 수다 떨어 보세요.';
+function nextNeed(pr){if(pr.lv>=6)return '최고 레벨입니다. 스몰메이트와 마음껏 수다 떨어 보세요.';
   const need=LV_XP[pr.lv+1]-pr.xp, okAvg=pr.recent.length>=3&&pr.avg3>=LV_AVG[pr.lv+1];
   const a=need>0?`XP ${need} 더`:'XP 충분';
   const b=pr.recent.length<3?`대화 ${3-pr.recent.length}번 더(평균 계산용)`:okAvg?`최근 3번 평균 ${pr.avg3}점, 통과`:`최근 3번 평균 ${pr.avg3}점 → ${LV_AVG[pr.lv+1]}점 이상 필요`;
@@ -3110,7 +3110,7 @@ const NATIVE={greet:["Not too bad! Just got outta class, so I'm kinda fried. You
 /* ---------- 영수증: 레벨 결과 + 원어민은 이렇게 말해요 ---------- */
 function receiptLevel(){const R=S.result;if(!R)return '';const up=R.after.lv>R.before.lv;
   return `${S.revHits&&S.revHits.length?`<section class="panel lvres"><div class="lvup">복습 성공 ${S.revHits.length}개</div><p style="font-size:.88rem">${S.revHits.map(esc).join('<br>')}</p><p class="muted" style="font-size:.82rem">다음 복습 날짜가 뒤로 밀렸어요.</p></section>`:''}${S.newBadges&&S.newBadges.length?`<section class="panel lvres"><div class="lvup">새 배지! ${esc(S.newBadges.join(', '))}</div></section>`:''}<section class="panel lvres">
-    ${up?`<div class="lvup">레벨 업! ${lvBadge(R.after.lv)}</div><p style="font-size:.9rem">이제 바리스타가 ${esc(LV[R.after.lv].talk)}</p><div class="dash"></div>`:''}
+    ${up?`<div class="lvup">레벨 업! ${lvBadge(R.after.lv)}</div><p style="font-size:.9rem">이제 ${S.scene?esc(S.scene.who):'스몰메이트'}가 ${esc(LV[R.after.lv].talk)}</p><div class="dash"></div>`:''}
     <div class="row" style="justify-content:space-between"><h3>오늘 얻은 XP</h3><span class="gain num">+${R.gain}</span></div>
     <p style="font-size:.88rem">${R.hit?`오늘의 도전 표현 <b>${esc(R.chal.p)}</b> 성공! 보너스 +${CHAL_BONUS} XP가 들어 있어요.`:`<span class="muted">오늘의 도전 표현 <b>${esc(R.chal.p)}</b>을(를) 다음 대화에서 써 보세요. 예: ${esc(R.chal.ex)} (+${CHAL_BONUS} XP)</span>`}</p>
     <div class="row" style="justify-content:space-between"><span style="font-weight:700;font-size:.88rem">내 레벨</span>${lvBadge(R.after.lv)}</div>
@@ -3123,7 +3123,7 @@ function receiptNative(){
   return `<section class="panel"><h3>원어민은 이렇게 말해요</h3>
     <p class="muted" style="font-size:.82rem">점수가 낮았던 단계를 원어민이 편하게 말하면 이렇습니다. 소리 내어 따라 해 보세요.</p>
     ${low.map(([s])=>`<div class="line"><div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><button class="btn themebtn" data-nsave="${esc(NATIVE[s][0])}" data-nko="${esc(NATIVE[s][1])}">${savedList().some(x=>x.en===NATIVE[s][0])?'저장됨':'저장'}</button></div><div class="tip">내 답: “${esc(S.best[s]?S.best[s].text:'—')}”</div><div class="model">${esc(NATIVE[s][0])}</div><div class="tip">${esc(NATIVE[s][1])}</div></div>`).join('')}
-    ${h.length?`<div class="dash"></div><h3>오늘 바리스타가 쓴 원어민 표현</h3><ul class="list">${h.map(([k,ko])=>`<li><span class="en">${esc(k)}</span><span class="muted" style="text-align:right">${esc(ko)}</span></li>`).join('')}</ul>`:(S.lv||2)<3?`<p class="muted" style="font-size:.82rem">Lv3 현지인부터는 바리스타가 이런 표현을 직접 섞어 말해요.</p>`:''}
+    ${h.length?`<div class="dash"></div><h3>오늘 ${S.scene?esc(S.scene.who):'스몰메이트'}가 쓴 원어민 표현</h3><ul class="list">${h.map(([k,ko])=>`<li><span class="en">${esc(k)}</span><span class="muted" style="text-align:right">${esc(ko)}</span></li>`).join('')}</ul>`:(S.lv||2)<3?`<p class="muted" style="font-size:.82rem">Lv3 현지인부터는 스몰메이트가 이런 표현을 직접 섞어 말해요.</p>`:''}
   </section>`}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-nsave]');if(b){saveChunk2(b.dataset.nsave,b.dataset.nko);b.textContent='저장됨'}});
 
@@ -3195,14 +3195,14 @@ function renderProfile(){
   </header>
   <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>로그인</h3>${u?`<button class="btn" id="logout">로그아웃</button>`:AUTH.on?`<button class="btn primary gbtn" id="login" ${AUTH.busy||!AUTH.ready?'disabled':''}>${AUTH.busy?'로그인 중…':'구글로 로그인'}</button>`:''}</div>
-    <p class="muted" style="font-size:.85rem">${!AUTH.on?'구글 로그인은 아직 준비 중이에요. 그동안에도 레벨과 기록은 이 기기에 저장됩니다.':u?(AUTH.sync||'기록이 계정에 저장됩니다.')+' 다른 휴대폰이나 컴퓨터에서 로그인해도 레벨, 바리스타가 기억하는 내용, 출석 기록이 이어져요.':'로그인하면 지금 기기의 기록과 합쳐져서 다른 기기에서도 이어집니다. 기존 기록은 사라지지 않아요. 로그아웃하면 이 기기에서는 기록이 지워지고 계정에만 남습니다.'}</p>
+    <p class="muted" style="font-size:.85rem">${!AUTH.on?'구글 로그인은 아직 준비 중이에요. 그동안에도 레벨과 기록은 이 기기에 저장됩니다.':u?(AUTH.sync||'기록이 계정에 저장됩니다.')+' 다른 휴대폰이나 컴퓨터에서 로그인해도 레벨, 스몰메이트가 기억하는 내용, 출석 기록이 이어져요.':'로그인하면 지금 기기의 기록과 합쳐져서 다른 기기에서도 이어집니다. 기존 기록은 사라지지 않아요. 로그아웃하면 이 기기에서는 기록이 지워지고 계정에만 남습니다.'}</p>
     ${AUTH.err?`<p class="note" style="font-size:.85rem;color:var(--error-dark)">${esc(AUTH.err)}</p>`:''}
   </section>
   <section class="panel">
     <div class="row" style="justify-content:space-between"><h3>내 레벨</h3>${lvBadge(pr.lv)}</div>
     <div class="prog">${xpBar(pr)}</div>
     <p class="muted" style="font-size:.85rem">${nextNeed(pr)}</p>
-    <div class="row" style="justify-content:space-between;margin-top:4px"><span style="font-size:.85rem;font-weight:700">바리스타 말투</span><div class="seg" role="group" aria-label="바리스타 말투 난이도">${[1,2,3,4,5,6].filter(l=>l<=pr.lv).map(l=>`<button data-tl="${l}" aria-pressed="${tl===l}">Lv${l}</button>`).join('')}</div></div>
+    <div class="row" style="justify-content:space-between;margin-top:4px"><span style="font-size:.85rem;font-weight:700">스몰메이트 말투</span><div class="seg" role="group" aria-label="스몰메이트 말투 난이도">${[1,2,3,4,5,6].filter(l=>l<=pr.lv).map(l=>`<button data-tl="${l}" aria-pressed="${tl===l}">Lv${l}</button>`).join('')}</div></div>
     <p class="muted" style="font-size:.85rem">Lv${tl} ${LV[tl].ko}: ${LV[tl].talk}${pr.lv>1?' 올라간 레벨까지는 언제든 골라서 연습할 수 있어요.':''}</p>
   </section>
   <section class="stats">
@@ -3211,9 +3211,9 @@ function renderProfile(){
     <div><b class="num">${pr.recent.length?pr.avg3:'–'}</b><span>최근 3번 평균</span></div>
     <div><b class="num">${pr.chal}</b><span>도전 표현 성공</span></div>
   </section>
-  <section class="panel"><h3>연속 출석·배지</h3>${(()=>{const i=streakInfo(),b=badgesNow();return `<p style="font-size:.9rem"><b>${i.streak}</b>일 연속 · 오늘 ${i.today}/${DAILY_GOAL}판 · 하루 ${DAILY_GOAL}판 달성 ${i.goalDays}일 · 총 ${i.total}판</p>${b.length?`<p style="font-size:.88rem">${badgeNames(b).map(x=>`<span class="badge">${esc(x)}</span>`).join(' ')}</p>`:`<p class="muted" style="font-size:.85rem">첫 대화를 마치면 배지가 생겨요.</p>`}`})()}<p class="muted" style="font-size:.82rem">바리스타가 내 이름과 지난 대답을 기억해요(이 기기에 저장).</p></section>
+  <section class="panel"><h3>연속 출석·배지</h3>${(()=>{const i=streakInfo(),b=badgesNow();return `<p style="font-size:.9rem"><b>${i.streak}</b>일 연속 · 오늘 ${i.today}/${DAILY_GOAL}판 · 하루 ${DAILY_GOAL}판 달성 ${i.goalDays}일 · 총 ${i.total}판</p>${b.length?`<p style="font-size:.88rem">${badgeNames(b).map(x=>`<span class="badge">${esc(x)}</span>`).join(' ')}</p>`:`<p class="muted" style="font-size:.85rem">첫 대화를 마치면 배지가 생겨요.</p>`}`})()}<p class="muted" style="font-size:.82rem">스몰메이트가 내 이름과 지난 대답을 기억해요(이 기기에 저장).</p></section>
   <section class="panel"><h3>오늘의 도전 표현</h3><p><b>${esc(chal.p)}</b> <span class="muted">${esc(chal.ko)}</span></p><p class="muted" style="font-size:.85rem">예: ${esc(chal.ex)} · 대화 중에 쓰면 +${CHAL_BONUS} XP</p></section>
-  <section class="panel"><h3>최근 기록</h3>${recent.length?`<ul class="list">${recent.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'바리스타'} · ${new Date(h.at).toLocaleDateString('ko-KR')}${h.b?' · 도전 성공':''}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 끝까지 한 대화가 없어요. 바리스타를 골라 첫 대화를 해 보세요.</p>`}</section>
+  <section class="panel"><h3>최근 기록</h3>${recent.length?`<ul class="list">${recent.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'스몰메이트'} · ${new Date(h.at).toLocaleDateString('ko-KR')}${h.b?' · 도전 성공':''}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 끝까지 한 대화가 없어요. 스몰메이트를 골라 첫 대화를 해 보세요.</p>`}</section>
   <section class="panel"><h3>레벨 안내</h3><ul class="list">${[1,2,3,4,5,6].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul></section>`;
   app.querySelector('#back').onclick=()=>{PROFILE=false;render();scrollTo(0,0)};
   const li=app.querySelector('#login');if(li)li.onclick=signIn;
