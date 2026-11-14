@@ -1,0 +1,1877 @@
+<title>Small Talk Café</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one narrow column like a phone at the counter; chat in the middle, receipt at the end */
+:root{
+  --bg:#f7f6f3; --surface:#ffffff; --ink:#24201b; --muted:#6f675d; --line:#e4dfd7;
+  --accent:#a8641e; --accent-soft:#f3e6d6; --me:#24201b; --me-ink:#fbf8f3;
+  --t10:#8c857b; --t30:#3f6fa3; --t60:#2f8a5f; --t100:#b57a10;
+  --display:"Bricolage Grotesque", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --body:system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171512; --surface:#211e1a; --ink:#efe9e1; --muted:#a59c90; --line:#35302a;
+  --accent:#e0a458; --accent-soft:#3a2d1f; --me:#efe9e1; --me-ink:#1b1814;
+  --t10:#9d958a; --t30:#7fa8d6; --t60:#6cc49a; --t100:#e8b44a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171512; --surface:#211e1a; --ink:#efe9e1; --muted:#a59c90; --line:#35302a;
+  --accent:#e0a458; --accent-soft:#3a2d1f; --me:#efe9e1; --me-ink:#1b1814;
+  --t10:#9d958a; --t30:#7fa8d6; --t60:#6cc49a; --t100:#e8b44a; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding-block:20px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:2rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.25rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 12px;font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* start */
+.personas{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.pcard{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.pcard:hover{border-color:var(--accent)}
+.pcard .nm{font-family:var(--display);font-weight:700;font-size:1.15rem}
+.pcard .role{font-family:var(--mono);font-size:.75rem;color:var(--accent)}
+.pcard .ds{font-size:.88rem;color:var(--muted)}
+.pcard .say{font-size:.85rem;font-style:italic;border-top:1px dashed var(--line);padding-top:6px}
+.panel{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.list li{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}
+.list .en{font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* chat */
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.who{display:flex;flex-direction:column}
+.steps{display:flex;gap:4px;flex-wrap:wrap}
+.steps span{font-family:var(--mono);font-size:.7rem;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.steps span.on{border-color:var(--accent);color:var(--accent);font-weight:600}
+.steps span.done{background:var(--accent-soft);border-color:transparent;color:var(--ink)}
+.log{display:flex;flex-direction:column;gap:10px;min-height:320px}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;line-height:1.45;min-width:0;overflow-wrap:anywhere}
+.msg.b{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.u{align-self:flex-end;background:var(--me);color:var(--me-ink);border-bottom-right-radius:4px}
+.msg .spk{border:0;background:none;color:var(--muted);font-size:.75rem;padding:0;margin-left:8px;text-decoration:underline}
+.typing{align-self:flex-start;color:var(--muted);font-size:.85rem;font-family:var(--mono)}
+.composer{position:sticky;bottom:0;background:var(--bg);padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
+.composer form{display:flex;gap:8px}
+.composer input{flex:1;min-width:0;font:inherit;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.hints{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.hints .note{font-size:.85rem;color:var(--accent)}
+.chip{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;border-top:1px dashed var(--line);padding-top:8px}
+.chip:first-of-type{border-top:0;padding-top:0}
+.chip .t{min-width:0}
+.chip .t b{display:block}
+.chip .t small{color:var(--muted)}
+.chip .acts{display:flex;gap:6px;flex-shrink:0}
+.chip .acts button{font-size:.78rem;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:transparent}
+
+.gl{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-decoration-color:var(--muted);text-underline-offset:3px}
+.gl:hover{color:var(--accent)}
+[hidden]{display:none!important}
+.gl.w{text-decoration:none}
+.gl.w:hover,.gl.w.on{text-decoration:underline;text-decoration-color:var(--accent)}
+.glbox .sense{line-height:1.45}
+.glbox .sense i{color:var(--muted);font-style:normal;margin-right:4px}
+.glbox .ex{display:block;color:var(--muted);font-size:.8rem}
+.glbox .src{font-size:.72rem;color:var(--muted)}
+.glbox{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--accent-soft);font-size:.88rem;display:flex;flex-direction:column;gap:6px}
+.glbox .row{font-size:.78rem}
+.glbox button{font-size:.78rem;padding:3px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
+.btnlink{font-size:.78rem;padding:4px 8px;border-radius:8px;border:1px solid var(--line);color:var(--ink);text-decoration:none;white-space:nowrap}
+/* receipt */
+.receipt{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 18px;font-family:var(--mono);font-size:.85rem;display:flex;flex-direction:column;gap:12px;
+  -webkit-mask:radial-gradient(circle 6px at 50% 0,#0000 98%,#000) 0 0/14px 100% repeat-x;mask:radial-gradient(circle 6px at 50% 0,#0000 98%,#000) 0 0/14px 100% repeat-x;padding-top:24px}
+.receipt .hd{text-align:center;display:flex;flex-direction:column;gap:2px}
+.receipt .hd b{font-size:1.05rem;letter-spacing:.1em}
+.dash{border-top:1px dashed var(--muted);opacity:.6}
+.line{display:flex;flex-direction:column;gap:4px}
+.line .top{display:flex;justify-content:space-between;gap:8px}
+.line .said{font-family:var(--body);font-size:.9rem;overflow-wrap:anywhere}
+.line .tip{font-family:var(--body);font-size:.82rem;color:var(--muted)}
+.line .model{font-family:var(--body);font-size:.82rem;border-left:2px solid var(--accent);padding-left:8px}
+.tier{font-weight:600;font-variant-numeric:tabular-nums}
+.tier.s0{color:var(--t10);opacity:.7}.tier.s10{color:var(--t10)}.tier.s30{color:var(--t30)}.tier.s60{color:var(--t60)}.tier.s100{color:var(--t100)}
+.total{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:600}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.8rem}
+@media (prefers-reduced-motion: no-preference){.msg{animation:pop .18s ease-out}@keyframes pop{from{transform:translateY(4px);opacity:.4}to{transform:none;opacity:1}}}
+.kofrom{display:block;margin-top:4px;font-size:12px;opacity:.8;line-height:1.4}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* ---------- storage helpers ---------- */
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let LANG=store.get('stc.lang','ko');
+
+/* ---------- personas ---------- */
+const P={
+maya:{name:'Maya',role:'수다쟁이',desc:'리액션이 크고 질문을 많이 던지는 대학생 바리스타',
+ lines:{greet:"Hi! Welcome in! How's your day going so far?",order:"So, what can I get started for you today?",size:"Love that choice! What size do you want? Small, medium, or large?",name:"Perfect. And can I get a name for the cup?",chat1:"So are you a student around here? You totally look like you're on a study break.",chat2:"Okay, last question, I promise. Any fun plans for the weekend?",close:"Here's your {size} {drink}, {name}! Careful, it's hot!",end:"Bye! Come back and tell me how the weekend went!"},
+ react:{greetPos:["Yay, love to hear that!","Oh nice, that makes me happy!"],greetNeg:["Aw, no! Well, coffee fixes everything, right?","Oh no, I'm sorry! Let's make it better."],order:["Ooh, good pick!","Yes! That's one of my favorites."],size:["Got it!","Okay, perfect."],name:["Cute name!","Nice to meet you, {name}!"],chat1:["Oh, that's so cool!","No way, that's awesome!"],chat2:["Ahh, that sounds so fun!","Honestly? That sounds perfect."]},
+ follow:{greet:"Oh yeah? Anything exciting happen today?",chat1:"Oh really? Tell me more! What do you like about it?",chat2:"Ooh, like what? I need ideas!"},
+ back:{greet:"I'm great, thanks for asking! It's been super busy, but I love it.",chat1:"Me? I go to the community college down the street. I'm studying art!",chat2:"I'm going to a concert on Saturday! I'm so excited.",close:"Aw, you too!"},
+ clarify:["Sorry, it's kind of loud in here! What was that?","Wait, say that one more time?"],giveup:"No worries! Let's keep going.",
+ expect:{chat1:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|student|school|college|work|study|grade|senior|junior|sophomore|freshman)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|hike|hiking|walk|walking|run|running|gym|travel|traveling|write|writing|art|anime|yoga|bike|biking|skate|skateboarding|tennis|baseball|volleyball|dancing|singing|cooking|baking|knitting|garden|gardening|games|gaming|plans?|nothing|not really|maybe|yes|yeah|no|going|gonna|beach|movies?|friends|study|chill|relax|sleep|party|game|concert|shopping|homework)\b/},
+ model:{chat1:"Yeah! I'm a high school student. I just moved here from Korea, actually. Do you go to school around here too?",chat2:"Not really, but I might go to the beach with my friends. What about you?"}},
+leo:{name:'Leo',role:'수줍음',desc:'말이 짧고 조심스러운 신입 바리스타. 내가 대화를 이끌어야 합니다',
+ lines:{greet:"Oh, um, hi. Welcome. How… how are you today?",order:"What can I, um, get for you?",size:"Okay. And what size? We have small, medium, and large.",name:"Can I get a name for the order? Sorry, it's policy.",chat1:"Um, is this your first time here? I don't think I've seen you before.",chat2:"Do you, um, come here to study? It's pretty quiet in the mornings.",close:"Here's your {size} {drink}, {name}. I, um, drew a little leaf on it.",end:"Okay, bye. Have a nice day."},
+ react:{greetPos:["Oh, that's good. Nice.","Cool, cool."],greetNeg:["Oh no. I hope it gets better.","Sorry to hear that."],order:["Oh, nice. Good choice."],size:["Okay."],name:["Okay, {name}. Got it."],chat1:["Oh, cool. Welcome, I guess."],chat2:["Oh, nice. That's… that's nice."]},
+ follow:{greet:"Oh. Um, is it a busy day for you?",chat1:"Oh. How did you, um, find this place?",chat2:"Oh. What do you usually do here?"},
+ back:{greet:"I'm okay. A little sleepy. Thanks for asking, though.",chat1:"Me? I've worked here for about two months. It's my first job.",chat2:"I, um, like reading here after my shift. Mostly comics.",close:"Oh. Thanks. You too."},
+ clarify:["Sorry, I didn't catch that. Could you say it again?","Um, sorry, what was that?"],giveup:"It's okay. Um, let's move on.",
+ expect:{chat1:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|first|been|before|second|time|sometimes)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|sometimes|study|homework|read|quiet|maybe|not really)\b/},
+ model:{chat1:"Yeah, it's my first time! My friend told me the coffee here is really good. How long have you worked here?",chat2:"Sometimes! I like quiet places for studying. Do you study too?"}},
+sam:{name:'Sam',role:'바쁨',desc:'아침 러시에 정신없는 베테랑. 짧고 빠르게 말합니다',
+ lines:{greet:"Hey! How's it going?",order:"What can I get you?",size:"Size?",name:"Name?",chat1:"You live around here?",chat2:"Busy day ahead?",close:"{size} {drink} for {name}! Have a good one.",end:"Bye! Next!"},
+ react:{greetPos:["Nice!","Good stuff."],greetNeg:["Ah, rough. Hang in there."],order:["Yep, got it."],size:["Cool."],name:["Got it, {name}."],chat1:["Nice, nice."],chat2:["Ha, same here."]},
+ follow:{greet:"Yeah? Busy day?",chat1:"Oh yeah? Which part of town?",chat2:"Yeah? What's on the list?"},
+ back:{greet:"Busy! It's the morning rush. But good.",chat1:"I live like five minutes away. Super easy commute.",chat2:"Oh yeah. I've got a double shift and then a soccer game.",close:"Thanks, you too!"},
+ clarify:["Sorry, what was that?","Come again?"],giveup:"All good! Moving on.",
+ expect:{chat1:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|live|near|nearby|close|moved|blocks?|downtown|street)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|busy|kind of|not really|school|class|work|test|exam|free|chill)\b/},
+ model:{chat1:"Yeah, I live a few blocks away. I just moved here last month. Do you live nearby too?",chat2:"Kind of! I have two classes and a club meeting. How about you?"}},
+rico:{name:'Rico',role:'농담꾼',desc:'모든 대답에 농담을 섞는 바리스타. 웃으면서 받아칠 기회가 많습니다',
+ lines:{greet:"Welcome to the best coffee shop on this block! Also the only one. How's your day going?",order:"What can I brew for you today?",size:"And what size? Small, medium, or 'I have three exams today'?",name:"Name for the cup? I promise I'll spell it wrong only a little.",chat1:"So what brings you in today, besides my amazing personality?",chat2:"Okay, very important question. Cats or dogs?",close:"One {size} {drink} for {name}! Spelled perfectly, if I do say so myself.",end:"See ya! Don't forget to tip your local comedian!"},
+ react:{greetPos:["Love that. Keep that energy!","Nice! My day just got better too."],greetNeg:["Oof. Well, you came to the right place."],order:["Excellent choice. Very sophisticated."],size:["Wise decision."],name:["{name}! Great name. Way better than mine."],chat1:["Ha! Respect."],chat2:["Correct answer. I'm kidding, there's no wrong answer. Mostly."]},
+ follow:{greet:"Just good? Come on, give me the highlight of your day!",chat1:"That's it? I need more details for my novel!",chat2:"Okay, but why? Defend your answer!"},
+ back:{greet:"Honestly? Great. I told a customer a joke and they laughed. That never happens.",chat1:"Me? I'm here for the free coffee. And the paycheck. Mostly the coffee.",chat2:"Dogs. I have a corgi named Biscuit. He's the boss of me.",close:"You too! Tell your friends about me. The jokes, not the spelling."},
+ clarify:["Sorry, the espresso machine was screaming. What was that?","One more time? My ears are still waking up."],giveup:"No problem! Let's pretend that went great.",
+ expect:{chat1:/\b(maybe|kind of|sort of|study|studying|coffee|caffeine|study|studying|test|exam|break|friends?|meet|work|just|need|tired|you|personality)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|cats?|dogs?|both|neither|puppy|kitten)\b/},
+ model:{chat1:"Honestly, I just needed caffeine before my math test. And maybe a joke. Got any?",chat2:"Dogs, for sure! I have a dog back in Korea. Do you have any pets?"}},
+dottie:{name:'Dottie',role:'다정함',desc:'동네 사람을 다 아는 할머니 바리스타. 천천히, 따뜻하게 묻습니다',
+ lines:{greet:"Well, hello there, sweetie! How are you doing today?",order:"What can I make for you, hon?",size:"And what size would you like, dear?",name:"And what's your name, sweetheart?",chat1:"Are you new in town? I don't think I've seen your face before.",chat2:"So what do you like to do for fun, honey?",close:"Here's your {size} {drink}, {name}. I made it with love.",end:"Take care now, sweetie. Come back and see me!"},
+ react:{greetPos:["Oh, that's wonderful to hear!"],greetNeg:["Oh, bless your heart. It'll get better, I promise."],order:["Oh, good choice, dear."],size:["Alright, sweetie."],name:["What a lovely name, {name}."],chat1:["Oh, how nice!"],chat2:["Oh, isn't that lovely!"]},
+ follow:{greet:"Oh? Tell me, what's on your mind today, dear?",chat1:"Oh? And how do you like it so far?",chat2:"Oh, that's nice. How did you get into that?"},
+ back:{greet:"Oh, I'm doing just fine, thank you for asking, honey. My knees are complaining, but I'm happy.",chat1:"Me? I've lived here for forty years, dear. I've seen this whole street change.",chat2:"Oh, I love gardening. My tomatoes are the best in the neighborhood!",close:"Oh, thank you, sweetie. You too."},
+ clarify:["Sorry, dear, my hearing isn't what it used to be. One more time?","Pardon me, sweetie?"],giveup:"That's alright, dear. Let's keep going.",
+ expect:{chat1:/\b(maybe|kind of|sort of|study|studying|yes|yeah|yep|no|nope|new|moved|visiting|live|years?|months?|korea|from)\b/,chat2:/\b(maybe|kind of|sort of|study|studying|hike|hiking|walk|walking|run|running|gym|travel|traveling|write|writing|art|anime|yoga|bike|biking|skate|skateboarding|tennis|baseball|volleyball|dancing|singing|cooking|baking|knitting|garden|gardening|games|gaming|movies?|music|read|reading|games?|sports?|draw|drawing|paint|dance|sing|photos?|pictures?|cook|bake|shop|shopping|hang|friends|swim|soccer|basketball|guitar|piano|play|watch|k-?pop|nothing|sleep)\b/},
+ model:{chat1:"Yes, I just moved here from Korea last month. It's really different, but I like it. Have you lived here long?",chat2:"I love watching movies and taking pictures. What about you? What do you like to do?"}}
+};
+const PIDS=['maya','leo','sam','rico','dottie'];
+/* ---------- 15 more baristas: each borrows an archetype's reply tables (pi) but has its own voice ---------- */
+const BASENAME={maya:'Maya',leo:'Leo',sam:'Sam',rico:'Rico',dottie:'Dottie'};
+function mk(base,name,role,desc,L,B,F,C,G,R){const b=P[base];return {base,name,role,desc,lines:{...b.lines,...L},back:{...b.back,...B},follow:{...b.follow,...F},clarify:C,giveup:G,react:{...b.react,...R},expect:b.expect,model:b.model}}
+Object.assign(P,{
+jasmine:mk('maya','Jasmine','응원단장','뭐든 칭찬하고 응원해 주는 에너지 넘치는 바리스타',
+ {greet:"Heyyy! Welcome! You look amazing today! How are you?",order:"Okay, what are we drinking today?",size:"Ooh, yes! Small, medium, or large?",name:"And what name should I write on your cup? I'll make it super cute!",chat1:"So, are you a student? You look so smart!",chat2:"Okay, last one! What are you doing this weekend? Tell me everything!",close:"Here you go! One {size} {drink} for {name}! You're going to have an awesome day!",end:"Bye bye! You're doing great, okay? Come back soon!"},
+ {greet:"Aw, thanks for asking! I'm super good. I led our cheer practice this morning!",chat1:"Me? I'm on the cheer team at the college! Go Tigers!",chat2:"I have a big game on Saturday! You should come!",close:"Aw, you're the best! You too!"},
+ {greet:"Aww, tell me more! What made it good?",chat1:"Ooh, I want to hear more! What's your favorite class?",chat2:"Wait, that sounds fun! Who are you going with?"},
+ ["Sorry, I couldn't hear you over the blender! Say it again?","Wait, can you say that one more time? I want to hear everything!"],"No worries! You're doing great anyway!",
+ {greetPos:["Yay! That's the best!","Love that for you!"],greetNeg:["Aw, no! You've got this, okay?"],order:["Ooh, great choice!","Amazing pick!"],size:["Perfect!","You got it!"],name:["{name}! I love that name!"],chat1:["That's so cool!","You're so smart!"],chat2:["That sounds so fun!","Yes! Have a blast!"]}),
+priya:mk('maya','Priya','여행 덕후','세계 여행 이야기를 좋아하고, 어디서 왔는지 꼭 물어보는 바리스타',
+ {greet:"Hi there! Welcome! How's your day going so far?",order:"What can I get started for you?",size:"Nice! And what size? Small, medium, or large?",name:"Great. What's your name for the cup?",chat1:"So where are you from? I love meeting people from other countries!",chat2:"Do you have any travel plans? I'm always planning my next trip!",close:"Here's your {size} {drink}, {name}! Safe travels today!",end:"Bye! Send me a postcard sometime!"},
+ {greet:"I'm great! I just booked a trip to Japan, so I'm super happy.",chat1:"Me? I'm from India originally, but I grew up here. I miss my grandma's cooking!",chat2:"I'm going to Japan in the spring! I can't wait.",close:"Thank you! Safe travels to you too!"},
+ {greet:"Oh yeah? What's making it a good day?",chat1:"Oh, tell me more! What's your hometown like?",chat2:"Ooh, where would you go if you could go anywhere?"},
+ ["Sorry, the grinder was loud! Can you say that again?","Oops, I missed that. One more time?"],"No problem! Let's keep going.",
+ {greetPos:["Great to hear!","Awesome, that's a good start!"],greetNeg:["Oh no. I hope your day gets better."],order:["Ooh, nice choice!","Good one!"],size:["Okay, great!"],name:["Nice to meet you, {name}!"],chat1:["Wow, that's so interesting!","Oh, I'd love to go there someday!"],chat2:["Oh, that sounds amazing!","Ooh, I'm jealous!"]}),
+tyler:mk('maya','Tyler','운동 선수','운동 얘기에 신나는 에너지 넘치는 바리스타',
+ {greet:"Hey, welcome in! What's up? How's your day?",order:"What are we getting, champ?",size:"Nice! Small, medium, or large? Go big!",name:"Name for the cup?",chat1:"Do you play any sports? You look like an athlete.",chat2:"Got any plans this weekend? I have a big game!",close:"{size} {drink} for {name}! Go get 'em!",end:"Later! Keep working hard!"},
+ {greet:"I'm pumped! I just finished a morning run.",chat1:"Me? I play soccer for the school team. I practice every day.",chat2:"We have a big game on Saturday. I can't wait!",close:"Thanks! You too, champ!"},
+ {greet:"Nice! What did you do today?",chat1:"Cool! What's your favorite sport?",chat2:"Nice! What are you going to do?"},
+ ["Sorry, the music's loud! What did you say?","Say that again, I couldn't hear."],"All good! Let's keep it moving.",
+ {greetPos:["Let's go! Great to hear!"],greetNeg:["Ah, tough day. You've got this."],order:["Solid choice.","Strong pick."],size:["Big move.","You got it."],name:["Got it, {name}!"],chat1:["That's awesome!","Nice!"],chat2:["Sweet!","That's gonna be fun."]}),
+hannah:mk('leo','Hannah','조용한 독서가','책을 좋아하고 작은 목소리로 말하는 바리스타',
+ {greet:"Oh, hi. Welcome. How is your day going?",order:"What would you like? Take your time.",size:"Okay. Small, medium, or large?",name:"And, um, what's your name?",chat1:"Oh, sorry, I was reading. Do you like books?",chat2:"Um, do you come here to study or to read?",close:"Here's your {size} {drink}, {name}. Enjoy.",end:"Okay. Bye. Have a nice day."},
+ {greet:"I'm good. It's quiet, so I can read a little. Thank you.",chat1:"Me? Yes. I read a lot. I'm reading a mystery book right now.",chat2:"I like reading here after work. It's peaceful.",close:"Thank you. You too."},
+ {greet:"Oh. Um, was it a quiet day?",chat1:"Oh. What kind of books do you like?",chat2:"Oh. What are you studying?"},
+ ["Sorry, I didn't hear you. Could you say it again?","Um, sorry. Once more, please?"],"That's okay. Let's go on.",
+ {greetPos:["Oh, that's nice.","Good, good."],greetNeg:["Oh. I'm sorry. I hope tomorrow is better."],order:["Oh, I like that one.","Good choice."],size:["Okay."],name:["Okay, {name}. Got it."],chat1:["Oh, nice.","Oh, interesting."],chat2:["Oh, that sounds nice."]}),
+ethan:mk('leo','Ethan','졸린 대학원생','늘 졸려 보이지만 마음은 따뜻한 대학원생 바리스타',
+ {greet:"Hey. Welcome. Sorry, I'm a little tired. How are you?",order:"What can I get you?",size:"What size? Small, medium, large?",name:"And your name?",chat1:"Are you a student too? Sorry, I only see students at this hour.",chat2:"Do you have a lot of homework? I have a thesis. Ugh.",close:"{size} {drink} for {name}. Have a good one.",end:"Okay, see you. I need a nap."},
+ {greet:"Tired. I stayed up writing. But I'm okay.",chat1:"Me? I'm a grad student. I study biology. I work here to pay rent.",chat2:"I have to finish a paper. I haven't slept much.",close:"Thanks. You too."},
+ {greet:"Hm. Did you sleep well?",chat1:"Oh. What are you studying?",chat2:"Oh. When is it due?"},
+ ["Sorry, my brain is slow today. Can you say that again?","Hm? Sorry, what?"],"Okay. Let's move on.",
+ {greetPos:["Good. Glad to hear that."],greetNeg:["Same. Let's survive together."],order:["Good choice. I drink that too."],size:["Okay."],name:["Got it, {name}."],chat1:["Oh, cool."],chat2:["Ah. Good luck."]}),
+nora:mk('leo','Nora','긴장한 신입','오늘이 첫 출근이라 계속 사과하는 신입 바리스타',
+ {greet:"Hi! Oh, sorry, welcome! It's my first day. How are you?",order:"Um, what can I get you? Sorry, I'm still learning the menu.",size:"Okay! Small, medium, or large? I think that's right.",name:"Um, can I have your name? Sorry, my manager says I have to ask.",chat1:"Sorry, is this your first time here? It's mine, too! I mean, my first day.",chat2:"Um, do you come here a lot? Do you have any tips for me?",close:"Here's your {size} {drink}, {name}. I hope it's right! Sorry if it isn't!",end:"Thank you so much! Bye! You were so nice to me."},
+ {greet:"I'm nervous, but okay! Thank you for asking.",chat1:"Me? It's my first day! I spilled one cup already.",chat2:"My tip is… um… please be nice to the new barista. Ha!",close:"Aw, thank you! You too!"},
+ {greet:"Oh, um, is it a busy day for you?",chat1:"Oh! Um, how did you find this place?",chat2:"Oh, um, what's your favorite drink here?"},
+ ["Sorry! I'm so sorry, I didn't catch that. Again, please?","Oh no, sorry. Could you say it again?"],"Sorry! Let's… um, keep going.",
+ {greetPos:["Oh, good! That's nice.","Great, great."],greetNeg:["Oh no, sorry to hear that."],order:["Oh, good! I know how to make that one!"],size:["Okay!"],name:["Okay, {name}! Got it. I hope I spell it right."],chat1:["Oh, nice!","Oh, welcome!"],chat2:["Oh, thank you! That helps."]}),
+marcus:mk('sam','Marcus','러시아워 대장','줄이 길수록 신나는, 번개처럼 빠른 바리스타',
+ {greet:"Morning! Next in line! How's it going?",order:"What can I get started?",chat1:"Taking the bus today?",chat2:"Long day ahead?",close:"{size} {drink} for {name}! Go crush it.",end:"Thanks! Who's next?"},
+ {greet:"Busy! Forty cups since six. But I love it.",chat1:"I take the 7 bus every day. It's always late.",chat2:"Yeah. Closing shift tonight, so late night.",close:"Thanks! You too!"},
+ {greet:"Yeah? What's up with you?",chat1:"Oh yeah? Where to?",chat2:"Yeah? What's first?"},
+ ["Sorry, say again?","What was that? It's loud."],"No worries. Next!",
+ {greetPos:["Nice!","Great!"],greetNeg:["Ah, tough. Coffee helps."],order:["Got it."],size:["Done."],name:["{name}. Got it."],chat1:["Nice."],chat2:["Ha, same."]}),
+dana:mk('sam','Dana','매니저','일 처리가 빠른 점장. 말은 짧지만 친절합니다',
+ {greet:"Hi, welcome! How are you today?",order:"What can I get for you?",size:"What size? Small, medium, or large?",name:"Name for the order?",chat1:"Are you from around here?",chat2:"Any plans after this?",close:"{size} {drink} for {name}! Thanks for coming in.",end:"Thanks! Have a great day!"},
+ {greet:"Good, thanks! Busy, but good. That's the job.",chat1:"I live nearby. I've managed this shop for five years.",chat2:"Just inventory and paperwork. Exciting, right?",close:"Thanks, you too!"},
+ {greet:"Good to hear. Anything special today?",chat1:"Oh yeah? Which area?",chat2:"Yeah? Anything fun?"},
+ ["Sorry, could you repeat that?","Pardon? It's noisy in here."],"No problem. Let's move on.",
+ {greetPos:["Great!","Good to hear."],greetNeg:["Sorry to hear that. Hope it gets better."],order:["Great, coming up."],size:["Sure."],name:["Got it, {name}."],chat1:["Nice."],chat2:["Sounds good."]}),
+kai:mk('sam','Kai','느긋한 서퍼','파도만 기다리는 느긋한 바리스타. 말이 짧고 편안합니다',
+ {greet:"Hey. What's up? How's your day?",order:"What'll it be?",chat1:"You surf?",chat2:"Got plans after this?",close:"{size} {drink} for {name}. Enjoy, my friend.",end:"Later. Stay cool."},
+ {greet:"Chill. The waves were good this morning.",chat1:"Me? I surf every morning before work.",chat2:"Going to the beach. Waves are big today.",close:"Thanks. You too."},
+ {greet:"Cool. What's good today?",chat1:"Cool, cool. Tell me more.",chat2:"Nice. What kind of plans?"},
+ ["Sorry, what? The grinder's loud.","Say that again?"],"No stress. Let's keep going.",
+ {greetPos:["Cool.","Nice, nice."],greetNeg:["Ah. It'll pass. Like a wave."],order:["Good pick."],size:["Cool."],name:["Nice, {name}."],chat1:["Cool."],chat2:["Sweet."]}),
+mo:mk('rico','Mo','마술사 지망생','주문마다 마술을 보여 주려는 바리스타',
+ {greet:"Welcome! Pick a card, any card! Just kidding. How's your day?",order:"What can I make appear for you today?",size:"And what size? Small, medium, or large? Abracadabra!",name:"Name for the cup? Watch closely!",chat1:"Do you like magic? I'm learning a new trick.",chat2:"Okay, pick a number from one to ten! I'll guess it.",close:"Ta-da! One {size} {drink} for {name}! No cards needed.",end:"And now… I disappear! Bye!"},
+ {greet:"Magical! I learned a new card trick this morning.",chat1:"Me? I'm a magician. Well, a student magician. The cards keep falling.",chat2:"Seven. Wait, was it seven? Ha. I'm doing a show on Friday!",close:"Thanks! Abracadabra, you too!"},
+ {greet:"Just good? I need more magic than that!",chat1:"Oh, come on, give me a little more!",chat2:"Ooh, why that number? Tell me the secret!"},
+ ["The coffee machine made a magic sound! What did you say?","Poof! I lost your words. Can you say it again?"],"Time for a magic trick: let's skip this part!",
+ {greetPos:["Magic! I love it.","Wonderful!"],greetNeg:["Oh no. Let me make it better. With coffee magic."],order:["Excellent! Watch this.","Perfect choice."],size:["Poof! Done."],name:["{name}! What a great name for a magic show."],chat1:["Ha! Nice.","Very cool."],chat2:["Amazing!","Ha, I knew it!"]}),
+lucy:mk('rico','Lucy','퀴즈 좋아하는 바리스타','엉뚱한 상식을 알려 주는 퀴즈 좋아하는 바리스타',
+ {greet:"Welcome! Fun fact: coffee beans are really seeds! How's your day?",order:"What can I get you?",size:"Size? Small, medium, or large? Fun fact: large is the most popular!",name:"Name for the cup? Fun fact: I love learning names.",chat1:"Quick quiz: what's your favorite season?",chat2:"Another quiz: would you rather have free coffee for a year or free pizza?",close:"One {size} {drink} for {name}! Fun fact: you're my favorite customer today.",end:"Bye! Fun fact: you're awesome. Come back soon!"},
+ {greet:"Great! I just learned that octopuses have three hearts.",chat1:"Spring is my favorite! Flowers, and no more winter.",chat2:"Free coffee, obviously. I'm a barista!",close:"Thanks! Fun fact: you too!"},
+ {greet:"Just good? Tell me one fun fact about your day!",chat1:"Why? Tell me your reason!",chat2:"Hmm, interesting! Why that one?"},
+ ["Sorry, bonus round! Can you say that again?","The grinder was loud! One more time?"],"No problem! Let's skip to the next question.",
+ {greetPos:["Awesome!","Great! That's a good fact."],greetNeg:["Oh no. Fun fact: bad days end."],order:["Excellent! Fun fact: that's popular.","Great choice."],size:["Perfect."],name:["{name}! Great name."],chat1:["Interesting answer!","Ooh, nice!"],chat2:["Ha! Good choice."]}),
+frank:mk('rico','Frank','아저씨 개그','썰렁한 말장난을 던지는 바리스타. 웃어 주면 좋아합니다',
+ {greet:"Hey there! Welcome! How are you? I'm brew-tiful today. Get it?",order:"What can I get you? I'd say 'the usual,' but I just met you.",size:"What size? Small, medium, or large? I'm a large, personally.",name:"Name for the cup? Don't worry, I won't mess it up. Probably.",chat1:"So, what do you do? Please say something funnier than my jokes.",chat2:"Okay, serious question: why did the coffee call the police?",close:"One {size} {drink} for {name}! It's a latte fun!",end:"See you later! Don't forget: espresso yourself!"},
+ {greet:"I'm doing great! I've been telling coffee jokes all morning.",chat1:"Me? I'm a dad of three, so I make bad jokes professionally.",chat2:"It got mugged! Get it? Mugged?",close:"Thanks! Have a brew-tiful day!"},
+ {greet:"Just good? Come on, I need more than that!",chat1:"That's it? Give me a little more!",chat2:"Haha, why? Tell me why!"},
+ ["Sorry, I didn't catch that. The espresso machine was screaming.","Say that again? I was busy thinking of a pun."],"No worries! Let's pretend that was hilarious.",
+ {greetPos:["Brew-tiful!","Nice! That makes me happy."],greetNeg:["Oh no. Don't worry. Coffee will fix it. Latte it go."],order:["Excellent choice!","Great taste."],size:["Good call."],name:["{name}! Great name."],chat1:["Ha! Respect.","Nice."],chat2:["Ha! Good answer."]}),
+walter:mk('dottie','Walter','은퇴한 선생님','은퇴한 영어 선생님. 천천히 또박또박 말해 줍니다',
+ {greet:"Well, good morning, young person! How are you today?",order:"What can I make for you today?",size:"And what size would you like? Small, medium, or large?",name:"And what's your name, please?",chat1:"Are you a student? I taught English for thirty years.",chat2:"And what do you enjoy doing when you're not studying?",close:"Here's your {size} {drink}, {name}. Take your time and enjoy it.",end:"Goodbye, now. Keep studying hard. I'm proud of you."},
+ {greet:"I'm doing very well, thank you for asking. It's a fine morning.",chat1:"Me? I'm retired now. I work here two days a week, for fun.",chat2:"I enjoy reading and fishing. Very slowly, both of them.",close:"Thank you, kindly. You too."},
+ {greet:"Oh? And what made it so good?",chat1:"Oh? And what do you like about school?",chat2:"Oh, that's wonderful. Tell me more."},
+ ["I beg your pardon? Could you say that once more?","Sorry, my hearing isn't what it was. Once more, please?"],"That's quite all right. Let's continue.",
+ {greetPos:["Splendid!","That's wonderful to hear."],greetNeg:["Oh, I'm sorry. Tomorrow will be better."],order:["An excellent choice.","Very good."],size:["Very well."],name:["What a fine name, {name}."],chat1:["Wonderful!","How nice."],chat2:["Oh, that sounds delightful."]}),
+rosa:mk('dottie','Rosa','동네 아주머니','요리를 사랑하고 손님 끼니를 챙기는 이웃 아주머니',
+ {greet:"Hello, my dear! Welcome! How are you today? Did you eat breakfast?",order:"What can I make for you, my dear?",size:"And what size, my dear? Small, medium, or large?",name:"And what's your name, my dear?",chat1:"Are you from this neighborhood? I know everyone, but not you!",chat2:"What do you like to eat? I love cooking for my family.",close:"Here you go, {name}. One {size} {drink}, made with love. Eat something, okay?",end:"Goodbye, my dear. Come back and tell me what you ate!"},
+ {greet:"I'm wonderful, thank you! I made tamales last night, and the whole street smelled amazing.",chat1:"Me? I've lived here thirty years. My daughter lives two blocks away.",chat2:"I love making soup and tamales. My family always asks for more!",close:"Aw, thank you, my dear. You too."},
+ {greet:"Oh? Did you eat something good today?",chat1:"Oh? And do you like it here?",chat2:"Ooh, what's your favorite food?"},
+ ["Sorry, my dear, the machine is loud. One more time?","Pardon, my dear? Say it again, slowly."],"That's okay, my dear. Let's keep going.",
+ {greetPos:["Oh, that's wonderful, my dear!"],greetNeg:["Oh, no. Poor thing. Eat something warm, okay?"],order:["Oh, good choice, my dear."],size:["Of course, my dear."],name:["What a beautiful name, {name}."],chat1:["Oh, how nice!"],chat2:["Oh, that sounds delicious!"]}),
+grace:mk('dottie','Grace','전직 간호사','은퇴한 간호사. 손님 컨디션을 꼼꼼히 챙깁니다',
+ {greet:"Hello, dear! Welcome. How are you feeling today?",order:"What can I get you, dear? Have you had water today?",size:"And what size would you like?",name:"And may I have your name, dear?",chat1:"Are you getting enough sleep? You young people stay up too late.",chat2:"What do you do to relax? It's important to rest.",close:"Here you are, {name}. One {size} {drink}. Drink some water too, okay?",end:"Take care of yourself, dear. Come back soon."},
+ {greet:"I'm feeling great, thank you. I took a long walk this morning.",chat1:"Me? I sleep eight hours. I was a nurse for thirty years, so I know!",chat2:"I walk every morning and I garden. Very relaxing.",close:"Thank you, dear. You too, and drink water!"},
+ {greet:"Oh? Did you sleep well last night?",chat1:"Oh dear. How many hours do you sleep?",chat2:"Oh, that's good. How often do you do that?"},
+ ["Sorry, dear, could you speak up a little?","Pardon me, dear? Once more?"],"That's alright, dear. Let's move on.",
+ {greetPos:["Oh, I'm glad to hear that, dear."],greetNeg:["Oh, I'm sorry, dear. Rest tonight, okay?"],order:["That's a nice choice, dear."],size:["Of course, dear."],name:["What a nice name, {name}."],chat1:["Oh, I see."],chat2:["Good, good. That's healthy."]})
+});
+const GROUPS=PIDS.map(b=>Object.keys(P).filter(k=>(P[k].base||k)===b));
+function pidx(pid){return PIDS.indexOf((P[pid]&&P[pid].base)||pid)}
+const dayNum=(()=>{const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000)})();
+function todays(){return GROUPS.map((g,i)=>g[(dayNum+i)%g.length])}
+let SHOWALL=false;
+
+
+/* ---------- intents: what the user might ask or say ---------- */
+// r = replies in order [maya, leo, sam, rico, dottie]
+const INTENTS=[
+ {id:'age',re:/how old are you|your age/,r:["I'm twenty-two!","Um, nineteen.","Twenty-five.","Old enough to make bad jokes. Thirty.","Oh, I'm sixty-three, dear. Don't tell anyone."]},
+ {id:'job',re:/what do you do( for (a )?living| for work)?\??$|what'?s your (job|major)|what is your (job|major)|do you work here (full|part)/,r:["I'm a barista! And I study art on the side.","Um, I work here. And I'm in school.","Barista. Full time.","I'm a barista and a part-time comedian. Mostly part-time.","Oh, I run this little shop, dear. Forty years now."]},
+ {id:'help',re:/can you help me|could you help me|need (some )?help|help me (with|find|choose|decide|pick)/,r:["Of course! What do you need?","Oh, um, sure. What do you need?","Sure. What's up?","Help? That's literally my job. Well, partly. What's up?","Of course, honey. What do you need?"]},
+ {id:'lesssweet',re:/not (too |very |so |that )?sweet (drink|one|thing)|(something|anything|drink|one)( that'?s| that is| is)? not (too |very |so |that )?sweet|less sweet (drink|option|one)|least sweet/,offer:'latte',r:["Try a plain latte! It's creamy, but not sweet at all.","Um, a plain latte isn't sweet. Or an americano.","Plain latte. Not sweet.","A plain latte. It's sweet like me, which means not very. Kidding!","Oh, a plain latte, honey. Nice and gentle, not sweet."]},
+ {id:'flavors',re:/(other|another|what|which|any|more) (flavou?rs?|favou?rs?|syrups?)|flavou?r options/,r:["We have vanilla, caramel, hazelnut, and honey! Honey is my favorite.","Um, vanilla, caramel, hazelnut, and honey.","Vanilla, caramel, hazelnut, honey.","Vanilla, caramel, hazelnut, honey, and my secret flavor: confidence.","Oh, vanilla, caramel, hazelnut, and honey, sweetie."]},
+ {id:'discount',re:/discount|student (price|deal)|cheaper/,r:["Yes! Ten percent off with a student ID!","Um, yes, ten percent off for students, I think.","Ten percent off. Show your ID.","Student discount? Yes. Ten percent. Twenty if you laugh at my jokes. Kidding.","Oh yes, ten percent off for students, sweetie."]},
+ {id:'beans',re:/\bbeans?\b|single origin|roast|where.*coffee (is )?from|what coffee do you use/,r:["Our beans are from Colombia! Medium roast, super smooth.","Um, they're from Colombia, I think. Medium roast.","Colombian. Medium roast.","Colombia. Roasted with love and a little panic.","Oh, they come from Colombia, dear. Medium roast."]},
+ {id:'warmrec',re:/warm(est)? (drink|one)|something (hot|warm)|hot drink|warm me up|warmest/,offer:'hot chocolate',r:["Hot chocolate! It's like a hug in a cup.","Um, the hot chocolate is really warm. And sweet.","Hot chocolate.","Hot chocolate. It's basically a blanket you can drink.","Oh, a hot chocolate will warm you right up, honey."]},
+ {id:'soothe',re:/sore throat|for a cold|i'?m sick|cough|feel better|good for (my )?(throat|cold)/,offer:'ginger tea',r:["Ginger tea with honey! It really helps.","Um, ginger tea is good for that. With honey.","Ginger tea. With honey.","Ginger tea with honey. Doctor Rico's orders.","Oh, honey, ginger tea with lemon and honey. Trust me."]},
+ {id:'funrec',re:/most fun|celebrat|something (fun|special|fancy|exciting)|fanciest|most special/,offer:'caramel macchiato',r:["Ooh, a caramel macchiato with extra whipped cream! Party in a cup!","Um, maybe a caramel macchiato? It's kind of fancy.","Caramel macchiato. Fancy.","Caramel macchiato with whipped cream. I'll even sing. Badly.","Oh, a caramel macchiato, sweetie. With a little extra caramel for you."]},
+ {id:'fastrec',re:/fastest|quickest|quick drink|fast drink|ready (fast|quick)/,offer:'drip coffee',r:["Drip coffee! I can pour it right now.","Um, drip coffee is the fastest.","Drip. Ten seconds.","Drip coffee. It's ready before you finish asking.","Oh, a drip coffee is ready right away, dear."]},
+ {id:'coldnc',re:/(cold|iced|refreshing).*(not|isn'?t|no|without|besides|other than) (a )?coffee|(not|isn'?t|no) coffee.*(cold|iced)|no caffeine/,offer:'lemonade',r:["Try our lemonade! Or iced tea. Super refreshing.","Um, lemonade or iced tea are nice.","Lemonade. Or iced tea.","Lemonade. It's like summer, but in a cup.","Oh, our lemonade is lovely, dear. Or an iced tea."]},
+ {id:'whichdrink',re:/(name of|called|what do you call) (the )?(coffee|drink|one|tea)? ?with ([a-z]+)|what'?s the (coffee|drink|one) with ([a-z]+)/,offer:'*',r:["That's the {d}!","Oh, um, that's the {d}.","{D}.","That would be the {d}. Excellent taste.","That's our {d}, honey."]},
+ {id:'wrong',re:/(drink|order) is wrong|wrong (drink|order)|not what i ordered|remake|made a mistake|this isn'?t (my|what)/,r:["Oh no, I'm so sorry! I'll remake it right now.","Oh, um, I'm really sorry. I'll fix it.","Sorry! Remaking it now.","Oh no. Okay, that one's on me. Literally. It's free.","Oh, I'm so sorry, sweetie. Let me fix that for you."]},
+ {id:'car',re:/do you (have|drive) a car|do you drive|have a (car|license)/,r:["Nope! I ride my bike everywhere.","Um, no. I take the bus.","No car. Bike.","I have a car. It's older than me. It makes jokes too. Mostly noises.","Oh, I still drive my old blue car, honey."]},
+ {id:'teakinds',re:/what (kinds?|types?|sorts?) of teas?|which teas?|what teas?/,r:["We have green, black, chamomile, peppermint, and chai! The chai is my favorite.","Um, green tea, black tea, chamomile, and chai.","Green, black, chamomile, chai.","Green, black, chamomile, chai, and one mystery tea I'm scared of. Kidding.","Oh, we have green, black, chamomile, and my lovely chai, dear."]},
+ {id:'sizehelp',re:/what size (is|should|do (you|people)|would)|which size|difference between|how many ounces|what size is (good|best|popular)|how big (is|are) (the|a|your)/,r:["Medium is the most popular! Small is like a quick little treat.","Um, medium is the most popular, I think.","Medium's the usual.","Large if you have homework. Medium if you have a life.","Most folks get a medium, sweetie. It's just right."]},
+ {id:'xl',re:/extra large|bigger than (a )?large|biggest size|larger size|any bigger|make it bigger/,r:["Large is our biggest, sorry! But it's pretty big.","Um, sorry, large is the biggest.","Large is max.","Large is the biggest. I asked my boss for a bucket size. He said no.","Large is as big as we go, honey."]},
+ {id:'drinksize',re:/is (it|that|the [a-z]+( [a-z]+)?) (pretty |really |very |too )?(small|big|tiny|strong)/,r:["It's pretty small, like a few sips. But strong!","Um, it's kind of small.","Small, yeah.","Small but mighty. Like me.","It's a little one, dear, but it's strong."]},
+ {id:'whatsin',re:/what'?s in (a|an|the|it|that)\b|what is in (a|an|the)|what'?s (a|an) [a-z ]+|what is (a|an) [a-z ]+|what does (a|an|the) [a-z ]+ taste/,r:["Ooh, it's one of our coffee drinks! Pretty popular.","Oh, um, it's a coffee drink. People like it.","Coffee drink. Popular.","It's coffee, but fancy.","Oh, it's a lovely coffee drink, dear."]},
+ {id:'isgood',re:/is (the|your) [a-z ]{2,25} (good|tasty|popular|any good)|is it good|how'?s the [a-z ]+|how is the [a-z ]+/,r:["Oh yes, it's one of my favorites!","Um, yeah, people really like it.","Yep. It's good.","It's so good I put it on my résumé.","Oh, it's wonderful, honey."]},
+ {id:'nosugar',re:/no sugar|sugar.?free|without sugar|unsweetened|protein|low.?calorie|zero sugar/,r:["No protein shakes, sorry! But our americano and teas have no sugar at all.","Um, the teas and americano don't have sugar.","Americano or tea. No sugar.","Black coffee. Zero sugar, zero fun. Kidding, it's great.","The green tea is lovely and has no sugar, dear."]},
+ {id:'diet',re:/vegan|gluten|allerg|nut.?free|dairy.?free|calorie|healthy/,r:["Yes! We have vegan and gluten-free options. Just ask!","Um, we have some vegan and gluten-free things. I can check.","Some vegan, some gluten-free. Ask me.","We have vegan options. My jokes are also gluten-free.","Oh yes, dear. Tell me what you can't eat and I'll help."]},
+ {id:'grocery',re:/grocery|supermarket|where can i (buy|get) (food|groceries|snacks)|convenience store|\bmarket\b/,r:["There's a grocery store two blocks down! It's huge.","Um, there's a grocery store down the street, on the left.","Two blocks down. Big grocery store.","Two blocks that way. Their snack aisle changed my life.","Oh, there's a nice little market around the corner, sweetie."]},
+ {id:'trails',re:/trails?\b|hik(e|es|ing)\b|good parks?|nice parks?/,r:["Yes! There's a pretty trail by the river. Great at sunset.","Um, there's a trail by the river. It's nice.","River trail. Nice and flat.","The river trail! Watch out for the ducks. They're aggressive.","Oh, the river trail is lovely, dear. I walk there every Sunday."]},
+ {id:'far',re:/museum|is it far|how far|walking distance|can i walk (there|to)/,r:["It's about ten minutes walking. So worth it!","Um, it's about a ten-minute walk, I think.","Ten minutes walking.","Ten minutes walking. Five if you run. Don't run.","Oh, it's just a short walk, honey. About ten minutes."]},
+ {id:'blive',re:/do you live (near|around|close|here)|where do you live|you live (nearby|around here|close)/,r:["Yep! I live like ten minutes away.","Um, yeah, kind of close. I take the bus.","Five minutes away.","I live close. Close enough to still be late every day.","Oh, right around the corner, dear. Forty years now."]},
+ {id:'bread',re:/what (kind of |kinds of )?(comics|books?|manga|novels?)|what do you (like to )?read|favorite (comic|book|manga)/,r:["Mostly art books! And some fantasy novels.","Oh, um, superhero comics, mostly. And some manga.","Don't read much. No time.","Joke books. For research.","Oh, mystery novels, honey. I love a good mystery."]},
+ {id:'comedy',re:/stand.?up|comedy|comedian|are you (always )?(this )?funny|open mic/,r:["Ha! No, but Rico at the other shop thinks he's a comedian.","Me? Oh, no. I'm way too shy.","No. Not my thing.","Every Thursday at the open mic downtown! Two people laughed last time. A new record.","Oh, no, honey. But I laugh at everyone's jokes."]},
+ {id:'petname',re:/(dog|cat|pet|corgi|hamster)'?s? name|name of (your|the) (dog|cat|pet|corgi|hamster)|what'?s (his|her) name|what is (his|her) name/,r:["My cat's name is Mochi! She's so lazy.","My hamster's name is Bean. He's, um, very small.","No pets. No time.","Biscuit! He's a corgi, and he's the boss of me.","My cat is named Pepper, sweetie. She's old and very spoiled."]},
+ {id:'garden',re:/garden|do you grow|grow (any|your)|plants?\b/,r:["Nope, but I have like five plants in my room!","Um, no. I can't even keep a cactus alive.","No garden. Apartment.","My garden is one sad plant named Steve.","Oh, yes! My tomatoes are the best in the neighborhood, honey."]},
+ {id:'nameok',re:/is (that|it) (okay|ok|fine|alright)\??$|hard to (spell|say)|can you spell it|is that a weird name/,r:["Of course! It's a really pretty name.","Oh, yes. Of course.","Sure.","Totally fine. Way easier to spell than mine.","Of course, sweetheart. It's lovely."]},
+ {id:'stay',re:/(can|could|may) i (stay|sit|study|work|hang out) (here|for|a while|long)|(is it|it'?s) (ok(ay)?|fine|alright) (if i|to) (stay|sit|study|work)|how long can i (stay|sit)|stay (here )?(for )?(a )?(long|while|all day|few hours)|mind if i (stay|sit|study)/,r:["Totally! Stay as long as you want. Lots of people study here all day.","Oh, um, yes. You can stay as long as you like. It's quiet.","Sure, stay as long as you want.","Stay forever! Just buy a muffin every few hours so my boss is happy.","Of course, honey. Stay as long as you like. Make yourself at home."]},
+ {id:'recommend',re:/recommend|what'?s good|popular|best ?seller|your favorite (drink|coffee|one|thing here|here)|favorite (drink|here)|what should i (get|order|try)/,r:["Ooh, the honey oat latte! I literally drink one every shift. It's sweet but not too sweet.","Oh, um, I like the vanilla cold brew. It's… pretty good, I think.","Honey oat latte. Best seller.","The caramel macchiato. It's so good it should be illegal. Please don't call the cops.","Oh honey, get the chai latte. It's like a warm hug in a cup."]},
+ {id:'strong',re:/(something|anything|what'?s) (really )?strong|wake me up|most caffeine|strongest|(a lot of|lots of|tons of|extra|more) caffeine/,r:["Get a cold brew! It'll wake you right up.","Um, the cold brew is pretty strong.","Cold brew. Strongest one.","Our cold brew. It's so strong it can do your homework.","Oh, the cold brew is strong, dear. Don't drink it too fast."]},
+ {id:'milk',re:/\b(oat|almond|soy|dairy|lactose|non-dairy)\b|what (kind of )?milk/,r:["We have oat, almond, and soy! Oat is the best, trust me.","Um, we have oat, almond, and soy milk.","Oat, almond, soy.","Oat, almond, soy, and regular. Basically a milk buffet.","We have oat, almond, and soy, dear. Oat is nice and creamy."]},
+ {id:'decaf',re:/decaf|caffeine.free/,r:["Yep! Any drink can be decaf. Just let me know!","Oh, yes. We can make it decaf.","Yep, decaf's fine.","Decaf? Sure. It's like coffee in airplane mode.","Of course, honey. Decaf is no problem."]},
+ {id:'pastry',re:/pastr|muffin|croissant|cookie|bagel|snack|something to eat|anything to eat|food/,r:["Oh my gosh, get the blueberry muffin. It's still warm!","We have muffins and croissants. The croissants are… really good.","Muffins, croissants, cookies. All in the case.","The chocolate croissant. It's basically a hug made of butter.","I baked banana bread this morning, sweetie. Want a slice?"]},
+ {id:'sweet',re:/\bsweet\b|sugar/,r:["It's a little sweet, but you can ask for less syrup!","It's… kind of sweet. I can make it less sweet.","A bit. Want less syrup?","It's sweet. Like me.","Just a little sweet, honey. I can go light on the syrup."]},
+ {id:'price',re:/how much|price|cost/,r:["That'll be five seventy-five! Not bad, right?","Um, it's five seventy-five.","Five seventy-five.","Five seventy-five. Jokes are free, though.","That'll be five seventy-five, dear."]},
+ {id:'payment',re:/\b(card|cash|apple pay|pay with|venmo|credit)\b/,r:["Card, cash, or phone, whatever works!","Oh, card or cash is fine.","Card or cash. Tap is fine.","Card, cash, or a really good joke. Kidding. Card or cash.","Any way you like, sweetie."]},
+ {id:'wait',re:/how long.*(take|wait)|will it (be|take) long/,r:["Just a couple minutes!","Um, about three minutes.","Two minutes, tops.","About two minutes. Or one, if you believe in me.","Just a few minutes, dear. Good things take time."]},
+ {id:'menu',re:/\bmenu\b|what (do you have|kinds?)|options/,r:["We have lattes, cold brew, tea, smoothies, and pastries!","Um, the menu is on the board behind me.","Board's behind me.","Everything on that board. Except my patience before 7 a.m.","It's all on the board, sweetie. Take your time."]},
+ {id:'wifi',re:/wi-?fi|password|internet/,r:["Yes! The password is on the little sign by the window.","Oh, yes. The password is on your receipt.","Password's on the receipt.","Yep! The password is coffee1234. Super secure, I know.","The password is on that sign over there, hon."]},
+ {id:'restroom',re:/restroom|bathroom|toilet|washroom/,r:["Down the hall, first door on the left!","Um, it's in the back, on the right.","Back left.","Down the hall. You can't miss it. Well, you could, but don't.","Right back there, sweetie, past the plants."]},
+ {id:'bname',re:/what'?s your name|what is your name|your name\b|who are you/,r:["I'm Maya! Nice to meet you!","Oh, I'm Leo. It's on my name tag.","Sam.","I'm Rico. Like the island, but with more coffee.","I'm Dottie, honey. Everyone around here knows me."]},
+ {id:'worklong',re:/how long.*(work|been here|worked)/,r:["Almost a year! Time flies.","Um, about two months. I'm still learning.","Three years.","Two years. I've made about a million lattes.","Oh, about fifteen years now, dear."]},
+ {id:'likejob',re:/(like|enjoy|love) (your job|working here|it here|work)/,r:["I love it! I get to talk to people all day.","Yeah, I like it. The people are nice.","Yeah, it's good. Fast-paced.","I love it. Free coffee and a captive audience for my jokes.","Oh, I love it. I get to meet sweet people like you."]},
+ {id:'busy',re:/(always|so|this|that) busy|busy today|crowded|is it busy|(a lot of|lots of|many) (students|people|customers)/,r:["Mornings are crazy! It gets quieter after ten, though.","Um, yeah. Mornings are really busy.","Mornings, yeah. Every day.","Busy? This is our quiet time. You should see Mondays.","Oh, it gets busy in the mornings, but I like it."]},
+ {id:'weather',re:/weather|\brain|sunny|hot (today|out)|cold (today|out)|nice (day|out)|beautiful day/,r:["Right? It's so nice out today! Perfect iced coffee weather.","Yeah, it's… pretty nice today.","Yeah, nice day.","The weather? Great. Unlike my jokes.","Oh, it's a beautiful day, isn't it? Perfect for a walk."]},
+ {id:'fromwhere',re:/where are you from|are you from (here|around)|did you grow up|where did you grow/,r:["I grew up here! Born and raised.","I'm from Ohio, actually. I moved here for school.","Grew up here.","I'm from Texas. That's why I talk so much.","I've lived here my whole life, sweetie."]},
+ {id:'weekend',re:/(your|you) .*(weekend|plans)|doing this weekend|plans for the weekend/,r:["I'm going to a concert on Saturday!","I'll probably just read at home.","Working. Then soccer.","Taking my corgi to the dog park. He has more friends than me.","I'll be in my garden, dear. The tomatoes need me."]},
+ {id:'school',re:/do you (go to|study)|are you a student|in college|go to school/,r:["Yep! I study art at the community college.","Yeah, I'm a college student. I'm studying computer science.","Not anymore. Just work.","I took one acting class once. Does that count?","Oh, no, dear. I finished school a long, long time ago."]},
+ {id:'hobby',re:/for fun|hobb|free time|like to do/,r:["I paint! And I'm learning to skateboard. Badly.","I read comics and play video games.","Soccer. Every weekend.","Stand-up comedy. You can tell, right?","Gardening and baking, honey."]},
+ {id:'music',re:/\bsong\b|music|playlist/,r:["It's my playlist! Do you like it?","Oh, it's a lo-fi playlist. I picked it.","No idea. It's the store playlist.","This is my 'pretend I'm in a movie' playlist.","Oh, the young ones pick the music. I just hum along."]},
+ {id:'eat',re:/(place|places|somewhere).*(eat|food|lunch|dinner)|restaurant/,r:["There's an amazing taco place across the street!","Um, the sandwich shop next door is good.","Taco place across the street.","The pizza place on the corner. Tell them Rico sent you. They won't know me, but tell them.","Oh, the diner on Main Street, dear. Best pancakes in town."]},
+ {id:'sights',re:/things to do|should i (see|visit)|places to visit|fun around here|tourist/,r:["Go to the park by the river! It's so pretty at sunset.","The library downtown is really nice. And quiet.","River park. Nice walk.","The river park. Bring snacks. The ducks are aggressive.","Oh, visit the farmers market on Saturday, sweetie."]},
+ {id:'sports',re:/\b(the game|basketball|football|baseball|soccer|team)\b/,r:["I don't really follow sports, but my brother loves basketball!","Um, I don't really watch sports, sorry.","Did you see the game last night? Crazy ending.","Sports? I only know one move. It's called the coffee pour.","Oh, my grandson plays baseball. I go to all his games."]},
+ {id:'pets',re:/\b(pets?|do you have a (dog|cat))\b/,r:["I have a cat named Mochi! She's so lazy.","I have a hamster. His name is Bean.","No pets. No time.","I have a corgi named Biscuit. He's the boss.","I have an old cat named Pepper, dear."]},
+ {id:'compliment',re:/(love|like|cool|nice|cute|great) (this|your) (place|shop|cafe|café|vibe|shirt|apron|hair|music|decor)|great vibe|smells (so )?good/,r:["Aww, thank you! That made my day!","Oh, um, thank you. That's nice of you.","Thanks!","Thank you! I'll add that to my résumé.","Oh, aren't you sweet! Thank you, honey."]},
+ {id:'hours',re:/what time do you (close|open)|when do you (close|open)|(opening|closing) time|open (late|tomorrow|on sunday)|your hours/,r:["We close at eight! Plenty of time.","Um, we close at 8 p.m.","Open six to eight.","We close at eight. Then I go home and practice jokes in the mirror.","We're open from six to eight, dear."]},
+ {id:'time',re:/what time is it|do you (know|have) the time/,r:["Oh, it's almost ten!","Um, it's about ten o'clock.","Almost ten.","Coffee o'clock. Also, about ten.","It's just about ten, sweetie."]},
+ {id:'outlet',re:/outlet|plug|charg(e|er|ing)|socket/,r:["Yes! There are outlets by the window seats.","Um, there's one under that table by the wall.","Window seats have outlets.","Outlets are by the window. Fight the laptop people for them.","Right by the window, dear. Charge away."]},
+ {id:'seat',re:/(can|could|may) i sit|is this (seat|table) (taken|free)|any (seats|tables)|sit (here|anywhere)|table for/,r:["Sit anywhere you like!","Oh, yes. Anywhere is fine.","Anywhere's open.","Pick any seat. The comfy chair is my favorite, though.","Sit wherever you like, honey."]},
+ {id:'togo',re:/to go|take ?out|for here|takeaway|take away/,r:["For here or to go, either works!","Oh, um, for here or to go?","Here or to go?","For here, or are you taking it on an adventure?","Will that be for here or to go, dear?"]},
+ {id:'extras',re:/straw|lid|napkin|sleeve|spoon|stirrer/,r:["Napkins and straws are at the end of the counter!","Um, they're over there, by the sugar.","End of the counter.","Straws and napkins are on the bar. Lids are on your cup, hopefully.","Right over there, sweetie, by the sugar."]},
+ {id:'temp',re:/(hot|iced?|cold) or (hot|iced?|cold)|can (it|you make it) (be )?(iced|hot|cold)|make it iced|is it hot/,r:["We can do it hot or iced! Your call.","Um, yes, hot or iced is fine.","Hot or iced, either.","Hot, iced, or room temperature if you're weird. Kidding.","Hot or iced, honey. Whatever you like."]},
+ {id:'addons',re:/extra shot|whip(ped)?( cream)?|syrup|flavou?r|less ice|no ice|extra hot|shot of/,r:["Totally! We can add whatever you want.","Oh, um, yes. I can add that.","Sure, I can add it.","Absolutely. I'll even add a little extra love. For free.","Of course, honey. Just how you like it."]},
+ {id:'refill',re:/refill/,r:["Drip coffee refills are free!","Um, refills on drip coffee are free.","Drip refills are free.","Free refills on drip coffee. Free jokes on everything.","Refills on the house coffee are free, dear."]},
+ {id:'rewards',re:/reward|points|stamp|loyalty|membership|coupon|discount/,r:["Yes! Ten stamps and you get a free drink!","Um, we have a stamp card. Ten stamps, one free drink.","Stamp card. Ten for a free one.","Stamp card! Ten drinks and the eleventh is free. It's basically math class.","Oh, here's a stamp card for you, sweetie."]},
+ {id:'hiring',re:/hiring|part.?time job|need (any )?(workers|staff)|apply/,r:["Yes, we are! Ask for the manager, she's super nice.","Um, I think so. There's a sign on the door.","Yeah. Form's online.","We're hiring! Warning: you'll have to hear my jokes every day.","Oh, we are, dear. You'd be wonderful."]},
+ {id:'directions',re:/where is (the|a)|how do i get to|bus stop|subway|station|library|bank|post office|nearest/,r:["Oh, it's just two blocks down that way!","Um, I think it's down the street, on the left.","Two blocks that way.","Two blocks down. If you see the giant donut sign, you went too far.","Just down the street, sweetie. You can't miss it."]},
+ {id:'joke',re:/joke|make me laugh|something funny/,r:["Okay, um, why did the coffee file a police report? It got mugged!","Um… why did the coffee go to the police? It got mugged. Sorry.","Coffee got mugged. That's the joke.","Why did the coffee file a police report? It got mugged! Thank you, I'm here all week.","Oh, my grandson's favorite: the coffee got mugged! Isn't that silly?"]},
+ {id:'favorite',re:/your favou?rite (food|snack|dessert|meal)/,r:["Ooh, tacos! Always tacos.","Um, probably ramen.","Pizza.","My favorite thing? Customers who laugh at my jokes. So, you, hopefully.","Oh, my own apple pie, dear."]},
+ {id:'newhere',re:/are you new|you'?re new|new here|first day|haven'?t seen you/,r:["Nope, almost a year now!","Um, yeah, kind of. Two months.","Nah, three years.","New? I've been here so long the espresso machine calls me dad.","Oh no, dear, I've been here for ages."]},
+ {id:'remember2',re:/remember me|do you remember/,r:["Hmm, wait… you look familiar! Welcome back!","Oh, um, I think so? Welcome back.","Maybe. Welcome back.","Of course! You're the one with the great taste. Welcome back!","Oh, of course, sweetie. Welcome back!"]},
+ {id:'remember',re:/remember me|do you know me/,r:["Hmm, maybe? Sorry, I see a lot of faces!","Oh, um, I'm not sure. Sorry.","Maybe! Lots of faces.","Of course! You're… the one with the great taste in coffee.","Oh, I try to remember everyone, sweetie."]},
+ {id:'line',re:/(the )?line|long wait|so many people/,r:["Yeah, the line goes fast though!","Um, sorry about the wait.","Line moves fast.","The line is long because everyone wants to hear my jokes.","Sorry for the wait, dear. It moves quickly."]},
+ {id:'city',re:/(this|the) (city|town|neighborhood|area)|live around here|is it safe|like living here/,r:["I love this neighborhood! Everyone's so friendly.","It's a nice area. Pretty quiet.","Good area. Safe.","Great neighborhood. Best coffee shop, too, if you ask me.","Oh, it's a lovely neighborhood, honey."]},
+ {id:'howsay',re:/how do (you|i) say|what does .* mean|what is .* in english/,r:["Hmm, I'm not sure, but you're doing great!","Um, I don't know, sorry.","Not sure, sorry!","No idea, but your English is better than my Spanish.","Oh, I don't know, dear, but you speak very well."]},
+ {id:'howareyou',re:/how are you|how'?s your (day|shift|morning|week)|how'?s it going|how about you|what about you|and you\b|how have you been/,r:null},
+ {id:'thanks',re:/thank/,r:["Of course!","Oh, no problem.","Yep!","Anytime!","You're very welcome, dear."]}
+];
+const AVAIL=/(^|\s)(you|u) (guys )?(have|sell|serve|got)\b|^(have|got) (you|any)?|\bavailable\b|\b(is|are) (the |some |any |a )?[a-z' -]{2,25} (here|available)\b|do you (guys )?(have|sell|serve|make|carry|got)|is there|are there|got any|something like|anything like|have any|is here|are here/;
+const AVAIL_R=["Yes, we do! Our {d} is so good. Want one?","Oh, um, yes, we have {d}. Do you want that?","Yep, {d}. Want it?","{d}? We sure do. Shall I make you one?","We sure do, sweetie. Would you like a {d}?"];
+const AVAIL_NONE=["We have lattes, cold brew, tea, smoothies, and pastries! Anything sound good?","Um, we have coffee, tea, and smoothies. Anything you like?","Coffee, tea, smoothies. What sounds good?","We've got coffee, tea, smoothies, and one very funny barista. What sounds good?","Oh, we have coffee, tea, cocoa, all sorts, dear. What would you like?"];
+const UNSURE=["Ooh, good question! Honestly, I'm not sure.","Um… I'm not really sure, sorry.","Not sure, sorry!","Great question. I have no idea, but I'll pretend I do later.","Oh, I'm not sure, dear."];
+const REC=['honey oat latte','vanilla cold brew','honey oat latte','caramel macchiato','chai latte'];
+const YES=/\b(sounds? (nice|great|fine|lovely|perfect|delicious|tasty|yummy|good)|let me try|i('ll)? take (it|that|one)|fine|go for it|that works|sure thing|alright|deal|all right|that'?s fine|i'?ll go( with)?( that| it)?|go with (that|it)|i'?ll do (that|it)|yes|yeah|yep|sure|okay|ok|please|sounds good|i'll take|i will take|let's do|perfect|definitely|why not|that one|i'll have|i will have|let me get)\b/;
+const ORDER_GENERIC=/(i'?ll take|i'?ll have|give me) (whatever|anything)|whatever (matches|fits|goes)|anything (is fine|works|you like)|(ice|iced|cold) (thing|drink|one|something)|something (ice|iced|cold)|surprise me|whatever you (recommend|like|suggest)|your (recommendation|favorite|best)|the (same|usual)|you choose|up to you|something (sweet|hot|warm|cold|iced|strong|good)|anything is fine|i'll (have|take|get) (that|it|one)|that sounds good/;
+// statements that change the barista's reaction during small talk
+const STATEMENTS=[
+ {re:/\b(exams?|tests?|finals?|midterms?|quiz(zes)?|homework|essay|paper|project|presentation|interview|audition|shift)\b[^.!?]{0,30}\b(finished|finish|done|over|ended|end|is over|was over|passed|submitted|completed|turned in)\b|\b(just |already |finally )?(finished|finish|done with|passed|survived|aced|took|taken|completed|submitted|turned in)\b[^.!?]{0,20}\b(exams?|tests?|finals?|midterms?|quiz(zes)?|homework|essay|paper|project|presentation|interview|audition|shift)\b|\b(exams?|tests?|finals?|midterms?)\b[^.!?]{0,15}\b(is|are|was|were) (just |finally |already )?(over|done|finished|behind me)\b/,r:["Wait, you're done? Yay, congrats! You must feel so free!","Oh, um, congrats. That must feel nice.","Nice, congrats. Time to relax.","Done?! Congrats! Now you can finally sleep. Or drink coffee. Mostly coffee.","Oh, congratulations, dear! You must be so relieved."]},
+ {re:/line was (so |really |super )?long|waited (so long|forever)|took forever|long line/,r:["Ugh, I'm so sorry about the wait! Thanks for sticking around.","Oh, um, sorry about the line.","Sorry. Long morning.","Sorry about the line. It's my fault. I talk too much.","Oh, I'm sorry, sweetie. Thank you for waiting so patiently."]},
+ {re:/\blost\b|can'?t find (the|my)/,r:["Oh no! Where are you trying to go? I can help.","Oh, um, where are you going? Maybe I can help.","Lost? Where to?","Lost? Don't worry, I've been lost since 2019.","Oh, you poor thing. Where are you headed, dear?"]},
+ {re:/have a problem|something (is )?wrong|an issue with/,r:["Oh no, what's wrong? I'll help!","Oh, um, what happened?","What's up?","Uh-oh. Tell me everything.","Oh dear, what's the matter?"]},
+ {re:/freezing|so cold (outside|out)|cold outside|it'?s cold/,r:["Brr! Let's get you something warm!","Oh, yeah, it's really cold today.","Yeah, freezing.","Freezing? Good thing I'm hot. The espresso machine, I mean.","Oh, come warm up, honey!"]},
+ {re:/i have a cold|i'?m sick|feel sick|not feeling well|sore throat|came from the doctor/,r:["Oh no, feel better soon!","Oh, I'm sorry. I hope you feel better.","Feel better.","Oh no. I prescribe one warm drink and zero homework.","Oh, you poor thing. Feel better soon, sweetie."]},
+ {re:/got (my|a|the) (driver'?s )?(license|job|offer)|passed (my|the)|got accepted|i won|finished my exams/,r:["No way! Congrats!! That's huge!","Oh, wow. Congratulations!","Nice! Congrats.","Congrats! Drinks are on… you. But congrats!","Oh, congratulations, sweetheart! I'm so proud of you!"]},
+ {re:/first time ordering in english|my first time (speaking|ordering)/,r:["Wait, really? You're doing amazing!","Oh, wow. You're doing really well.","You're doing great.","First time? You're better than half my regulars.","Oh, honey, you're doing wonderfully."]},
+ {re:/birthday|\bbday\b/,r:["Wait, it's your birthday?! Happy birthday!!","Oh! Happy birthday. That's really nice.","Happy birthday!","Happy birthday! Your drink comes with a free song. Just kidding, I can't sing.","Oh, happy birthday, sweetheart! How wonderful!"]},
+ {re:/in a hurry|in a rush|running late|late for|gotta run|got to run|no time|have to hurry|kind of late|only (have )?(five|5|ten|10|a few) minutes/,rush:1,r:["Oh no! I'll make it super quick!","Oh, um, okay. I'll be fast.","Got it. Fast.","Speed mode activated. Beep boop.","Oh, don't you worry, honey. I'll be quick."]},
+ {re:/my english is (not|bad|terrible|so bad)|(sorry|excuse) (for|about)? ?my english|bad at english|english is (hard|difficult)/,r:["Your English is great! Seriously, don't worry.","Oh, um, no, your English is good. Really.","Your English is fine. Don't worry.","Your English is way better than my Korean. And my Korean is zero.","Oh, honey, you're doing just fine. Take your time."]},
+ {re:/raining|forgot my umbrella|soaked|so wet/,r:["Oh no! Stay as long as you want until it stops!","Oh, um, that's rough. You can stay until it stops.","Ugh, rain. Stay dry.","Rain? Great, now I have to be the sunshine.","Oh, you poor thing! Come warm up, honey."]},
+ {re:/hungry|starving|haven'?t eaten|skipped (breakfast|lunch)/,r:["Ooh, we have warm muffins! Just saying.","Um, we have muffins and croissants, if you want.","Muffins are fresh.","Hungry? Our croissants are legally amazing.","Oh, you need a snack, honey. The banana bread is fresh."]},
+ {re:/my (friend|sister|brother|mom|dad|cousin) (said|told|recommended|dragged|brought|loves)|(friend|son|daughter|kid) (loves|likes) this place/,r:["Aw, tell them thank you from me!","Oh, that's really nice.","Nice.","They have excellent taste. Tell them I said hi.","Oh, how sweet. Tell them Dottie said hello."]},
+ {re:/wish me luck|pray for me/,r:["Good luck! You've totally got this!","Oh, um, good luck! You'll do great.","Good luck!","Good luck! I put an extra shot of luck in there.","Good luck, sweetie. I'll be rooting for you."]},
+ {re:/korea|korean|seoul|busan/,r:["Wait, Korea?! I love K-dramas so much!","Oh, Korea? That's really cool. I like Korean food.","Korea! Nice. Welcome!","Korea? Okay, now I'm nervous. The coffee back home is probably amazing.","All the way from Korea! Oh, your family must miss you."]},
+ {re:/exam|test|finals|midterm|homework|quiz/,r:["Ugh, exams are the worst! You've got this!","Oh, good luck. I'm sure you'll do great.","Good luck! Caffeine helps.","Exams? Say no more. I'll add an extra shot of courage.","Oh, you study hard, but don't forget to rest, dear."]},
+ {re:/just moved|new here|new in town|first time/,r:["Welcome to the neighborhood! You're gonna love it!","Oh, welcome. It's a nice area.","Welcome! Good area.","Welcome! You picked the right coffee shop, obviously.","Oh, welcome to the neighborhood, sweetie!"]}
+];
+
+/* ---------- stages ---------- */
+const STAGES=['greet','order','size','name','chat1','chat2','close'];
+const STAGE_KO={greet:'인사',order:'주문',size:'사이즈',name:'이름',chat1:'잡담 1',chat2:'잡담 2',close:'마무리'};
+const STAGE_EN={greet:'Greeting',order:'Order',size:'Size',name:'Name',chat1:'Chat 1',chat2:'Chat 2',close:'Goodbye'};
+const SHORT={greet:"how's your day?",order:"what can I get you?",size:"what size?",name:"what name should I put?"};
+const ALT_SHORT={greet:["how's your day?","how are you doing today?","how's it going so far?"],order:["what can I get you?","what are you in the mood for?","what sounds good today?","what'll it be?"],size:["what size?","small, medium, or large?","how big do you want it?"],name:["what name should I put?","what's your name?","who should I write on the cup?"]};
+const CHAT=new Set(['greet','chat1','chat2']);
+const MODEL={greet:"Pretty good, thanks! I just finished my exams, so I'm finally relaxing. How about you?",order:"Can I get an iced vanilla latte, please? Actually, what do you recommend?",size:"A medium, please. Is it pretty sweet?",name:"It's Seyoung. S-E-Y-O-U-N-G. It's a Korean name.",close:"Thanks so much! You have a great day too. I'll come back next week!"};
+const DRINKS=['honey oat latte','caramel macchiato','vanilla cold brew','vanilla latte','chai latte','matcha latte','hot chocolate','cold brew','flat white','drip coffee','iced coffee','green tea','latte','americano','cappuccino','mocha','espresso','macchiato','frappuccino','chai','matcha','tea','lemonade','smoothie','coffee',
+ 'cafe latte','caffe latte','cafe au lait','cafe mocha','pumpkin spice latte','hazelnut latte','caramel latte','oat latte','oat milk latte','almond milk latte','soy latte','iced americano','iced latte','iced tea','iced mocha','cortado','bubble tea','milk tea','black tea','earl grey','herbal tea','peppermint tea','chamomile tea','jasmine tea','hot tea','orange juice','apple juice','juice','milk','water','sparkling water','cocoa','hot cocoa','milkshake','shake','frappe','soda','kombucha','decaf','vanilla','caramel','hazelnut','lungo','ristretto','red eye','affogato','yuzu tea','lemon tea','ginger tea','strawberry smoothie','mango smoothie','berry smoothie','banana smoothie','iced chocolate','chocolate milk','pour over','pour-over','oat latte','iced chai','iced matcha','dirty chai','london fog','ginger tea'].sort((a,b)=>b.length-a.length);
+const FUZZY=['cappuccino','macchiato','americano','espresso','frappuccino','chocolate','caramel','hazelnut','smoothie','lemonade','vanilla','kombucha','chamomile','peppermint','lemonade','school','library','student','students','flavors','flavor','weekend','homework','recommend','favorite','coffee','restroom','bathroom','delicious','beautiful','vegetarian','strawberry','welcome','tomorrow','morning','afternoon','anything','something','everything','exciting','interesting','amazing','awesome','friendly','restaurant','university','college','chocolate','sandwich','birthday','exchange','together','probably','because','tonight','yesterday','weather','musical','practice','subject','friends','cousin','grandma','recommendation','suggestion','napkins','straws','outlets','charger','password','cinnamon','coconut','pumpkin','almond','banana','blueberry','croissant','pancake','refreshing','healthy','creamy','fruity','strong','sugary'];
+const SLANG={meduim:'medium',medum:'medium',meidum:'medium',mediun:'medium',meduem:'medium',larg:'large',lage:'large',larje:'large',smal:'small',smol:'small',smoll:'small',hbu:'how about you',wbu:'what about you',tmrw:'tomorrow',tmr:'tomorrow',latee:'latte',lattee:'latte',lattte:'latte',lates:'latte',lattes:'latte',teas:'tea',smoothies:'smoothie',mochas:'mocha',cappuccinos:'cappuccino',americanos:'americano',macchiatos:'macchiato',croissants:'croissant',muffins:'muffin',cookies:'cookie',bagels:'bagel',scones:'scone',brownies:'brownie',u:'you',r:'are',ur:'your',pls:'please',plz:'please',thx:'thanks',tnx:'thanks',ty:'thank you',wanna:'want to',gonna:'going to',gimme:'give me',lemme:'let me',cuz:'because',coz:'because',bc:'because',ya:'you',yea:'yeah',yup:'yep',ye:'yeah',nah:'no',nope:'no',im:"i'm",ive:"i've",its:"it's",whats:"what's",hows:"how's",wheres:"where's",thats:"that's",dont:"don't",cant:"can't",didnt:"didn't",isnt:"isn't",idk:"i don't know",tbh:'to be honest',k:'okay',kk:'okay',ok:'okay',okey:'okay',alr:'alright',rn:'right now',btw:'by the way',gud:'good',gd:'good',fine:'fine',coffe:'coffee',cofee:'coffee',cofe:'coffee',caffe:'cafe',caffee:'coffee',expresso:'espresso',capuccino:'cappuccino',cappucino:'cappuccino',capucino:'cappuccino',machiato:'macchiato',macchiatto:'macchiato',frappe:'frappe',frap:'frappe',choco:'chocolate',amerciano:'americano',americcano:'americano',ameriacano:'americano',late:'late',plese:'please',pleas:'please',thank:'thank',thanx:'thanks',hi:'hi',hii:'hi',hiii:'hi',helo:'hello',hey:'hey',heyy:'hey',wat:'what',wut:'what',sum:'some',smth:'something',sth:'something',bout:'about',abt:'about',tho:'though',kinda:'kind of',sorta:'sort of',lil:'little',prolly:'probably',def:'definitely',fav:'favorite',fave:'favorite',favourite:'favorite',colour:'color',flavour:'flavor'};
+function lev(a,b){if(Math.abs(a.length-b.length)>2)return 9;const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[a.length][b.length]}
+function fixWord(w){if(SLANG[w])return SLANG[w];if(w.length<6)return w;let best=w,bd=9;for(const v of FUZZY){const k=lev(w,v);if(k<bd){bd=k;best=v}}return bd<=(w.length>=9?2:1)?best:w}
+const FEEL=/\b(so so|meh|doing well|can'?t complain|so far so good|hanging in there|could be better|not too bad|same old|nothing much|not much|lovely|super|wonderful|excellent|bored|sick|surviving|alive|productive|relaxed|peaceful|crazy|hectic|fun|awful|horrible|good|great|fine|ok|okay|alright|not bad|tired|busy|awesome|well|so-so|stress|stressed|exhausted|amazing|sleepy|bad|terrible|pretty|hungry|happy|excited|sad|nervous|meh|wonderful|fantastic|cool|chill|rough|long day)\b/;
+const NEG=/\bnot (so |that |very |too |really |feeling )?(good|great|well|okay|happy|the best)\b|\b(so so|could be better|hanging in there|surviving|sick|bored|awful|horrible|hectic|crazy|tired|busy|bad|terrible|stress|stressed|exhausted|sleepy|sad|nervous|meh|not great|not good|rough|long day|so-so)\b/;
+const SIZE=/\b(small|medium|large|tall|grande|venti|regular|big|little|biggest|largest|smallest|normal|short|12|16|20|whatever|any|doesn'?t matter|don'?t care|up to you|you choose|middle|mid)\b/;
+const CLOSE=/\b(thank|thanks|you too|you 2|bye|have a|see you|appreciate|great|awesome|cool|nice|perfect|wonderful|cheers)\b/;
+const REPEAT=/^(sorry|pardon|what|huh|excuse me|come again|sorry what|pardon me|what was that|sorry pardon)\??$|say (that|it) again|repeat|what did you say|slow(er)? down|didn'?t (get|catch)|one more time/;
+const BACK=/\b(how |what )?(a)?bout you\??$|how about you|what about you|and you\b|you\?$|how'?s (your|the) (day|shift|morning|week)( going)?/;
+const QSTART=/^(what|where|when|why|how|who|which|do|does|did|are|is|can|could|would|will|have you|any|so what|so how)\b/;
+const QANY=/\b(could you|can you|would you|will you|do you|are you|is it|is there|what'?s|how much|how long|where'?s|where is|any (ideas|recommendations?|suggestions?))\b/;
+const lead=ns=>ns.replace(/^((and|oh|so|um|uh|also|but|actually|okay|ok|then|wait|hmm|well|sorry|hey|hi|haha|lol)\s+)+/,'');
+function segsOf(raw){return raw.split(/(?<=[?!.;])\s+|\.{2,}|…/).map(x=>x.trim()).filter(Boolean)}
+const ORDERQ=/^(so |okay |ok |um |and |then |actually |hi |hello )*(can|could|may) i (please )?(get|have|grab|order|try)\b|^i'?d like|^(let me|lemme) get/;
+function isQSeg(x){const ns=lead(norm(x));if(wordsOf(ns).length<2)return false;return /\?/.test(x)||QSTART.test(ns)||QANY.test(ns)}
+const TAGQ=/\bright\?$|isn'?t it|aren'?t (you|they)|don'?t you|is that okay/;
+function infoQ(x){const ns=lead(norm(x));return isQSeg(x)&&!ORDERQ.test(ns)&&!/^(why not|how about (that|it)|what the heck)\b/.test(ns)&&(QSTART.test(ns)||QANY.test(ns)||TAGQ.test(ns)||AVAIL.test(ns))}
+function qText(raw){return norm(segsOf(raw).filter(infoQ).join(' '))}
+function isQuestion(raw,n){return segsOf(raw).some(isQSeg)}
+const ICED_REC=["Ooh, for something iced? Get the iced honey oat latte! So refreshing.","Um, for something cold, I like the vanilla cold brew.","Iced? Cold brew. Best one.","Something iced? The iced caramel macchiato. It's like a vacation in a cup.","Oh, for something cold, try the iced chai latte, sweetie."];
+const ICED_PICK=['iced honey oat latte','vanilla cold brew','cold brew','iced caramel macchiato','iced chai latte'];
+const STOPNAME=new Set(['put','write','gamer','under','yeah','yes','uh','um','so','it','is','its','my','name','the','oh','sure','ok','okay','hi','hello','please','just','sorry','hmm','well','hey','thanks','thank','you','i','me','haha','lol','hard','fine','difficult','korean','a','an','not','very','easy','long','weird','kidding','actually','call','and','but','that','this','good','great','mine','here','there','is','yep','yup','uhh','umm','er','ah','wow']);
+
+/* ---------- scoring rules (see design doc: 10 / 30 / 60 / 100) ---------- */
+function wordsOf(n){return (n.match(/[a-z']+/g)||[])}
+function scoreTurn(raw,n,stage,lastB){
+  const w=wordsOf(n), wc=w.length;
+  const polite=/\b(please|can i (get|have)|could i|i'?d like|i would like|thank)/.test(n);
+  const connector=/\b(and|because|but|so|actually|just|really|kind of|though|since|also|too|finally|today|this morning)\b/.test(n);
+  const added=wc>=6||(connector&&wc>=4)||(!CHAT.has(stage)&&polite);
+  const asked=/\?/.test(raw)||QSTART.test(n)||BACK.test(n)||/\b(how about|what about) /.test(n);
+  const content=new Set(wordsOf((lastB||'').toLowerCase()).filter(x=>x.length>=5));
+  const overlap=w.some(x=>content.has(x));
+  const reacted=/\b(oh|nice|cool|wow|really|that'?s|sounds|haha|lol|awesome|no way|love|aw+|ha|great)\b/.test(n)||overlap;
+  if(asked&&added&&(reacted||wc>=10))return 100;
+  if(asked)return 60;
+  if(added)return 30;
+  return 10;
+}
+const TIPS={
+ ko:{0:"이 단계는 바리스타가 알아듣지 못해 넘어갔어요. 아래 모범 답을 소리 내어 읽어 보세요.",10:"이유나 정보를 하나 덧붙여 보세요. 예: '... I just finished school.'",30:"질문을 되돌려 보세요. 예: 'How about you?'",60:"상대 말에 반응하고(Oh, nice!) 이야기를 한 문장 더 풀어 보세요.",100:"대화를 이끌었어요. 이 느낌 그대로 가면 됩니다."},
+ en:{0:"The barista couldn't follow, so this step was skipped. Read the model answer out loud.",10:"Add one more detail, like '... I just finished school.'",30:"Bounce the question back: 'How about you?'",60:"React first (Oh, nice!) and add one more sentence.",100:"You led the conversation. Keep it up."}};
+const STAGE_TIP={
+ ko:{order:"주문한 뒤 하나 더 물어보세요. 예: 'Actually, what do you recommend?'",size:"사이즈를 말하고 짧게 하나 더 물어보세요. 예: 'Is it pretty sweet?'",name:"철자를 불러 주거나 이름에 대해 한마디 덧붙여 보세요. 예: 'It's a Korean name.'",close:"좋은 하루 인사나 다시 오겠다는 말을 덧붙여 보세요. 예: 'I'll come back next week!'"},
+ en:{order:"After ordering, ask one more thing: 'Actually, what do you recommend?'",size:"Say the size and ask a quick question: 'Is it pretty sweet?'",name:"Spell it or add a line about it: 'It's a Korean name.'",close:"Add a warm goodbye: 'I'll come back next week!'"}};
+const FIXES=[
+ {re:/\b(is|are) here\b/,fix:"Is there ...? / Do you have ...?",ko:"'여기 ~ 있어요?'는 'Is here ~'가 아니라 'Do you have ~?'나 'Is there ~?'로 말합니다.",en:"Use 'Do you have ...?' or 'Is there ...?' instead of 'Is here ...?'."},
+ {re:/\blike (a )?cafe\b(?! latte)/,fix:"something like a café latte",ko:"'cafe'는 카페(가게)라는 뜻이라, 음료는 'café latte'라고 해야 합니다.",en:"'Cafe' is the shop. The drink is a 'café latte'."},
+ {re:/\bi want\b/,fix:"Can I get ...? / I'd like ...",ko:"주문할 때 'I want'는 조금 직설적으로 들립니다. 'Can I get ~?'이 가장 자연스럽습니다.",en:"'I want' sounds blunt when ordering. Try 'Can I get ...?'"},
+ {re:/\bgive me\b/,fix:"Can I get ...?",ko:"'Give me'는 명령처럼 들립니다. 'Can I get ~?'로 바꿔 보세요.",en:"'Give me' sounds like a command. Try 'Can I get ...?'"},
+ {re:/i'?m fine thank you and you/,fix:"Pretty good, thanks! How about you?",ko:"교과서 표현이라 실제로는 어색하게 들립니다.",en:"This textbook line sounds stiff in real life."},
+ {re:/\bice (americano|latte|coffee|tea|mocha)\b/,fix:"iced americano / iced latte",ko:"'ice americano'가 아니라 'iced americano'입니다.",en:"It's 'iced', not 'ice'."},
+ {re:/\b(an? )?ice (thing|drink|one|something)\b/,fix:"something iced / an iced drink",ko:"'ice'는 얼음이라는 명사입니다. 차가운 음료는 'iced'나 'something iced'로 말합니다.",en:"Use 'iced' or 'something iced', not 'ice thing'."},
+ {re:/\bone (iced|hot) /,fix:"Can I get an iced ...?",ko:"'One iced ~'보다 'Can I get an iced ~?'가 대화처럼 들립니다.",en:"'Can I get an iced ...?' sounds more natural."},
+ {re:/\bsize up\b/,fix:"Can I get a large instead?",ko:"'사이즈 업'은 콩글리시입니다.",en:"'Size up' isn't used this way."},
+ {re:/\btake ?out\b/,fix:"to go",ko:"미국에서는 '테이크아웃'을 'to go'라고 합니다.",en:"In the US, say 'to go'."},
+ {re:/\bhand ?phone\b/,fix:"phone / cell phone",ko:"'핸드폰'은 영어로 'phone'입니다.",en:"Just say 'phone'."},
+ {re:/\bfighting\b/,fix:"Good luck! / You got this!",ko:"'화이팅'은 영어로 'Good luck!'이나 'You got this!'입니다.",en:"Say 'Good luck!' or 'You got this!'"},
+ {re:/\bi'?m (a )?student of\b/,fix:"I'm a student at ...",ko:"학교 이름 앞에는 'of'가 아니라 'at'을 씁니다.",en:"Use 'a student at'."},
+ {re:/\bhow about you\?? how about you\b/,fix:"How about you?",ko:"한 번만 물어도 충분합니다.",en:"Once is enough."}
+];
+function fixesFor(lines){const out=[];for(const t of lines){const n=norm(t);for(const f of FIXES){if(f.re.test(n)&&!out.some(o=>o.f===f))out.push({f,t})}}return out}
+const TIER_NAME={ko:{0:'넘어감',10:'통함',30:'덧붙임',60:'되묻기',100:'이끌기'},en:{0:'Skipped',10:'Got it',30:'Added',60:'Asked back',100:'Led it'}};
+
+/* ---------- hint chunks per stage ---------- */
+const HINTS={
+ greet:[["Pretty good, thanks!","꽤 좋아요, 고마워요! 가장 흔한 대답입니다.","The most common reply."],["I just finished ...","방금 ~를 끝냈어요. 정보를 하나 덧붙일 때 씁니다.","Add one detail about your day."],["Not bad, a little tired though.","나쁘지 않은데 좀 피곤해요. 솔직하면서도 친근한 대답입니다.","Honest but friendly."],["How about you?","당신은요? 질문을 되돌려 대화를 이어 갑니다.","Bounce the question back."],["Kind of tired, honestly.","솔직히 좀 피곤해요.","Honest answer."],["Can't complain!","불평할 게 없어요! 잘 지낸다는 뜻의 관용 표현입니다.","Means 'doing fine'."],["It's been a long day.","긴 하루였어요.","Share how your day went."]],
+ order:[["Can I get a ..., please?","~ 주시겠어요? 가장 자연스러운 주문 표현입니다.","The most natural way to order."],["I'd like an iced latte.","아이스 라떼로 할게요.","Another polite way to order."],["What do you recommend?","뭐 추천하세요? 고민될 때 바리스타에게 묻습니다.","Ask the barista to choose."],["Actually, can I make that iced?","아, 그거 아이스로 바꿔도 될까요?","Change your order politely."],["Could I get a ... with oat milk?","귀리 우유로 ~ 주실 수 있나요?","Ask for a swap politely."],["What's your most popular drink?","제일 인기 있는 음료가 뭐예요?","Ask for the popular pick."],["For here, please.","여기서 마실게요.","Dine in or 'to go'."]],
+ size:[["A medium, please.","미디엄으로 주세요.","Size + please."],["Small is fine.","스몰이면 돼요.","A relaxed answer."],["Is it pretty sweet?","많이 단가요? 사이즈를 말하고 하나 더 물어볼 수 있습니다.","Add a quick question."],["Which size do you recommend?","어떤 사이즈를 추천하세요?","Ask for advice."],["The biggest one, please.","제일 큰 걸로 주세요.","Go big."]],
+ name:[["It's Seyoung.","It's + 이름. 'My name is'보다 카페에서 더 자연스럽습니다.","Shorter than 'My name is'."],["S-E-Y-O-U-N-G.","철자를 불러 줍니다. 이름이 낯설 때 유용합니다.","Spell it out."],["It's a Korean name.","한국 이름이에요. 대화거리를 만들어 줍니다.","Gives them something to talk about."],["It's pronounced like...","발음은 ~처럼 해요.","Help them say it."],["You can call me ...","~라고 불러 주세요.","Offer a nickname."]],
+ chat:[["Yeah! / Not really.","네! / 그렇진 않아요. 먼저 짧게 답합니다.","Answer short first."],["Actually, I just moved here from Korea.","사실 한국에서 막 이사 왔어요. 정보를 덧붙입니다.","Add a detail."],["Oh, that's so cool!","오, 멋지네요! 상대 말에 반응합니다.","React to what they said."],["What about you?","당신은요? 질문을 되돌립니다.","Bounce it back."],["That reminds me of...","그러고 보니 ~가 생각나요.","Link to a memory."],["Me too!","저도요! 공감 표현입니다.","Show you agree."],["Honestly, I'm not sure.","솔직히 잘 모르겠어요.","Be honest."]],
+ close:[["Thanks so much!","정말 고마워요!","Simple thanks."],["You too!","당신도요! 'Have a good one'에 대한 대답입니다.","Reply to 'Have a good one'."],["Have a great day!","좋은 하루 보내세요!","Wish them well."],["I'll come back next week.","다음 주에 또 올게요.","End warmly."],["It was nice talking to you!","얘기해서 즐거웠어요!","A warm goodbye."],["See you around!","또 봐요!","A casual goodbye."]]
+};
+
+/* ---------- Korean -> English phrase bank (cafe & small talk) ---------- */
+const PB=`덜 달게/덜달게/안 달게/덜 단/당 적게|less sweet|Can I get it less sweet?
+더 달게/달달하게|a little sweeter|Can you make it a little sweeter?
+얼음 적게/얼음 조금/얼음 빼/얼음 없이/얼음 빼고|light ice / no ice|Can I get it with light ice?
+얼음 많이/얼음 더|extra ice|Extra ice, please.
+샷 추가/진하게/샷 하나 더/샷 더|an extra shot|Can I add an extra shot?
+연하게/약하게/덜 진하게|a little weaker|Can you make it a little weaker?
+따뜻한/따뜻하게/뜨거운 걸로/핫/뜨겁게|hot|Can I get a hot latte?
+아이스/차가운/시원한/차갑게|iced|Can I get an iced latte?
+포장/테이크아웃/가져갈/들고 갈/가지고 갈|to go|Can I get it to go?
+먹고 갈/여기서 먹/매장에서/여기서 마실|for here|It's for here.
+추천/뭐가 맛있/뭐 마시지/뭐 먹지/고민돼|What do you recommend?|What do you recommend?
+제일 인기/인기 메뉴/잘 나가/잘 팔리/베스트|most popular|What's your most popular drink?
+메뉴/메뉴판|the menu|Can I take a look at the menu?
+시럽/바닐라 시럽/헤이즐넛|syrup|Can I get vanilla syrup in it?
+휘핑/생크림/크림 빼|whipped cream|No whipped cream, please.
+귀리 우유/오트/두유/아몬드 우유/우유 바꿔/우유 대신|oat milk / soy milk|Can I get it with oat milk instead?
+디카페인/카페인 없는|decaf|Do you have decaf?
+카페인/잠 깨|caffeine|I need something with a lot of caffeine.
+큰 거/라지/제일 큰|large|Can I get a large instead?
+작은 거/스몰/제일 작은|small|A small, please.
+중간/미디엄/보통 사이즈/중간 사이즈|medium|A medium, please.
+사이즈 업/사이즈업/한 사이즈 크게|go up a size|Can I go up a size?
+빨대|straw|Can I get a straw?
+뚜껑|lid|Can I get a lid for this?
+냅킨/휴지|napkins|Where are the napkins?
+슬리브/컵홀더/뜨거워서 못 들|sleeve|Can I get a sleeve? It's really hot.
+캐리어/들고 가기 편하게|cup holder / carrier|Can I get a cup holder?
+영수증|receipt|Can I get a receipt?
+카드로/카드 돼/카드 결제|pay with card|Can I pay with card?
+현금/현금으로|cash|Is cash okay?
+얼마/가격|How much is it?|How much is it?
+잔돈|Keep the change|Keep the change!
+팁/팁 줘|tip|Where's the tip jar?
+리필/더 채워|refill|Can I get a refill?
+쿠폰/도장/스탬프/적립|stamp card|Do you have a stamp card?
+얼마나 걸려/오래 걸려/기다려야/언제 나와|How long will it take?|How long will it take?
+오래 있어도/오래 앉아/오래 있어도 돼/계속 있어도/공부해도 돼|stay for a while|Is it okay if I stay here for a while?
+잘 그리/그림 예쁘/그림 잘/귀엽다/귀여워/라떼아트|so cute|That's so cute! You're really good at that.
+처음 와 봤/처음 왔/첫 방문|first time here|Yes, it's my first time here.
+주문 바꾸/주문 변경/바꿔도 돼/바꿀 수/변경|change my order|Can I change my order?
+취소|cancel|Can I cancel that?
+잘못 나왔/주문한 거 아니/다른 게 나왔/이거 제 거 아니|wrong drink|Sorry, I think this is the wrong drink.
+다시 만들어/새로 만들어|remake|Could you remake it, please?
+맛있/맛있어요/존맛|really good|This is really good!
+너무 써/쓰다/써요|too bitter|It's a little too bitter.
+너무 달아/너무 달/달아요|too sweet|It's a bit too sweet for me.
+식었/차가워졌/미지근|got cold|My drink got a little cold.
+너무 뜨거/뜨거워|too hot|It's too hot to drink right now!
+빵/베이커리/디저트/간식/먹을 거|pastry / snack|Do you have any pastries?
+케이크/조각 케이크|a slice of cake|Can I get a slice of cake?
+쿠키|cookie|I'll get a chocolate chip cookie too.
+머핀|muffin|Can I get a blueberry muffin?
+크루아상/크로와상|croissant|One croissant, please.
+샌드위치|sandwich|Do you have sandwiches?
+데워/데워 주|warm it up|Could you warm it up for me?
+비건/채식|vegan|Do you have any vegan options?
+알레르기/견과류/땅콩|allergic to nuts|I'm allergic to nuts. Does it have any nuts?
+글루텐|gluten-free|Is this gluten-free?
+칼로리/살 찌|calories|How many calories is it?
+와이파이/비밀번호/인터넷|Wi-Fi password|What's the Wi-Fi password?
+화장실|restroom|Where's the restroom?
+콘센트/충전/배터리|outlet / charge|Is there an outlet I can use?
+자리/앉아도/빈자리/여기 앉|Is this seat taken?|Is this seat taken?
+몇 시까지/문 닫/영업시간/마감|What time do you close?|What time do you close?
+몇 시에 열/오픈/문 열|What time do you open?|What time do you open tomorrow?
+줄 서/이 줄/줄이 길|Is this the line?|Sorry, is this the line?
+먼저 하세요/먼저 주문/먼저 가|Go ahead|Go ahead, you were here first.
+잠깐만/잠시만/잠깐|Just a second|Just a second, please.
+아직 못 정/고민 중/생각 중|still deciding|Sorry, I'm still deciding.
+그걸로 할게/그거 주세요/그걸로 주세요/그거 마실게|I'll have that|Sounds good, I'll have that.
+똑같은 거/같은 걸로/같은 거|the same|I'll have the same, please.
+아무거나/알아서/맡길게/추천해 주는 걸로|Surprise me|Surprise me!
+뭐가 들어/재료/뭐 들어있|What's in it?|What's in it?
+무슨 맛/맛이 어때/어떤 맛|What does it taste like?|What does it taste like?
+좋아요/좋아/기분 좋|I'm good|I'm doing pretty good, thanks!
+피곤/졸려/잠 못/잠을 못|tired|I'm a little tired. I didn't sleep much.
+바빠/바빴/정신없|busy|It's been a busy day.
+스트레스|stressed out|I'm a bit stressed out.
+배고파/배고픈|starving|I'm starving!
+그냥 그래/그럭저럭/보통이야/그저 그래|so-so|It's okay. Nothing special.
+신나/설레|excited|I'm so excited!
+긴장/떨려|nervous|I'm kind of nervous.
+심심/지루|bored|I'm a little bored.
+아파/감기/몸이 안 좋|have a cold|I'm not feeling great. I have a cold.
+행복|happy|I'm really happy today.
+대박/최고|amazing|That's amazing!
+힘들/힘든 하루|tough day|It's been a tough day.
+괜찮아요/괜찮아/신경 쓰지 마|No worries|No worries!
+다행|That's a relief|Oh, that's a relief.
+아쉽/안타깝/안됐다|That's too bad|Oh, that's too bad.
+부럽|jealous|I'm so jealous!
+축하|Congratulations|Congrats! That's awesome.
+고마워/감사/고맙습니다|Thank you|Thanks so much!
+미안/죄송|Sorry|Sorry about that.
+천만에/별말씀/괜찮아요 뭘요|No problem|No problem!
+좋은 하루/좋은 하루 보내|Have a good day|Have a great day!
+또 올게/다음에 또/다시 올/또 올게요|I'll come back|I'll come back next week!
+잘 가/안녕히 계세요/안녕히|See you|See you later!
+만나서 반가/반가워/처음 뵙|Nice to meet you|Nice to meet you!
+한국에서 왔/한국 사람/한국인|I'm from Korea|I'm from Korea.
+이사 왔/이사했/새로 왔/얼마 전에 왔|I just moved here|I just moved here last month.
+교환학생|exchange student|I'm an exchange student.
+유학|study abroad|I'm studying abroad here.
+고등학생|high school student|I'm a high school student.
+고1|sophomore (10th grade)|I'm a sophomore in high school.
+고2|junior (11th grade)|I'm a junior in high school.
+고3|senior (12th grade)|I'm a senior, so it's a busy year.
+중학생|middle school student|I'm in middle school.
+시험/중간고사/기말/기말고사|exam / midterm / final|I just finished my finals!
+숙제/과제|homework|I have so much homework.
+공부하러/공부|study|I came here to study.
+수업|class|I have class at noon.
+동아리|club|I'm in the music club.
+친구 만나/약속|meeting a friend|I'm meeting a friend here.
+영어 못/영어 잘 못/영어 서툴|My English isn't great yet|Sorry, my English isn't great yet.
+영어 연습/영어 공부|practicing my English|I'm practicing my English.
+천천히 말해/다시 말해/못 알아들/한 번 더|Could you say that again?|Sorry, could you say that again more slowly?
+무슨 뜻/무슨 의미/뭔 뜻|What does that mean?|Sorry, what does that mean?
+단어가 생각 안/뭐라고 하지/단어를 모르|I don't know the word|I don't know the word, but it's like...
+가족|family|My family is still in Korea.
+부모님/엄마/아빠|parents|My parents are visiting next month.
+형/오빠|older brother|I have an older brother.
+언니/누나|older sister|I have an older sister.
+동생|younger brother / sister|I have a little sister.
+강아지/개 키워|dog|I have a dog back home.
+고양이|cat|I have two cats.
+반려동물/애완동물|pet|Do you have any pets?
+취미|hobby|My hobby is taking pictures.
+케이팝/아이돌|K-pop|I'm really into K-pop.
+노래/음악|music|What kind of music do you like?
+영화|movies|I love watching movies.
+드라마|TV shows|I've been watching a lot of K-dramas.
+게임|video games|I play video games a lot.
+운동/헬스|work out|I work out after school.
+축구|soccer|I play soccer on weekends.
+농구|basketball|I play basketball with my friends.
+야구|baseball|I like watching baseball.
+그림|drawing|I like drawing.
+사진|taking pictures|I love taking pictures.
+요리|cooking|I like cooking Korean food.
+여행|traveling|I love traveling.
+책/독서|reading|I read a lot.
+쇼핑|shopping|I'm going shopping later.
+산책|go for a walk|I like going for walks.
+주말|this weekend|What are you doing this weekend?
+계획 없/그냥 쉬/별일 없|Nothing much|Nothing much, just relaxing.
+집에 있/집콕|stay home|I'm just going to stay home.
+늦잠|sleep in|I'm going to sleep in.
+놀러 가/놀아/놀 거|hang out|I'm going to hang out with my friends.
+바닷가/해변/바다|beach|I want to go to the beach.
+날씨 좋/날씨|nice weather|The weather is so nice today!
+덥다/더워/더운|hot|It's so hot today!
+춥다/추워/추운|freezing|It's freezing out there!
+비 와/비가/비 올|rain|It looks like it's going to rain.
+아침형|morning person|I'm not really a morning person.
+올빼미/밤에 깨어|night owl|I'm more of a night owl.
+처음 와/처음이/첫 방문|first time here|It's my first time here.
+자주 와/단골/자주 올|come here often|I come here a lot.
+분위기|vibe|I love the vibe here.
+이 노래/노래 좋|I love this song|I love this song! What is it?
+근처/이 동네/동네|around here|Do you live around here?
+맛집/먹을 데/밥집/식당|good place to eat|Any good places to eat around here?
+가볼 만한/구경/놀 데/관광|things to do|Any fun things to do around here?
+어떻게 가/길 좀/가는 길|How do I get to...|How do I get to the library?
+버스 정류장/버스|bus stop|Where's the nearest bus stop?
+지하철/역|subway station|Is there a subway station near here?
+도서관|library|Is there a library near here?
+은행/ATM|bank / ATM|Is there an ATM around here?
+마트/슈퍼|grocery store|Where's the nearest grocery store?
+여기서 일한 지/얼마나 일했|How long have you worked here?|How long have you worked here?
+일 재밌/일 좋아/일하는 거 좋|Do you like working here?|Do you like working here?
+알바/아르바이트|part-time job|Are you hiring? I'm looking for a part-time job.
+너는/당신은요/너는 어때/너는요|How about you?|How about you?
+진짜/정말|Really?|Oh, really?
+멋지다/멋있다/쩐다|That's so cool!|That's so cool!
+웃기/웃겨|That's funny!|Haha, that's hilarious!
+맞아/그러니까/인정|Exactly|Right? Exactly!
+나도/저도|Me too|Me too!
+나도 아니/저도 아니/나도 안|Me neither|Me neither.
+모르겠/잘 몰라|I'm not sure|Hmm, I'm not sure.
+아마/글쎄|Maybe|Hmm, maybe.
+당연하지/물론|Of course|Of course!
+그렇구나/아 그래/그렇군요|Oh, I see|Oh, I see.
+신기|interesting|That's so interesting!
+화이팅/힘내|You got this!|Good luck! You got this!
+오랜만|Long time no see|Long time no see!
+뭐 하는 중/뭐해/뭐 하고 있|What are you up to?|What are you up to today?
+생일|birthday|It's my birthday today!
+선물|gift|I'm buying a gift for my friend.
+배불|full|I'm so full.
+다이어트|on a diet|I'm kind of on a diet.
+늦었/지각|running late|Sorry, I'm running late!
+급해/서둘/바빠서 빨리|in a hurry|I'm in a bit of a hurry.
+도와줄 수/도와줘/도움|Can you help me?|Sorry, can you help me with something?
+잃어버/분실/놓고 왔|I lost my...|I think I left my phone here.
+핸드폰/휴대폰/폰|phone|Have you seen a black phone?
+지갑|wallet|I think I lost my wallet.
+충전기|charger|Do you have a phone charger?
+농담/장난이야|just kidding|I'm just kidding!
+진심|seriously|Seriously?
+예쁘/귀엽|cute|That's so cute!
+옷 예쁘/셔츠|I like your shirt|I like your shirt!
+머리 예쁘/헤어|I like your hair|I love your hair!
+향 좋/냄새 좋|smells good|It smells so good in here!
+조용/조용하|quiet|It's nice and quiet here.
+시끄럽|loud|It's kind of loud today.
+사람 많/붐비|crowded|It's so crowded today!
+한산/사람 없|not busy|It's pretty quiet today.
+일찍/아침 일찍|early|I got up really early today.
+학교 끝나고/방과 후|after school|I usually come here after school.
+점심/점심시간|lunch|I'm on my lunch break.
+저녁|dinner|I'm meeting my family for dinner.
+기숙사|dorm|I live in the dorm.
+홈스테이|host family|I live with a host family.
+룸메이트|roommate|My roommate recommended this place.
+친해지|make friends|I'm trying to make new friends here.
+외로|lonely|It's a little lonely sometimes.
+향수병/집 생각/그리워|homesick|I'm a little homesick.
+문화 차이/다르다/달라|different|It's really different from Korea.
+적응|get used to|I'm still getting used to it.
+한국 음식/김치/떡볶이|Korean food|Have you ever tried Korean food?
+추천해 줄게/한번 먹어 봐|You should try...|You should try tteokbokki!
+어디 출신/어디서 왔|Where are you from?|Where are you from originally?
+몇 살/나이|How old are you?|(Tip: it's a little personal in the US. Ask about school instead.)
+이름 뭐/이름이 뭐|What's your name?|What's your name, by the way?
+철자|spell|It's S-E-Y-O-U-N-G.
+별명|nickname|You can call me Sey.`.split('\n').map(l=>{const [k,en,ex]=l.split('|');return {kws:k.split('/').map(x=>x.replace(/\s/g,'')),ko:k.split('/')[0],en,ex}});
+function findKo(run){const r=run.replace(/\s/g,'');const out=[];for(const e of PB){let best=0;for(const k of e.kws){if(!k)continue;if(r.includes(k))best=Math.max(best,k.length*2);else if(r.length>=2&&k.includes(r))best=Math.max(best,r.length)}if(best)out.push([best,e])}return out.sort((a,b)=>b[0]-a[0]).slice(0,4).map(x=>x[1])}
+const HANGUL=/[가-힣ㄱ-ㅎㅏ-ㅣ][가-힣ㄱ-ㅎㅏ-ㅣ\s]*/g;
+const KOW={'아이스티':'iced tea','아이스':'iced','아메리카노':'americano','카페라떼':'cafe latte','라떼':'latte','라테':'latte','바닐라':'vanilla','카라멜':'caramel','캐러멜':'caramel','마키아토':'macchiato','카푸치노':'cappuccino','모카':'mocha','녹차':'green tea','말차':'matcha','홍차':'black tea','차':'tea','커피':'coffee','콜드브루':'cold brew','에스프레소':'espresso','핫초코':'hot chocolate','스무디':'smoothie','레모네이드':'lemonade','우유':'milk','귀리우유':'oat milk','오트밀크':'oat milk','두유':'soy milk','디카페인':'decaf','샷':'shot','추가':'extra','시럽':'syrup','얼음':'ice','따뜻한':'hot','따뜻하게':'hot','뜨거운':'hot','핫':'hot','차가운':'iced','차갑게':'iced','작은':'small','작은거':'small','작은걸로':'small','스몰':'small','톨':'tall','미디엄':'medium','중간':'medium','보통':'medium','큰':'large','큰거':'large','큰걸로':'large','라지':'large','그란데':'grande','벤티':'venti','사이즈':'size','하나':'one','한잔':'one','두잔':'two','두개':'two','둘':'two','머핀':'muffin','크루아상':'croissant','쿠키':'cookie','베이글':'bagel','케이크':'cake','빵':'bread','감사합니다':'thank you','고맙습니다':'thank you','고마워요':'thank you','감사해요':'thank you','네':'yes','예':'yes','응':'yeah','아니요':'no','아뇨':'no','아니':'no','좋아요':'sounds good','좋아':'good','괜찮아요':"I'm okay",'안녕하세요':'hi','안녕':'hi','학생':'student','고등학생':'high school student','대학생':'college student','한국':'Korea','서울':'Seoul','주말':'weekend','친구':'friend','친구들':'friends','집':'home','학교':'school','시험':'exam','숙제':'homework','공부':'study','영화':'movie','쇼핑':'shopping','가족':'family','강아지':'dog','개':'dog','고양이':'cat','오늘':'today','내일':'tomorrow','피곤해요':"I'm tired",'배고파요':"I'm hungry",'바빠요':"I'm busy",'그냥':'just','아마':'maybe','주세요':'please','이름':'name','제':'my','저':'I','저는':'I','있어요':'stay','갈':'go','가요':'go','좋아해요':'like','먹었어요':'ate','봐요':'watch','볼':'watch','같이':'together','처음':'first time','여기':'here','맛있어요':"it's good",'추천':'recommend','추천해':'recommend','뭐':'what','덜':'less','달게':'sweet','안':'not','달지':'sweet','않게':'not','조금':'a little','많이':'a lot','포장':'to go','먹고':'for here','갈게요':'to go','정말':'really','진짜':'really'};
+const KOP=/(이에요|예요|입니다|이요|으로요|로요|에서|으로|해요|하고|이랑|랑|은|는|이|가|을|를|에|로|와|과|도|만|요)$/;
+function koWord(t){if(KOW[t])return KOW[t];let b=t;for(let i=0;i<2&&KOP.test(b);i++){b=b.replace(KOP,'');if(!b)return '';if(KOW[b])return KOW[b]}if(/주세요$/.test(t)){const x=koWord(t.replace(/주세요$/,''));return x===null?null:(x?x+' ':'')+'please'}return null}
+function koConvert(v){
+  const pairs=[];let ok=true;
+  const out=v.replace(HANGUL,run=>{const r=run.trim();if(!r)return run;
+    const ws=r.split(/\s+/).map(koWord);
+    if(ws.every(w=>w!==null)){const en=ws.filter(Boolean).join(' ');pairs.push([r,en||'—']);const rest=v.replace(HANGUL,' ').toLowerCase();if(en&&(rest.includes(en.toLowerCase())||(/good/.test(en)&&/\bgood\b/.test(rest))))return ' ';return ' '+en+' '}
+    const rr=r.replace(/\s/g,'');let best=null;for(const e of PB){for(const k of e.kws){if(k&&rr.includes(k)&&k.length>=rr.length*0.6&&(!best||k.length>best[0]))best=[k.length,e]}}
+    if(best){const en=best[1].en.split(' / ')[0];pairs.push([r,en]);return ' '+en+' '}
+    ok=false;return run});
+  return {ok,text:out.replace(/\s+/g,' ').replace(/\s([?.!,])/g,'$1').trim(),pairs};
+}
+/* ---------- English -> Korean glossary for the barista's words ---------- */
+const GL={};`get started|(주문을) 시작하다, 준비하다
+what can i get you|뭐 드릴까요?
+have a good one|좋은 하루 보내요 (가벼운 작별 인사)
+come again|뭐라고요? 다시 말해 줄래요?
+hang in there|힘내요, 조금만 버텨요
+say no more|더 말 안 해도 알겠어요
+good stuff|좋네요, 잘됐네요
+all good|괜찮아요, 문제없어요
+moving on|다음으로 넘어갈게요
+on break|쉬는 시간인
+born and raised|나고 자란 (토박이)
+time flies|시간 참 빠르네요
+plenty of time|시간 충분해요
+you've got this|넌 할 수 있어
+back to business|다시 본론으로
+if i do say so myself|내 입으로 말하긴 그렇지만
+made my day|내 하루를 행복하게 해 줬어요
+on the house|가게에서 무료로 주는
+you can't miss it|못 찾을 리 없어요 (바로 보여요)
+tell you what|그럼 이렇게 해요
+for sure|당연하죠, 확실히
+no way|말도 안 돼! (놀람)
+bless your heart|아이고 저런 (안쓰러움·다정함)
+fast-paced|정신없이 빠르게 돌아가는
+captive audience|어쩔 수 없이 들어야 하는 청중
+airplane mode|비행기 모드 (농담: 카페인 없는 커피)
+study break|공부하다 쉬는 시간
+morning rush|아침에 손님이 몰리는 시간
+double shift|연속 2교대 근무
+great minds think alike|생각이 통했네요 (농담조)
+keep that energy|그 기분 계속 유지해요
+best seller|제일 잘 팔리는 메뉴
+it's policy|규정이에요
+spell it wrong|철자를 틀리게 쓰다
+defend your answer|왜 그런지 말해 봐요
+highlight of your day|오늘 제일 좋았던 일
+that never happens|그런 일은 절대 없어요
+go light on|~을 조금만 넣다
+take care|잘 지내요, 조심히 가요
+come back|다시 오다
+get back to work|다시 일하러 가다
+hang out|놀다, 시간을 보내다
+on the list|할 일 목록에
+how's it going|잘 지내요? 어때요?
+how's your day going|오늘 하루 어때요?
+so far|지금까지
+anything exciting|뭐 신나는 일
+by the way|그런데, 참고로
+kind of|약간, 좀
+sort of|약간, 어느 정도
+a couple|두어 개, 몇 개
+tops|많아 봐야, 최대
+right back there|바로 저 뒤에
+down the hall|복도를 따라가면
+first door on the left|왼쪽 첫 번째 문
+end of the counter|카운터 끝쪽
+across the street|길 건너편
+next door|바로 옆집
+two blocks|두 블록 (길 두 개 지나서)
+this block|이 블록 (이 거리 구역)
+the only one|유일한 곳
+welcome in|어서 오세요
+welcome|환영해요, 어서 오세요
+you went too far|너무 많이 간 거예요
+call the cops|경찰을 부르다
+pretend|~인 척하다
+literally|말 그대로, 진짜로
+honestly|솔직히
+basically|기본적으로, 한마디로
+totally|완전히
+obviously|당연히, 누가 봐도
+absolutely|물론이죠, 완전히
+hopefully|바라건대, 아마도
+mostly|대부분, 주로
+actually|사실은
+anyway|아무튼
+careful|조심해요
+policy|규정, 방침
+sophisticated|세련된, 고급스러운
+excellent|훌륭한
+wise|현명한
+decision|결정
+choice|선택
+pick|고른 것, 고르다
+favorite|가장 좋아하는 것
+recommend|추천하다
+illegal|불법인
+caffeine|카페인
+decaf|디카페인
+brew|(커피를) 내리다, 끓이다
+cold brew|콜드브루 (찬물로 오래 우린 커피)
+drip coffee|드립 커피
+oat|귀리
+almond|아몬드
+soy|두유(콩)
+creamy|부드럽고 크리미한
+syrup|시럽
+sweet|단, 달콤한
+sweetie|(다정하게) 얘야, 자기
+sweetheart|(다정하게) 얘야, 자기
+honey|(다정하게) 얘야, 자기
+hon|(다정하게) 얘야 (honey의 줄임)
+dear|(다정하게) 얘야
+buffet|뷔페 (농담: 종류가 많다)
+pastries|빵, 페이스트리류
+croissant|크루아상
+muffin|머핀
+blueberry|블루베리
+banana bread|바나나 빵
+baked|구웠다
+hug|포옹
+butter|버터
+slice|한 조각
+case|진열장
+board|(메뉴) 판
+receipt|영수증
+password|비밀번호
+secure|안전한, 보안이 좋은
+tap|(카드를) 갖다 대다
+cash|현금
+card|카드
+outlets|콘센트
+window seats|창가 자리
+comfy|편안한
+napkins|냅킨
+straws|빨대
+lids|컵 뚜껑
+sugar|설탕
+refills|리필
+stamp card|도장(적립) 카드
+manager|매니저, 점장
+hiring|직원을 뽑는 중인
+form|신청서
+online|온라인으로
+plants|화분
+hall|복도
+restroom|화장실
+weather|날씨
+perfect|완벽한
+beautiful|아름다운
+walk|산책
+busy|바쁜
+quieter|더 한산한
+quiet|조용한, 한산한
+crowded|붐비는
+line|줄
+wait|기다림
+mondays|월요일마다
+mornings|아침마다
+community college|지역 2년제 대학
+art|미술
+computer science|컴퓨터 공학
+acting class|연기 수업
+paint|그림을 그리다
+skateboard|스케이트보드를 타다
+badly|서툴게, 못
+comics|만화책
+video games|비디오 게임
+soccer|축구
+baseball|야구
+basketball|농구
+stand-up comedy|스탠드업 코미디 (혼자 하는 개그 공연)
+comedian|코미디언
+jokes|농담
+joke|농담
+gardening|정원 가꾸기
+garden|정원
+tomatoes|토마토
+baking|빵 굽기
+grandson|손자
+knees|무릎
+complaining|불평하는 (여기선 아프다는 뜻)
+forty years|40년
+whole street|길 전체
+neighborhood|동네
+community|지역 사회
+farmers market|농산물 직거래 장터
+river|강
+sunset|노을
+ducks|오리
+aggressive|공격적인, 사나운
+snacks|간식
+diner|미국식 간이 식당
+pancakes|팬케이크
+taco place|타코 가게
+sandwich shop|샌드위치 가게
+pizza place|피자 가게
+corner|모퉁이
+library|도서관
+downtown|시내
+playlist|플레이리스트
+lo-fi|로파이 (잔잔한 음악 장르)
+hum along|흥얼거리다
+concert|콘서트
+saturday|토요일
+excited|신난
+corgi|코기 (강아지 품종)
+boss|대장, 상사
+dog park|강아지 공원
+hamster|햄스터
+lazy|게으른
+cat|고양이
+pets|반려동물
+no time|시간이 없다
+commute|통학·통근 길
+live|살다
+nearby|근처에
+part of town|동네의 어느 쪽
+first job|첫 직장
+sleepy|졸린
+rough|힘든
+oof|으악 (안타까움)
+respect|인정, 존경해요
+correct answer|정답
+mostly the coffee|주로 커피 때문에
+paycheck|월급
+free coffee|공짜 커피
+personality|성격
+besides|~말고도
+brings you in|여기 온 이유
+novel|소설
+details|자세한 내용
+exams|시험
+courage|용기
+shot|(에스프레소) 샷
+extra|추가의
+less|덜
+light ice|얼음 조금
+hot or iced|따뜻하게 또는 차갑게
+room temperature|상온
+weird|이상한
+temperature|온도
+vegan|비건 (동물성 재료를 안 먹는)
+gluten-free|글루텐이 없는
+allergic|알레르기가 있는
+make it|만들다, 해내다
+remake|다시 만들다
+remember|기억하다
+faces|얼굴들
+learning|배우는 중인
+still|아직
+anymore|더 이상
+almost|거의
+ages|아주 오래
+fifteen years|15년
+three years|3년
+two months|두 달
+espresso machine|에스프레소 머신
+screaming|비명 지르는 (시끄러운)
+waking up|잠이 깨는 중인
+hearing|청력
+pardon me|뭐라고요? (공손하게)
+catch that|알아듣다
+loud|시끄러운
+distracted|정신이 딴 데 팔린
+smiley face|웃는 얼굴 그림
+leaf|나뭇잎 (라떼 아트)
+drew|그렸다
+cup|컵
+spelled|철자를 썼다
+tip|팁
+local|동네의
+plenty|충분히
+patience|인내심
+ohio|오하이오 (미국 주 이름)
+texas|텍사스 (미국 주 이름)
+island|섬
+grew up|자랐다
+k-dramas|한국 드라마
+nervous|긴장한
+family|가족
+miss|그리워하다
+rest|쉬다
+good luck|행운을 빌어요
+you've got this|넌 할 수 있어
+welcome to the neighborhood|동네에 온 걸 환영해요
+gonna|going to (~할 거야)
+ideas|아이디어
+tell me more|더 얘기해 줘요
+anything fun|뭐 재밌는 거
+plans|계획
+weekend|주말
+summer|여름
+subject|과목
+morning person|아침형 인간
+night person|저녁형 인간
+excited about|~이 기대되는
+hardest part|가장 어려운 부분
+hang out|놀다, 시간을 보내다
+go-to|늘 고르는, 단골 메뉴
+lately|최근에
+into|~에 빠져 있는, 좋아하는
+been to|~에 가 본 적 있다
+tried|먹어 봤다, 해 봤다
+promise|약속하다
+last question|마지막 질문
+look like|~처럼 보이다
+so far|지금까지
+cute name|귀여운 이름
+nice to meet you|만나서 반가워요
+love that choice|좋은 선택이에요
+good pick|잘 골랐어요
+got it|알겠어요
+cool|좋아요, 멋져요
+nice|좋네요
+yay|야호
+aw|아이고 (안타까움·귀여움)
+ugh|으 (짜증)
+ooh|오 (관심)
+hmm|흠
+nope|아니요
+yep|네
+ya|you (너)
+next|다음 손님!
+weird|이상한
+kidding|농담하는
+seriously|진지하게, 진짜로`.split('\n').forEach(l=>{const [k,v]=l.split('|');GL[k.trim().toLowerCase()]=v.trim()});
+const GRE=new RegExp("(?<![a-z'])("+Object.keys(GL).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+")(?![a-z'])","gi");
+function wordsHTML(t){let o='',l=0;t.replace(/[A-Za-z]+(?:['’][A-Za-z]+)*/g,(m,off)=>{o+=esc(t.slice(l,off))+`<button class="gl w" data-k="${esc(m.toLowerCase().replace(/’/g,"'"))}">${esc(m)}</button>`;l=off+m.length;return m});return o+esc(t.slice(l))}
+function glossHTML(text){let out='',last=0;text.replace(GRE,(m,g,off)=>{out+=wordsHTML(text.slice(last,off))+`<button class="gl" data-k="${esc(m.toLowerCase())}">${esc(m)}</button>`;last=off+m.length;return m});return out+wordsHTML(text.slice(last))}
+/* ---------- free dictionary lookup (dictionaryapi.dev, no key) ---------- */
+const CONTR={"i'm":"I am","you're":"you are","we're":"we are","they're":"they are","it's":"it is / it has","that's":"that is","what's":"what is","there's":"there is","here's":"here is","let's":"let us (~하자)","don't":"do not","doesn't":"does not","didn't":"did not","can't":"cannot","won't":"will not","isn't":"is not","aren't":"are not","wasn't":"was not","i'll":"I will","you'll":"you will","we'll":"we will","it'll":"it will","i've":"I have","you've":"you have","we've":"we have","i'd":"I would / I had","you'd":"you would / you had","how's":"how is","who's":"who is","gonna":"going to","wanna":"want to","gotta":"got to (have to)","y'all":"you all"};
+const DICT=Object.assign({},store.get('stc.dict',{}));
+function dictSave(){const ks=Object.keys(DICT).filter(k=>!DICT[k].err);const keep={};ks.slice(-300).forEach(k=>keep[k]=DICT[k]);store.set('stc.dict',keep)}
+function lemmas(w){const c=[w];const add=x=>{if(x&&x.length>1&&!c.includes(x))c.push(x)};w=w.replace(/'s$/,'');add(w);
+  if(/ies$/.test(w))add(w.replace(/ies$/,'y'));if(/(ses|xes|zes|ches|shes|oes)$/.test(w))add(w.replace(/es$/,''));if(/s$/.test(w)&&!/ss$/.test(w))add(w.replace(/s$/,''));
+  if(/ied$/.test(w))add(w.replace(/ied$/,'y'));if(/ed$/.test(w)){add(w.replace(/ed$/,''));add(w.replace(/d$/,''));if(/([b-df-hj-np-tv-z])\1ed$/.test(w))add(w.replace(/[a-z]ed$/,''))}
+  if(/ing$/.test(w)){add(w.replace(/ing$/,''));add(w.replace(/ing$/,'e'));if(/([b-df-hj-np-tv-z])\1ing$/.test(w))add(w.replace(/[a-z]ing$/,''))}
+  if(/ly$/.test(w)){add(w.replace(/ly$/,''));add(w.replace(/ily$/,'y'))}if(/er$/.test(w))add(w.replace(/e?r$/,''));if(/est$/.test(w))add(w.replace(/e?st$/,''));return c.slice(0,6)}
+async function lookupWord(k){
+  if(DICT[k]&&!DICT[k].err)return DICT[k];
+  if(typeof navigator!=='undefined'&&navigator.onLine===false)return DICT[k]={err:'offline'};
+  let netErr=false;
+  for(const w of lemmas(k)){
+    try{const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),6000);
+      const r=await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(w),{signal:ctl.signal});clearTimeout(tm);
+      if(r.status===404)continue;if(!r.ok){netErr=true;break}
+      const j=await r.json();if(!Array.isArray(j)||!j.length)continue;
+      const e=j[0];const ph=e.phonetic||((e.phonetics||[]).find(p=>p.text)||{}).text||'';
+      const senses=[];for(const en of j)for(const m of en.meanings||[]){const d=(m.definitions||[])[0];if(d&&senses.length<3&&!senses.some(x=>x.pos===m.partOfSpeech))senses.push({pos:m.partOfSpeech||'',def:d.definition||'',ex:d.example||''})}
+      if(!senses.length)continue;
+      DICT[k]={word:e.word||w,ph,senses};dictSave();return DICT[k];
+    }catch(err){netErr=true;break}
+  }
+  return DICT[k]=netErr?{err:'net'}:{none:true};
+}
+const POS_KO={noun:'명사',verb:'동사',adjective:'형용사',adverb:'부사',pronoun:'대명사',preposition:'전치사',conjunction:'접속사',interjection:'감탄사',determiner:'한정사',article:'관사',exclamation:'감탄사'};
+function naverLink(k,label){return `<a class="btnlink" href="https://en.dict.naver.com/#/search?query=${encodeURIComponent(k)}" target="_blank" rel="noopener">${label||'네이버 사전 (한국어 뜻)'}</a>`}
+function glossBody(k){
+  if(GL[k])return esc(GL[k]);
+  if(CONTR[k])return `<span class="sense">= ${esc(CONTR[k])}</span><span class="src">줄임말</span>`;
+  const d=DICT[k];
+  if(!d)return `<span class="muted">사전에서 찾는 중…</span>`;
+  if(d.err)return `<span class="muted">${d.err==='offline'?'인터넷이 연결되어 있지 않아 사전을 불러오지 못했어요.':'사전 서버에 연결하지 못했어요. 잠시 후 다시 눌러 보세요.'}</span><span>${naverLink(k)}</span>`;
+  if(d.none)return `<span class="muted">무료 사전에 이 단어가 없어요. 사람 이름이거나 말투(슬랭)일 수 있어요.</span><span>${naverLink(k)}</span>`;
+  return `${d.word!==k?`<span class="src">기본형: ${esc(d.word)}</span>`:''}${d.ph?`<span class="src">${esc(d.ph)}</span>`:''}${d.senses.map(x=>`<span class="sense"><i>${esc(LANG==='ko'?(POS_KO[x.pos]||x.pos):x.pos)}</i>${esc(x.def)}${x.ex?`<span class="ex">e.g. ${esc(x.ex)}</span>`:''}</span>`).join('')}<span class="src">영영사전: Free Dictionary API · ${naverLink(d.word,'한국어 뜻 보기')}</span>`;
+}
+function glossKo(k){if(GL[k])return GL[k];if(CONTR[k])return CONTR[k];const d=DICT[k];return d&&d.senses?d.senses[0].def:''}
+const PENALTY=5;
+function adj(st){const b=S.best[st];if(!b)return 0;const n=S.looked[st]?S.looked[st].length:0;return Math.max(0,b.score-PENALTY*n)}
+
+/* ---------- hints & ideas for each barista question ---------- */
+const QH={};(()=>{let cur=null;`Q|Oh yeah? Anything exciting happen today?
+H|Not really, just school.|별일 없었어요, 그냥 학교 갔어요.
+H|Actually, I got a good grade on my test!|사실 시험 점수가 잘 나왔어요!
+H|I tried a new restaurant for lunch.|점심에 새 식당에 가 봤어요.
+I|예: 오늘 있었던 좋은 일 하나 말하기
+I|예: 별일 없었다고 하고 '너는?' 되묻기
+I|예: 점심에 먹은 것 이야기하기
+Q|So are you a student around here? You totally look like you're on a study break.
+H|Yeah, I go to the high school nearby.|네, 근처 고등학교 다녀요.
+H|Busted! I'm taking a break from homework.|들켰네요! 숙제하다 쉬는 중이에요.
+H|Do you go to school too?|당신도 학교 다녀요?
+I|예: 근처 고등학교에 다닌다고 말하기
+I|예: 숙제하다 쉬러 왔다고 말하기
+I|예: 대답하고 상대도 학생인지 묻기
+Q|Oh really? Tell me more! What do you like about it?
+H|The teachers are really nice.|선생님들이 정말 친절해요.
+H|I like that the classes are small.|수업 인원이 적어서 좋아요.
+H|Honestly, mostly lunch!|솔직히 점심시간이 제일 좋아요!
+I|예: 학교에서 좋은 점 하나 말하기
+I|예: 좋아하는 과목 이야기하기
+I|예: 농담처럼 '점심시간'이라고 답하기
+Q|Okay, last question, I promise. Any fun plans for the weekend?
+H|I'm going to the beach with my friends.|친구들이랑 바닷가 가요.
+H|Not really, I'll probably just relax.|별로요, 그냥 쉴 것 같아요.
+H|What about you? Any plans?|당신은요? 계획 있어요?
+I|예: 친구들과 놀러 간다고 말하기
+I|예: 그냥 집에서 쉰다고 말하기
+I|예: 대답하고 상대 주말 계획 묻기
+Q|Ooh, like what? I need ideas!
+H|Maybe watch a movie or go shopping.|영화 보거나 쇼핑 갈까 해요.
+H|I want to try that taco place across the street.|길 건너 타코집 가 보고 싶어요.
+H|Do you have any ideas for me?|저한테 추천해 줄 거 있어요?
+I|예: 하고 싶은 것 두 가지 말하기
+I|예: 가 보고 싶은 가게 이야기하기
+I|예: 거꾸로 추천해 달라고 하기
+Q|Oh. Um, is it a busy day for you?
+H|Kind of. I have a lot of homework.|좀요. 숙제가 많아요.
+H|Not really, it's pretty chill.|아니요, 꽤 여유로워요.
+H|How about you? Busy morning?|당신은요? 아침 바빴어요?
+I|예: 숙제가 많아서 바쁘다고 말하기
+I|예: 오늘은 여유롭다고 말하기
+I|예: 대답하고 상대도 바빴는지 묻기
+Q|Um, is this your first time here? I don't think I've seen you before.
+H|Yeah, it's my first time!|네, 처음 왔어요!
+H|My friend told me about this place.|친구가 여기 알려 줬어요.
+H|How long have you worked here?|여기서 일한 지 얼마나 됐어요?
+I|예: 처음 왔다고 말하기
+I|예: 친구가 추천해 줬다고 말하기
+I|예: 상대가 여기서 일한 지 얼마나 됐는지 묻기
+Q|Oh. How did you, um, find this place?
+H|I just walked by and it looked cozy.|지나가다 아늑해 보여서요.
+H|I saw it on Instagram.|인스타그램에서 봤어요.
+H|My friend recommended it.|친구가 추천해 줬어요.
+I|예: 지나가다 들어왔다고 말하기
+I|예: SNS에서 봤다고 말하기
+I|예: 분위기가 좋아 보였다고 말하기
+Q|Do you, um, come here to study? It's pretty quiet in the mornings.
+H|Yeah, I need a quiet place to study.|네, 조용한 공부 장소가 필요해서요.
+H|Sometimes. Today I'm just here for coffee.|가끔요. 오늘은 커피만 마시러 왔어요.
+H|Is it okay to stay here for a while?|여기 좀 오래 있어도 돼요?
+I|예: 공부하러 왔다고 말하기
+I|예: 오늘은 커피만 마시러 왔다고 말하기
+I|예: 오래 있어도 되는지 물어보기
+Q|Oh. What do you usually do here?
+H|I usually do my homework.|보통 숙제해요.
+H|I just read or listen to music.|그냥 책 읽거나 음악 들어요.
+H|What do you do after your shift?|당신은 일 끝나고 뭐 해요?
+I|예: 보통 숙제를 한다고 말하기
+I|예: 음악 들으면서 쉰다고 말하기
+I|예: 상대는 일 끝나고 뭐 하는지 묻기
+Q|Yeah? Busy day?
+H|Yeah, I have three classes today.|네, 오늘 수업이 세 개예요.
+H|Not too bad.|그렇게 바쁘진 않아요.
+H|You look busy too!|당신도 바빠 보여요!
+I|예: 오늘 수업이 많다고 말하기
+I|예: 그렇게 바쁘진 않다고 말하기
+I|예: 상대도 바빠 보인다고 말하기
+Q|You live around here?
+H|Yeah, a few blocks away.|네, 몇 블록 떨어진 곳이요.
+H|Not really, I live across town.|아니요, 좀 멀리 살아요.
+H|I just moved here last month.|지난달에 막 이사 왔어요.
+I|예: 근처에 산다고 말하기
+I|예: 지난달에 이사 왔다고 말하기
+I|예: 대답하고 상대도 근처 사는지 묻기
+Q|Oh yeah? Which part of town?
+H|Near the park, by the river.|강가 공원 근처요.
+H|Close to the high school.|고등학교 근처요.
+H|Do you know the library downtown? Near there.|시내 도서관 알아요? 그 근처예요.
+I|예: 공원 근처에 산다고 말하기
+I|예: 학교 근처라고 말하기
+I|예: 근처 건물 이름으로 위치 설명하기
+Q|Busy day ahead?
+H|Yeah, I have a big test today.|네, 오늘 큰 시험 있어요.
+H|Kind of. School, then soccer practice.|좀요. 학교 갔다가 축구 연습이요.
+H|Not really. How about you?|별로요. 당신은요?
+I|예: 오늘 시험이 있다고 말하기
+I|예: 학교 끝나고 할 일 이야기하기
+I|예: 대답하고 상대 하루 묻기
+Q|Yeah? What's on the list?
+H|Two classes and a club meeting.|수업 두 개랑 동아리 모임이요.
+H|Homework, homework, and more homework.|숙제, 숙제, 그리고 또 숙제요.
+H|I'm meeting my friends later.|이따가 친구들 만나요.
+I|예: 오늘 할 일 두세 가지 말하기
+I|예: 숙제가 많다고 농담하기
+I|예: 이따 친구 만난다고 말하기
+Q|Just good? Come on, give me the highlight of your day!
+H|Okay, okay! I aced my math test.|알았어요! 수학 시험 잘 봤어요.
+H|Honestly, this coffee might be the highlight.|솔직히 이 커피가 오늘의 하이라이트일지도요.
+H|My friend made me laugh so hard at lunch.|점심때 친구가 엄청 웃겨 줬어요.
+I|예: 오늘 제일 좋았던 일 말하기
+I|예: 농담으로 '이 커피'라고 받아치기
+I|예: 친구랑 있었던 재밌는 일 말하기
+Q|So what brings you in today, besides my amazing personality?
+H|Haha, mostly the coffee. Sorry!|하하, 주로 커피 때문이에요. 미안해요!
+H|I need caffeine before my test.|시험 전에 카페인이 필요해서요.
+H|I'm meeting a friend here.|여기서 친구 만나기로 했어요.
+I|예: 농담에 웃으면서 커피 때문이라고 말하기
+I|예: 시험 전이라 카페인이 필요하다고 말하기
+I|예: 친구를 만나러 왔다고 말하기
+Q|That's it? I need more details for my novel!
+H|Okay, I have a history test at noon.|좋아요, 정오에 역사 시험이 있어요.
+H|My friend is late, as always.|친구가 늘 그렇듯 늦네요.
+H|What's your novel about?|소설은 무슨 내용이에요?
+I|예: 이유를 하나 더 자세히 말하기
+I|예: 농담 받아서 '소설 무슨 내용이에요?' 묻기
+I|예: 늦는 친구 이야기하기
+Q|Okay, very important question. Cats or dogs?
+H|Dogs, for sure!|무조건 강아지죠!
+H|Cats. They're so chill.|고양이요. 너무 느긋해서 좋아요.
+H|Both! I can't choose.|둘 다요! 못 고르겠어요.
+I|예: 강아지파라고 말하기
+I|예: 고양이파라고 이유와 함께 말하기
+I|예: 둘 다 좋다고 하고 상대는 뭔지 묻기
+Q|Okay, but why? Defend your answer!
+H|Because they're so loyal.|충성스러워서요.
+H|They're cute and easy to take care of.|귀엽고 키우기 쉬워서요.
+H|I had one back in Korea.|한국에서 키웠었거든요.
+I|예: 좋아하는 이유 하나 말하기
+I|예: 한국에서 키우던 동물 이야기하기
+I|예: 농담처럼 과장해서 변론하기
+Q|Oh? Tell me, what's on your mind today, dear?
+H|Just school stuff. I have a test soon.|그냥 학교 일이요. 곧 시험이 있어요.
+H|I miss my family a little.|가족이 좀 보고 싶어요.
+H|Nothing much, I'm just happy today.|별거 없어요, 그냥 오늘 기분 좋아요.
+I|예: 요즘 신경 쓰이는 일 말하기
+I|예: 가족이 보고 싶다고 말하기
+I|예: 그냥 기분이 좋다고 말하기
+Q|Are you new in town? I don't think I've seen your face before.
+H|Yes, I just moved here from Korea.|네, 한국에서 막 이사 왔어요.
+H|I've been here about a month.|여기 온 지 한 달쯤 됐어요.
+H|Have you lived here long?|여기 오래 사셨어요?
+I|예: 한국에서 막 이사 왔다고 말하기
+I|예: 여기 온 지 얼마나 됐는지 말하기
+I|예: 상대가 여기 오래 살았는지 묻기
+Q|Oh? And how do you like it so far?
+H|I like it! People are really friendly.|좋아요! 사람들이 정말 친절해요.
+H|It's different, but I'm getting used to it.|다르지만 적응하는 중이에요.
+H|I miss Korean food, though.|그래도 한국 음식이 그리워요.
+I|예: 사람들이 친절해서 좋다고 말하기
+I|예: 다르지만 적응 중이라고 말하기
+I|예: 한국 음식이 그립다고 말하기
+Q|So what do you like to do for fun, honey?
+H|I love watching movies.|영화 보는 걸 좋아해요.
+H|I play basketball with my friends.|친구들이랑 농구해요.
+H|What do you like to do?|할머니는 뭐 하는 거 좋아하세요?
+I|예: 좋아하는 취미 하나 말하기
+I|예: 친구들과 하는 운동 이야기하기
+I|예: 대답하고 상대 취미 묻기
+Q|Oh, that's nice. How did you get into that?
+H|My dad got me into it.|아빠 때문에 좋아하게 됐어요.
+H|I started in middle school.|중학교 때 시작했어요.
+H|My friends were doing it, so I tried.|친구들이 해서 저도 해 봤어요.
+I|예: 누구 때문에 시작했는지 말하기
+I|예: 언제 시작했는지 말하기
+I|예: 친구 따라 시작했다고 말하기
+Q|What kind of music are you into?
+H|I'm really into K-pop.|K-pop에 푹 빠져 있어요.
+H|Mostly hip-hop and R&B.|주로 힙합이랑 R&B요.
+H|Do you know any Korean singers?|한국 가수 아는 사람 있어요?
+I|예: 좋아하는 음악 장르 말하기
+I|예: 좋아하는 가수 이름 말하기
+I|예: 상대가 아는 한국 가수 있는지 묻기
+Q|Have you tried any good food around here yet?
+H|Yeah, the taco place was amazing.|네, 그 타코집 진짜 맛있었어요.
+H|Not yet. Any recommendations?|아직이요. 추천해 줄 데 있어요?
+H|I miss Korean food, honestly.|솔직히 한국 음식이 그리워요.
+I|예: 먹어 본 음식 하나 말하기
+I|예: 아직이라고 하고 추천 부탁하기
+I|예: 한국 음식이 그립다고 말하기
+Q|Do you play any sports?
+H|I play soccer on weekends.|주말에 축구해요.
+H|Not really. I'm more of a gamer.|별로요. 게임 쪽이에요.
+H|Do you play anything?|당신은 하는 운동 있어요?
+I|예: 하는 운동 말하기
+I|예: 운동보다 게임을 좋아한다고 말하기
+I|예: 대답하고 상대 운동 묻기
+Q|Seen any good movies lately?
+H|Yeah, I watched a really funny one last week.|네, 지난주에 진짜 웃긴 거 봤어요.
+H|Not lately. Any recommendations?|요즘은 못 봤어요. 추천해 줄래요?
+H|I mostly watch K-dramas.|주로 한국 드라마 봐요.
+I|예: 최근에 본 영화 이야기하기
+I|예: 추천해 달라고 하기
+I|예: 드라마를 주로 본다고 말하기
+Q|What's your favorite subject at school?
+H|Probably math. I like solving problems.|아마 수학이요. 문제 푸는 게 좋아요.
+H|Art! I love drawing.|미술이요! 그림 그리는 게 좋아요.
+H|Honestly, lunch.|솔직히 점심시간이요.
+I|예: 좋아하는 과목과 이유 말하기
+I|예: 싫어하는 과목도 같이 말하기
+I|예: 농담으로 '점심시간'이라고 답하기
+Q|Do you have any pets?
+H|I have a dog back in Korea.|한국에 강아지가 있어요.
+H|No, but I really want a cat.|아니요, 근데 고양이 키우고 싶어요.
+H|Do you have any?|당신은 키워요?
+I|예: 키우는 동물 말하기
+I|예: 키우고 싶은 동물 말하기
+I|예: 대답하고 상대도 키우는지 묻기
+Q|What do you usually do after school?
+H|I usually go to the library.|보통 도서관 가요.
+H|I hang out with my friends.|친구들이랑 놀아요.
+H|I have soccer practice.|축구 연습이 있어요.
+I|예: 방과 후에 하는 일 말하기
+I|예: 친구들과 노는 이야기하기
+I|예: 학원이나 연습 이야기하기
+Q|Any plans for the summer?
+H|I'm going back to Korea to see my family.|가족 보러 한국 가요.
+H|Maybe a summer camp.|아마 여름 캠프요.
+H|Not yet. Any ideas?|아직이요. 추천해 줄 거 있어요?
+I|예: 한국에 간다고 말하기
+I|예: 하고 싶은 여름 활동 말하기
+I|예: 아직 없다고 하고 추천 부탁하기
+Q|Are you a morning person or a night person?
+H|Definitely a night person.|완전 저녁형이에요.
+H|Morning person! I wake up at six.|아침형이에요! 여섯 시에 일어나요.
+H|Neither. I'm always tired.|둘 다 아니에요. 늘 피곤해요.
+I|예: 저녁형이라고 이유와 함께 말하기
+I|예: 아침 몇 시에 일어나는지 말하기
+I|예: 농담으로 '늘 피곤하다'고 하기
+Q|What do you usually drink back home?
+H|I usually drink iced americanos.|보통 아이스 아메리카노 마셔요.
+H|In Korea, everyone drinks iced coffee, even in winter.|한국은 겨울에도 다들 아이스 커피 마셔요.
+H|I like milk tea a lot.|밀크티 엄청 좋아해요.
+I|예: 한국에서 자주 마시던 음료 말하기
+I|예: 한국 사람들은 겨울에도 아이스를 마신다고 말하기
+I|예: 좋아하는 음료 이유 말하기
+Q|Have you been to the beach here yet?
+H|Not yet, but I really want to go.|아직이요, 근데 진짜 가 보고 싶어요.
+H|Yeah, it was so beautiful.|네, 진짜 예뻤어요.
+H|Which beach do you recommend?|어느 해변 추천해요?
+I|예: 아직 못 가 봤다고 말하기
+I|예: 가 봤던 느낌 말하기
+I|예: 추천할 해변 물어보기
+Q|What's the hardest part about speaking English?
+H|Talking fast like native speakers.|원어민처럼 빨리 말하는 거요.
+H|I know the words, but I get nervous.|단어는 아는데 긴장돼요.
+H|Small talk, honestly!|솔직히 스몰토크요!
+I|예: 영어로 말할 때 어려운 점 말하기
+I|예: 긴장된다고 솔직하게 말하기
+I|예: 농담으로 '스몰토크'라고 답하기
+Q|What's something you're excited about this week?
+H|My friend's birthday party on Friday.|금요일에 친구 생일 파티요.
+H|A new episode of my favorite show.|좋아하는 드라마 새 에피소드요.
+H|Honestly, the weekend!|솔직히 주말이요!
+I|예: 이번 주 기대되는 일 말하기
+I|예: 기다리는 드라마나 노래 말하기
+I|예: '주말!'이라고 짧게 답하고 덧붙이기
+Q|Are you more of a coffee person or a tea person?
+H|Coffee, definitely. I need caffeine.|무조건 커피요. 카페인이 필요해요.
+H|Tea, actually. Coffee makes me shaky.|사실 차요. 커피 마시면 손이 떨려요.
+H|Both, depending on the day.|날마다 달라요.
+I|예: 커피파인지 차파인지 이유와 함께 말하기
+I|예: 날마다 다르다고 말하기
+I|예: 대답하고 상대는 어느 쪽인지 묻기
+Q|What's the best thing that happened to you this week?
+H|I made a new friend at school.|학교에서 새 친구를 사귀었어요.
+H|I got a good grade on my essay.|에세이 점수 잘 받았어요.
+H|Finding this café!|이 카페를 찾은 거요!
+I|예: 이번 주 좋았던 일 말하기
+I|예: 새 친구 사귄 이야기하기
+I|예: 칭찬처럼 '이 카페를 찾은 것'이라고 말하기
+Q|Do you have a favorite place to hang out?
+H|The park by the river.|강가 공원이요.
+H|Honestly, this café now!|솔직히 이제 이 카페요!
+H|Where do you like to hang out?|당신은 어디서 노는 거 좋아해요?
+I|예: 자주 가는 장소 말하기
+I|예: 이 카페라고 말해 보기
+I|예: 대답하고 상대가 좋아하는 장소 묻기
+Q|__offer
+H|Yes, please!|네, 주세요!
+H|Sounds good, I'll have that.|좋아요, 그걸로 할게요.
+H|Hmm, is it sweet?|음, 달아요?
+I|예: 그걸로 달라고 하기
+I|예: 단지 먼저 물어보기
+I|예: 다른 메뉴로 하겠다고 말하기`.split('\n').forEach(l=>{const [t,a,b]=l.split('|');if(t==='Q'){cur={h:[],i:[]};QH[a]=cur}else if(t==='H')cur.h.push([a,b,'Example answer']);else if(t==='I')cur.i.push(a)})})();
+const OFFER_RE=/Want to try it\?|Should I make you one\?|Want one\?|Do you want that\?|Want it\?|Shall I make you one\?|Would you like a /;
+function setHintKey(text){if(QH[text])S.hk=text;else if(OFFER_RE.test(text))S.hk='__offer';else if(text.includes('?'))S.hk=null}
+
+/* ---------- state ---------- */
+let S=null;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const norm=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’‘`]/g,"'").replace(/[^a-z0-9'?\s-]/g,' ').replace(/([a-z])\1{2,}/g,'$1$1').replace(/\?/g,' ? ').replace(/\s+/g,' ').trim().split(' ').map(w=>w==='?'?w:fixWord(w)).join(' ').replace(/ \?/g,'?').trim();
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function fill(t){const d=S.slots.drink||'';if(!/latte|cappuccino|macchiato|mocha|flat white|chai|matcha|milk/.test(d))t=t.replace("I, um, drew a little leaf on it.","I, um, wrote your name really neatly.");if(/iced|cold|frapp|smoothie|lemonade/.test(d))t=t.replace("Careful, it's hot!","Enjoy, it's nice and cold!");if(S.foodOnly)t=t.replace("Careful, it's hot!","Enjoy!").replace(' I made it with love.',' Fresh from the oven.');return t.replace('{size} {drink}',drinkLabel()).replace('{size}',S.slots.size).replace('{drink}',S.slots.drink).replace(/\{name\}/g,S.slots.name)}
+function iRe(id){return INTENTS.find(i=>i.id===id)}
+function irText(it,pi,q){if(!it.r)return null;if(it.id==='bname'){const bn=BASENAME[PIDS[pi]];return it.r[pi].replace(new RegExp('\\b'+bn+'\\b'),P[S.pid].name)}let d=it.offer==='*'?findDrink((q||'').replace(/.*\bwith\b/,'')):it.offer;return it.r[pi].replace('{d}',d||'that one').replace('{D}',cap(d||'that one'))}
+function matchIntent(n){for(const it of INTENTS){if(it.re.test(n))return it}return null}
+/* ---------- activity follow-up: "I watched a movie" -> short related question ---------- */
+const FUT=/\b(going to|gonna|will|tomorrow|tonight|planning|plan to|this weekend|next (week|month|year|friday|saturday|sunday)|later|after this|about to|heading)\b/;
+const ACTS=[
+ {k:'movie',re:/\b(movie|film|cinema|netflix|drama|series|show|anime|marvel)\b/,p:["What was it about?","What movie was it?","Was it any good?"],f:["What are you going to see?","Oh, what are you watching?"]},
+ {k:'game',re:/\b(game|games|gaming|played|playing|minecraft|valorant|lol|league|fortnite|roblox|nintendo|switch|playstation|ps5)\b/,p:["What game was it?","Was it fun? Did you win?","Is it a new game?"],f:["What game are you playing?","Is it a new one?"]},
+ {k:'sport',re:/\b(soccer|football|basketball|baseball|tennis|swim|swimming|jog|jogging|run|running|workout|gym|yoga|badminton|volleyball|hiking|hike|cycling|biking|exercise|taekwondo)\b/,p:["Nice! Do you do that a lot?","How was it? Tiring?","Oh nice, are you on a team?"],f:["Nice! Is that a regular thing?","Oh cool, is it for fun or a team?"]},
+ {k:'concert',re:/\b(concert|festival|fan ?meeting)\b/,p:["Who did you see?","How was it? Was it loud?","Was it your first concert?"],f:["Who are you going to see?","Are you excited?"]},
+ {k:'music',re:/\b(guitar|piano|violin|drums|drum|flute|ukulele|sing|singing|song|songs|music|concert|k-?pop|band|playlist|cello)\b/,p:["Oh nice! What kind of music?","Cool! How long have you played?","What song was it?"],f:["Nice! Who are you going to see?","Oh cool, what are you going to play?"]},
+ {k:'book',re:/\b(book|books|novel|read|reading|webtoon|manga|comic)\b/,p:["What's it about?","Oh nice, what's the title?","Is it good?"],f:["What are you going to read?","Oh, what kind of book?"]},
+ {k:'cook',re:/\b(cook|cooked|cooking|baked|baking|bake|made (?:dinner|lunch|breakfast|pasta|cookies|ramen|kimchi))\b/,p:["Ooh, what did you make?","Did it turn out good?","Do you cook a lot?"],f:["Oh, what are you making?","Sounds yummy! What's on the menu?"]},
+ {k:'eat',re:/\b(ate|eat|eating|lunch|dinner|breakfast|brunch|pizza|burger|ramen|sushi|chicken|tteokbokki|pasta|steak|noodles|restaurant)\b/,p:["Ooh, was it good?","Where did you go?","What did you get?"],f:["Ooh, where are you going?","What are you in the mood for?"]},
+ {k:'study',re:/\b(study|studied|studying|homework|essay|assignment|project|report|exam|test|quiz|class|school|academy|tutor|presentation)\b/,p:["Ugh, how did it go?","What subject was it?","Was it hard?"],f:["Good luck with that! What subject?","Is it a big one?"]},
+ {k:'trip',re:/\b(trip|travel|traveled|travelled|vacation|holiday|flight|flew|visited|camping|beach|mountain|island|jeju|busan|seoul|tokyo|japan|paris|london|new york|hawaii)\b/,p:["Oh nice! How was it?","Where did you go?","Was it your first time there?"],f:["Oh nice! Where to?","How long are you going for?"]},
+ {k:'shop',re:/\b(shopping|bought|buy|shop|mall|store|sale|ordered|clothes|shoes|sneakers)\b/,p:["Ooh, what did you get?","Find anything good?","Was it on sale?"],f:["What are you looking for?","Ooh, any good sales?"]},
+ {k:'friends',re:/\b(hung out|hang out|met (?:my|a)? ?friend|with (?:my )?(?:friends?|family|brother|sister|mom|dad|cousin)|date|boyfriend|girlfriend|party|birthday)\b/,p:["Nice! What did you guys do?","Sounds fun! Where did you go?","Oh cool, was it a good time?"],f:["Sounds fun! What's the plan?","Nice! Where are you guys going?"]},
+ {k:'art',re:/\b(draw|drew|drawing|paint|painted|painting|photo|photos|camera|design|designed|dance|danced|dancing|sketch|craft)\b/,p:["Oh cool! What did you make?","Nice! Do you do that often?","What's your style?"],f:["Ooh, what are you going to make?","Nice! Is it for a project?"]},
+ {k:'sleep',re:/\b(slept|sleep|nap|napped|stayed up|woke up|insomnia|all night|overslept)\b/,p:["Oh no, how come?","Ha, did you get enough sleep?","Need some coffee, huh?"],f:["Good idea! Early night?","Hope you get some rest!"]},
+ {k:'work',re:/\b(work|worked|working|job|part-?time|shift|intern|internship|meeting|boss|volunteer|volunteering)\b/,p:["Oh nice, what kind of work?","Was it a long day?","How was it?"],f:["Oh, what time do you start?","What kind of work is it?"]},
+ {k:'pet',re:/\b(dog|puppy|cat|kitten|hamster|rabbit|bird|fish|pet|walk(?:ed)? my)\b/,p:["Aw! What's their name?","Ooh, how old are they?","Aw, what kind is it?"],f:["Aw, what's their name?","Aw nice, what kind?"]},
+ {k:'learn',re:/\b(learn|learned|learnt|learning|practice|practiced|practicing|started|began|picked up|joined|signed up)\b/,p:["Oh cool! How's it going so far?","Nice! What made you start?","Is it hard?"],f:["Oh cool! What made you want to?","Nice, what are you hoping to learn?"]},
+ {k:'clean',re:/\b(clean|cleaned|cleaning|laundry|chores|organized|moved|moving|packed)\b/,p:["Ha, the fun stuff! Big job?","Ugh, chores. Did you finish?","Nice, feels good when it's done, right?"],f:["Ha, fun times! Big job?","Good luck with that!"]},
+ {k:'tv',re:/\b(youtube|youtuber|twitch|stream|streaming|podcast|tiktok|instagram|video|videos|vlog)\b/,p:["Oh, what kind of videos?","Who's your favorite channel?","Anything good?"],f:["Oh, what are you going to post?","Nice! What's it about?"]}
+];
+const ACT_PRE=[["Oh nice! ","Cool! ","Sweet! "],["Hey, nice. ","Oh yeah? ","Cool. "],["Oh, nice. ","Ah, okay. ","Huh. "],["Awesome! ","Dude, nice! ","Oh cool! "],["Oh, lovely. ","How nice. ","Oh my. "]];
+const INTERJ=/^(oh|ooh|aw|ha|ugh|nice|cool|sounds|good|hope|ah)\b/i;
+const actSay=(pi,t)=>INTERJ.test(t)?t:pick(ACT_PRE[pi]||ACT_PRE[0])+t;
+const PLACE_Q={library:"Did you get a lot of studying done?",gym:"Nice! Do you go often?",mall:"Find anything good?",park:"Nice! Was the weather good?",cafe:"Oh, a different cafe? Is it any good?",church:"Oh, a nice community, huh?",hospital:"Oh, I hope everything is okay.",museum:"Oh cool! Anything interesting?",zoo:"Ooh, what was your favorite animal?",market:"Ooh, get anything good?",club:"Nice! What do you do there?"};
+const ACT_NEG=/\b(not|never|didn'?t|don'?t|haven'?t|can'?t|couldn'?t|nothing|nope|no)\b/;
+function actFollow(raw,n,pi){
+  if(ACT_NEG.test(n.replace(/\bnot bad\b/,'')))return null;
+  if(!/\b(i|i'?m|i'?ve|we|my|me|just|today|yesterday|last|this|tonight|tomorrow|gonna|going)\b/.test(n))return null;
+  const fut=FUT.test(n);
+  for(const a of ACTS){if(a.re.test(n)){const pool=(fut?a.f:a.p);return actSay(pi,pick(pool))}}
+  const m=n.match(/\b(?:went|going|go|been|headed|heading)\s+to\s+(?:the |a |an |my )?([a-z]{3,})/);
+  if(m&&!/^(school|work|bed|sleep|class|home)$/.test(m[1]))return actSay(pi,PLACE_Q[m[1]]||(fut?"What are you going to do there?":"How was the "+m[1]+"?"));
+  return null;
+}
+function statementReact(n){const pi=pidx(S.pid);S.usedSt=S.usedSt||[];for(let i=0;i<STATEMENTS.length;i++){const s=STATEMENTS[i];if(s.re.test(n)){if(isNegAt(n,s.re))continue;if(s.rush)S.rush=true;if(S.usedSt.includes(i))continue;S.usedSt.push(i);return s.r[pi]}}return null}
+
+function stageMatch(st,n,raw,isQ){
+  const wc=wordsOf(n).length, p=P[S.pid];
+  if(S.followed[st]&&CHAT.has(st)&&wc>=1&&!(isQ&&!segsOf(raw).some(x=>!isQSeg(x))))return true;
+  if(st==='greet')return FEEL.test(n)||(!isQ&&wc>=3);
+  if(st==='order'){const q=qText(raw);if(q&&/recommend|suggest|what'?s good|your favorite|popular/.test(q))return false;const ok=segsOf(raw).filter(x=>!infoQ(x)).map(norm);if(S.offer&&ok.some(x=>YES.test(x)))return true;if(!findDrink(ok.join(' '))&&attrRec(ok.join(' ')||n))return false;return ok.some(x=>findDrink(x)!==null||ORDER_GENERIC.test(x)||FOOD.test(x))}
+  if(st==='size'){if(/^(s|m|l)$/.test(n))return true;return segsOf(raw).filter(x=>!infoQ(x)).some(x=>SIZE.test(norm(x)))}
+  if(st==='name')return !!extractName(n,raw);
+  if((st==='chat1'||st==='chat2')&&/^(yes|yeah|yep|no|nope|maybe|sometimes|not really|sure|kind of|sort of|i guess|probably|not much|a little|a bit|very|yes very|always|never|ok|okay|exactly|totally|of course|unfortunately|definitely|absolutely)[.!]?$/.test(n))return true;
+  if(st==='chat1'||st==='chat2')return p.expect[st].test(n.replace(/\?/g,''))&&!(isQ&&wc<=3)||(!isQ&&wc>=3);
+  if(st==='close')return CLOSE.test(n)||!isQ||wc<=4;
+}
+const FLAVOR={pumpkin:'pumpkin spice latte',honey:'honey oat latte',strawberry:'strawberry smoothie',mango:'mango smoothie',chocolate:'mocha',mint:'peppermint tea',peppermint:'peppermint tea',lemon:'lemon tea',ginger:'ginger tea',coconut:'iced latte',cinnamon:'chai latte'};
+function findDrinks(n){n=stripNeg(n);let t=' '+n.replace(/\?/g,'')+' ';const out=[];for(const d of DRINKS){const k=' '+d+' ';let i;while((i=t.indexOf(k))>=0){out.push([i,d]);t=t.slice(0,i)+' '+'#'.repeat(d.length)+' '+t.slice(i+k.length)}}return out.sort((a,b)=>a[0]-b[0]).map(x=>x[1]).filter(d=>!['vanilla','caramel','hazelnut','decaf','milk','water'].includes(d)||out.length===1).filter((d,i,a)=>a.indexOf(d)===i||/\b(two|2|both|another)\b/.test(n))}
+function aOf(w){return (/^[aeiou]/.test(w)?'an ':'a ')+w}
+function listJoin(a){return a.length<2?a.join(''):a.length===2?a.join(' and '):a.slice(0,-1).join(', ')+', and '+a[a.length-1]}
+function drinkLabel(){if(S.foodOnly)return S.food;const z=S.slots.size;if(S.slots.drinks&&S.slots.drinks.length>1)return listJoin(S.slots.drinks.map(d=>z+' '+d));return z+' '+S.slots.drink}
+function stripNeg(n){return n.replace(/\b(isn'?t|not|no|without|besides|other than|except|instead of)\s+(a |an |the )?(coffee|caffeine|tea|milk|sugar|drink)\b/g,' ')}
+function findDrink(n){n=stripNeg(n);const t=' '+n.replace(/\?/g,'')+' ';for(const d of DRINKS){if(t.includes(' '+d+' '))return d}if(/\bcafe\b/.test(n))return 'cafe latte';if(!FOOD.test(n))for(const k in FLAVOR){if(new RegExp('\\b'+k+'\\b').test(n))return FLAVOR[k]}return null}
+function extractName(n,raw){
+  const fix=n.match(/(?:\bno|actually|kidding|i mean|wait)\s+(?:it'?s\s+|my name is\s+)?([a-z][a-z'-]*)\s*$/);if(fix&&!STOPNAME.has(fix[1]))return cap(fix[1]);
+  const full=(raw||'').match(/(?:[Mm]y name is|I'm|I am|[Ii]t's|[Cc]all me)\s+([A-Z][\w'-]*(?:\s+[A-Z][\w'-]*)?)/);if(full&&!STOPNAME.has(full[1].toLowerCase().split(' ')[0]))return full[1];
+  const m=n.match(/(?:my name is|my name's|name is|i'm|i am|it's|it is|its|call me|this is|put|write|under|it'?s for)\s+([a-z][a-z'-]*)/);
+  if(m&&!STOPNAME.has(m[1]))return cap(m[1]);
+  for(const x of segsOf(raw||n)){if(infoQ(x))continue;const w=(norm(x).match(/[a-z][a-z'-]*/g)||[]).filter(t=>!STOPNAME.has(t));if(w.length&&w.length<=3)return cap(w[0])}
+  return null;
+}
+function captureSlots(st,n){
+  if(st==='order'){const pi=pidx(S.pid);let d=findDrink(n);if(!d&&S.offer&&YES.test(n))d=S.offer;if(!d){if(/something (cold|iced|ice)|(ice|iced|cold) (thing|drink|one)/.test(n))d='iced latte';else if(/something (hot|warm)/.test(n))d='latte';else if(/something sweet/.test(n))d='caramel macchiato';else if(/something strong/.test(n))d='cold brew';else d=S.lastRec||REC[pi]}const okn=norm(segsOf(S.lastRaw||n).filter(x=>!infoQ(x)).join(' '));const all=findDrinks(okn);S.slots.drinks=all.length>1?all.slice(0,4):null;if(S.slots.drinks)d=S.slots.drinks[0];if(d==='coffee'&&/\bsweet\b/.test(n))d='vanilla latte';let drink=d;if(/\b(iced?|cold)\b/.test(n)&&!/\bhot\b/.test(n)&&!d.includes('iced')&&!d.includes('cold'))drink='iced '+d;S.slots.drink=drink;const sz=norm(segsOf(S.lastRaw||n).filter(x=>!infoQ(x)).join(' ')).match(/\b(small|medium|large|tall|grande|venti)\b/);if(sz){S.slots.size=({tall:'small',grande:'medium',venti:'large'})[sz[1]]||sz[1];S.presize=true}const fd=n.match(FOOD);S.food=fd?fd[0]:null;S.foodOnly=!!(S.food&&!findDrink(okn));if(S.foodOnly){S.slots.drink=S.food;S.presize=true;S.slots.size=''}}
+  if(st==='size'){if(/^(s|m|l)$/.test(n)){S.slots.size={s:'small',m:'medium',l:'large'}[n];return}const mm=[...n.matchAll(new RegExp(SIZE.source,'g'))];const m=mm[mm.length-1];let s=m[1];s=({tall:'small',short:'small',grande:'medium',venti:'large',regular:'medium',normal:'medium',middle:'medium',mid:'medium',big:'large',biggest:'large',largest:'large',little:'small',smallest:'small','12':'small','16':'medium','20':'large'})[s]||(['small','medium','large'].includes(s)?s:'medium');S.slots.size=s}
+  if(st==='name'){S.slots.name=extractName(n,S.lastRaw)||'friend'}
+}
+
+/* ---------- conversation engine ---------- */
+async function say(text){
+  S.busy=true;render();
+  await sleep(Math.min(1200,350+text.length*12));
+  S.log.push({who:'b',text});S.lastB=text;S.busy=false;setHintKey(text);S.ph=newIdea();render();
+}
+function koAttach(st){if(!S.pendingKo)return;const m=S.log[S.log.length-1];m.orig=S.pendingKo.orig;m.pairs=S.pendingKo.pairs;if(st&&!S.free){S.looked[st]=S.looked[st]||[];for(const[k,e] of m.pairs){const key=k+'→'+e;if(!S.looked[st].includes(key))S.looked[st].push(key)}}S.pendingKo=null}
+function flag(f){for(let i=S.log.length-1;i>=0;i--)if(S.log[i].who==='u'){S.log[i].flag=f;break}}
+function record(st,text,score){
+  S.turns.push({st,text,score});
+  const b=S.best[st];
+  if(!b||score>b.score)S.best[st]={text,score};
+}
+async function advance(){
+  S.idx++;
+  if(S.idx>=STAGES.length){await say(pick(["Oh hey, I'm on break in a minute. Want to chat a bit more?","It's pretty quiet now, actually. Want to hang out and chat a little?"]));S.ended=true;render();return}
+  S.hk=null;
+  if(STAGES[S.idx]==='size'&&S.presize){record('size',S.foodOnly?'(음식만 주문)':S.slots.size+' (주문할 때 함께 말함)',30);S.idx++;if(!S.foodOnly)await say(pick(['Got it, '+S.slots.size+'!','Okay, '+S.slots.size+'.']))}
+  await say(fill(P[S.pid].lines[STAGES[S.idx]]));
+}
+async function finish(){
+  S.done=true;S.ended=false;logSave();
+  const total=STAGES.reduce((a,s)=>a+adj(s),0);
+  const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,at:Date.now()});store.set('stc.history',hist.slice(0,20));
+  render();
+}
+async function reask(st,raw){
+  const p=P[S.pid],pi=pidx(S.pid);
+  if(st==='chat1'||st==='chat2'){if(!S.best[st])record(st,raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
+  if(st==='close'){await say(pick(["Anyway, enjoy your drink!","Oh, and your drink's getting cold!","Alright, enjoy!"]));if(!S.best.close)record('close',raw,scoreTurn(raw,norm(raw),st,S.lastB));await advance();return}
+  S.reasks[st]=(S.reasks[st]||0)+1;
+  if(S.reasks[st]>=3){
+    if(!S.best[st])record(st,S.asked[st]||raw,60);
+    if(st==='order'){S.slots.drink=S.lastRec||REC[pi];await say("Tell you what, I'll make you my favorite. One "+S.slots.drink+"!")}
+    else if(st==='size')await say("I'll just make it a medium!");
+    else if(st==='name')await say("I'll just draw a smiley face on the cup!");
+    else await say(pick(["Anyway!","Okay, moving on!"]));
+    await advance();return;
+  }
+  if(st==='order'&&S.offer){await say(pick(["So, want to try the "+S.offer+"? Or something else?","Should I make you the "+S.offer+", or do you want something different?"]));return}
+  const pre=S.reasks[st]===1?pick(["So, ","Anyway, ","Okay, so "]):pick(["Alright, back to business. ","Sorry, I'm getting distracted! ","Okay, okay. "]);
+  const alts=ALT_SHORT[st].filter(x=>!S.log.slice(-8).some(m=>m.who==='b'&&m.text.toLowerCase().includes(x.toLowerCase())));
+  const q=alts.length?alts[0]:pick(ALT_SHORT[st]);
+  await say(pre+(/[.!] $/.test(pre)?cap(q):q));
+}
+const IDEAS={
+ greet:["예: 오늘 기분이 어떤지 말하고, 상대에게도 물어보기","예: 시험이 끝나서 홀가분하다고 말해 보기","예: 조금 피곤하지만 괜찮다고 말해 보기","예: 날씨가 좋아서 기분이 좋다고 말해 보기","예: 바빴지만 좋은 하루였다고 말해 보기","예: 아침에 늦잠 자서 허둥댔다고 말하기","예: 오늘 처음으로 커피를 마신다고 말하기","예: 비가 와서 우산을 챙겼다고 말하기","예: 주말이라 여유롭다고 말하기","예: 방금 학원이 끝났다고 말하기","예: 친구랑 약속이 있어서 설렌다고 말하기","예: '그냥 그래요'라고 솔직하게 말하고 이유 덧붙이기","예: 월요일이라 좀 힘들다고 말하기","예: 오늘 날씨가 너무 춥다고 말하기","예: 어제 늦게 자서 졸리다고 말하기","예: 새 학기라서 긴장된다고 말하기"],
+ order:["예: 아이스 바닐라 라떼를 주문해 보기","예: 바리스타에게 추천 메뉴 물어보기","예: 카페 라떼가 있는지 물어보기","예: 너무 달지 않은 음료가 있는지 물어보기","예: 따뜻한 차를 주문해 보기","예: 귀리 우유로 바꿀 수 있는지 물어보기","예: 디카페인으로 주문해 보기","예: 시럽을 반만 넣어 달라고 부탁하기","예: 샷을 하나 추가해 달라고 말하기","예: 친구 것까지 두 잔 주문하기","예: 오늘의 커피가 뭔지 물어보기","예: 시원하고 상큼한 음료 있는지 물어보기","예: 휘핑크림 빼 달라고 말하기","예: 아이스 아메리카노 한 잔 주문하기","예: 머핀이나 쿠키 같은 간식도 같이 주문하기","예: 초콜릿이 들어간 음료가 있는지 물어보기","예: 먹고 갈지 포장할지 말하며 주문하기","예: 뭐가 제일 인기 있는지 물어보기"],
+ size:["예: 미디엄으로 달라고 하기","예: 제일 큰 사이즈로 달라고 하기","예: 사이즈를 말하고 얼음 적게 부탁하기","예: 작은 사이즈면 된다고 말하기","예: 라지와 미디엄의 차이를 물어보기","예: 사이즈를 말하고 컵에 이름 써 달라고 하기","예: '스몰이면 충분해요'라고 말하고 이유 덧붙이기","예: 큰 걸로 해서 오래 마시겠다고 말하기","예: 사이즈를 고르고 가격이 얼마인지 물어보기","예: 미디엄으로 하고 빨대도 달라고 하기"],
+ name:["예: 내 이름을 말하고 철자 불러 주기","예: 이름을 말하고 한국 이름이라고 덧붙이기","예: 친구들이 부르는 별명 알려 주기","예: 이름이 발음하기 어렵다고 말하고 쉬운 별명 알려 주기","예: 이름을 말하고 뜻을 한마디로 설명하기","예: 영어 이름이 따로 있다고 말하기","예: '제 이름은 좀 길어요'라고 웃으며 말하기","예: 이름을 말하고 '발음 맞게 하셨어요'라고 칭찬하기"],
+ chat:["예: 짧게 대답하고 이유 하나 덧붙이기","예: 대답한 뒤 '당신은요?'라고 되묻기","예: 한국에서 왔다고 말해 보기","예: 상대 말에 '오, 멋지다!'라고 반응하기","예: 요즘 빠져 있는 것 이야기하기","예: 어제 본 영화나 드라마 이야기하기","예: 주말에 한 일 말하기","예: 좋아하는 음식 한 가지 말하기","예: 요즘 배우고 있는 걸 말하기","예: 키우는 반려동물이 있다고 말하기","예: 오늘 학교에서 있었던 일 하나 말하기","예: '저도 그래요!'라고 공감하고 이유 덧붙이기","예: 잘 모르겠다고 솔직히 말하고 다시 물어보기","예: '좀 더 천천히 말해 줄래요?'라고 부탁하기","예: 어제 저녁에 뭘 했는지 말하기","예: 좋아하는 운동이나 취미 말하기","예: 영어 공부 중이라고 말하기","예: 이번 방학 계획 말하기"],
+ close:["예: 고맙다고 하고 좋은 하루 보내라고 하기","예: 다음 주에 또 오겠다고 말하기","예: 음료 맛있어 보인다고 말하기","예: '대화 즐거웠어요'라고 말하기","예: '다음에 또 얘기해요'라고 인사하기","예: 오늘 영어로 말해서 뿌듯하다고 말하기","예: '수고하세요'에 해당하는 인사하기","예: '당신도 좋은 하루요!'라고 받아치기","예: '맛있게 마실게요'라고 말하기","예: 이제 공부하러 가야 한다고 말하기"],
+ free:["예: 질문에 답하고 하나 더 덧붙이기","예: 바리스타에게 좋아하는 음식 물어보기","예: 근처에 갈 만한 곳 물어보기","예: 오늘 있었던 일 하나 이야기하기","예: 대답하고 '너는 어때?'라고 되묻기","예: 이제 가 봐야 한다고 인사하기","예: 주말에 뭐 하는지 물어보기","예: 좋아하는 영화나 노래 물어보기","예: 어릴 때 꿈이 뭐였는지 물어보기","예: 여행 가고 싶은 곳 말하기","예: 이 카페의 인기 메뉴 물어보기","예: 한국에 대해 하나 알려 주기","예: 요즘 스트레스 푸는 방법 물어보기","예: 내가 좋아하는 계절 이야기하기","예: 반려동물이 있는지 물어보기","예: 최근에 웃었던 일 이야기하기","예: '정말요? 더 말해 주세요!'라고 호기심 보이기","예: 다음 주 계획 이야기하기","예: 좋아하는 가수나 배우 물어보기","예: 아침형인지 저녁형인지 이야기하기"]};
+const EXPR={
+ greet:[{p:"I'm feeling ...",m:"오늘 기분을 말할 때: I'm feeling pretty good.",re:/feeling/i},{p:"I just ...",m:"방금 한 일: I just finished class.",re:/\bi just\b/i},{p:"kind of",m:"'조금, 약간': I'm kind of tired.",re:/kind of|sort of/i},{p:"It's been a ... day",m:"'~한 하루였어요': It's been a long day.",re:/been a\b.*\bday/i},{p:"How about you?",m:"되묻기",re:/how about you|and you|what about you/i}],
+ order:[{p:"Can I get ...?",m:"주문할 때 가장 흔한 틀: Can I get a latte?",re:/can i (get|have)/i},{p:"I'd like ...",m:"정중한 주문: I'd like an iced tea.",re:/i'?d like|i would like/i},{p:"with ... instead of ...",m:"'~ 대신 ~로': with oat milk instead of regular.",re:/instead of/i},{p:"Could you make it ...?",m:"'~하게 해 주실래요?': Could you make it less sweet?",re:/could you (make|add)/i},{p:"What's ... like?",m:"'~는 어떤 맛이에요?': What's the mocha like?",re:/what'?s .* like|what is .* like/i},{p:"I'll have ...",m:"'~로 할게요': I'll have the same.",re:/i'?ll (have|take|go with)/i}],
+ size:[{p:"... is fine",m:"'~면 돼요': Small is fine.",re:/is fine|'?s fine|is enough|will do/i},{p:"a bit ...",m:"'조금 ~': a bit bigger.",re:/a bit|a little/i},{p:"What's the difference between ... and ...?",m:"두 가지 차이 묻기",re:/difference between/i},{p:"I'll go with ...",m:"'~로 갈게요': I'll go with medium.",re:/go with|i'?ll take/i}],
+ name:[{p:"It's ...",m:"이름 말하기: It's Seyoung.",re:/it'?s|its|i'?m|my name/i},{p:"You can call me ...",m:"별명 알려 주기",re:/call me/i},{p:"It's spelled ...",m:"철자 알려 주기: It's spelled S-E-Y...",re:/spell/i}],
+ chat:[{p:"be into ...",m:"'~에 빠져 있다': I'm really into baking lately.",re:/into/i},{p:"a lot of ...",m:"'많은 ~': I have a lot of homework.",re:/a lot/i},{p:"I used to ...",m:"'예전에 ~했었다': I used to live in Busan.",re:/used to/i},{p:"I've been ...ing",m:"'요즘 계속 ~하는 중': I've been learning guitar.",re:/i'?ve been|i have been/i},{p:"I'm planning to ...",m:"'~할 계획이에요': I'm planning to travel.",re:/planning to|plan to|going to|gonna/i},{p:"Actually, ...",m:"'사실은 ~': Actually, I'm from Korea.",re:/actually/i},{p:"because ...",m:"이유 덧붙이기: because it's relaxing.",re:/because|cause|since|so /i},{p:"It reminds me of ...",m:"'~가 떠올라요'",re:/reminds me|remind me/i}],
+ close:[{p:"It was nice ...ing",m:"'~해서 좋았어요': It was nice talking to you.",re:/nice (talking|meeting|chatting)|good (talking|chatting)/i},{p:"Hope you ...",m:"'~하길 바라요': Hope you have a great day.",re:/hope you/i},{p:"See you ...",m:"'~에 봐요': See you next week.",re:/see you/i},{p:"Thanks for ...",m:"'~해 줘서 고마워요': Thanks for the recommendation.",re:/thanks for|thank you for/i}],
+ free:[{p:"I'm curious about ...",m:"'~가 궁금해요': I'm curious about this neighborhood.",re:/curious/i},{p:"What do you usually ...?",m:"'보통 뭐 해요?': What do you usually do on weekends?",re:/usually/i},{p:"It depends on ...",m:"'~에 따라 달라요'",re:/depends/i},{p:"I can't wait to ...",m:"'빨리 ~하고 싶어요': I can't wait to go home.",re:/can'?t wait/i},{p:"I wish I could ...",m:"'~할 수 있으면 좋겠다'",re:/wish i/i},{p:"I think ...",m:"'제 생각엔 ~': I think it's great.",re:/i think|i guess/i},{p:"Have you ever ...?",m:"'~해 본 적 있어요?': Have you ever been to Korea?",re:/have you ever/i},{p:"How come ...?",m:"'왜 ~야?': How come you're up so early?",re:/how come/i}]};
+const QEXPR=[
+{q:/student|study break|come here to study|usually do here/i,p:"I'm a ... / I'm studying ...",m:"'저는 ~예요/~를 공부해요': I'm a high school student.",ko:"저는 고등학생이에요",re:/i'?m (a|an|studying)|student/i},
+{q:/weekend|plans for the summer|any plans|what's on the list|after school/i,p:"I'm planning to ...",m:"'~할 계획이에요': I'm planning to see a movie.",ko:"주말에 영화를 볼 계획이에요",re:/planning to|plan to|going to|gonna/i},
+{q:/what do you like to do for fun|how did you get into|what do you like about it|what do you usually do/i,p:"I'm really into ...",m:"'~에 푹 빠져 있어요': I'm really into drawing lately.",ko:"요즘 그림 그리기에 푹 빠져 있어요",re:/into|love|like/i},
+{q:/cats or dogs|why\?|defend|coffee person|tea person|morning person/i,p:"I'm more of a ... person",m:"'나는 ~ 쪽이에요': I'm more of a dog person.",ko:"저는 강아지 쪽이에요",re:/more of a|prefer|because/i},
+{q:/first time here|new in town|new here|find this place|part of town|live around/i,p:"I just moved here / I live ...",m:"'막 이사 왔어요 / ~에 살아요': I just moved here from Korea.",ko:"얼마 전에 한국에서 이사 왔어요",re:/just moved|live|from/i},
+{q:/music/i,p:"I've been listening to ...",m:"'요즘 ~를 듣고 있어요': I've been listening to K-pop.",ko:"요즘 케이팝을 듣고 있어요",re:/listening|music|i like/i},
+{q:/food|eat|dinner|lunch|drink back home/i,p:"I usually ... / I haven't tried ...",m:"'보통 ~해요 / ~는 못 먹어 봤어요': I haven't tried tacos yet.",ko:"타코는 아직 못 먹어 봤어요",re:/usually|haven'?t tried|tried/i},
+{q:/movie|show|watched/i,p:"I watched ... and it was ...",m:"'~를 봤는데 ~했어요': I watched a comedy and it was hilarious.",ko:"코미디를 봤는데 정말 웃겼어요",re:/watched|saw/i},
+{q:/sports|play any/i,p:"I play ... / I used to ...",m:"'~를 해요 / 예전에 ~했어요': I used to play soccer.",ko:"예전에 축구를 했었어요",re:/play|used to/i},
+{q:/subject|school/i,p:"My favorite ... is ...",m:"'제일 좋아하는 ~는 ~예요': My favorite subject is math.",ko:"제일 좋아하는 과목은 수학이에요",re:/favorite|favourite|because/i},
+{q:/pets/i,p:"I have a ... named ...",m:"'~라는 이름의 ~를 키워요': I have a dog named Coco.",ko:"코코라는 강아지를 키워요",re:/have a|named|no pets|don'?t have/i},
+{q:/beach|favorite place|hang out|place/i,p:"I usually go to ... to ...",m:"'보통 ~에 가서 ~해요': I usually go to the park to relax.",ko:"보통 공원에 가서 쉬어요",re:/usually go|go to/i},
+{q:/hardest part|english/i,p:"The hardest part is ...",m:"'가장 어려운 건 ~예요': The hardest part is speaking fast.",ko:"가장 어려운 건 빨리 말하기예요",re:/hardest|hard|difficult/i},
+{q:/excited|best thing|highlight|good week|happened to you/i,p:"The best part was ... / I'm excited about ...",m:"'제일 좋았던 건 ~ / ~가 기대돼요': I'm excited about the weekend.",ko:"이번 주말이 기대돼요",re:/best part|excited|looking forward/i},
+{q:/how are you|how's it going|how's your day|how was your|busy day|long day|brings you in|on your mind|exciting|happen today|highlight of your day/i,p:"It's been a ... day",m:"'~한 하루였어요': It's been a long day.",ko:"오늘은 피곤한 하루였어요",re:/been a|feeling|day/i}];
+const KO_BY_P={"I'm feeling ...": "오늘은 기분이 꽤 좋아요", "I just ...": "방금 수업이 끝났어요", "kind of": "조금 피곤해요", "It's been a ... day": "오늘은 피곤한 하루였어요", "How about you?": "저는 괜찮아요. 당신은요?", "Can I get ...?": "아이스 라떼 한 잔 주실 수 있나요?", "I'd like ...": "아이스티로 할게요", "with ... instead of ...": "일반 우유 대신 귀리 우유로 해 주세요", "Could you make it ...?": "덜 달게 만들어 주실 수 있나요?", "What's ... like?": "모카는 어떤 맛이에요?", "I'll have ...": "그걸로 할게요", "... is fine": "스몰이면 충분해요", "a bit ...": "조금 더 크게 해 주세요", "What's the difference between ... and ...?": "미디엄과 라지는 뭐가 달라요?", "I'll go with ...": "미디엄으로 할게요", "Which size do you recommend?": "어떤 사이즈가 좋을까요?", "The biggest one, please.": "제일 큰 걸로 주세요", "It's ...": "제 이름은 세영이에요", "You can call me ...": "편하게 세라고 불러 주세요", "It's spelled ...": "S-E-Y-O-U-N-G라고 써요", "It's pronounced like...": "'세영'처럼 발음해요", "be into ...": "요즘 베이킹에 푹 빠져 있어요", "a lot of ...": "오늘 숙제가 아주 많았어요", "I used to ...": "예전에 부산에 살았어요", "I've been ...ing": "요즘 기타를 배우고 있어요", "I'm planning to ...": "영화를 볼 계획이에요", "Actually, ...": "사실 한국에서 왔어요", "because ...": "왜냐하면 마음이 편해지거든요", "It reminds me of ...": "고향이 생각나요", "That reminds me of...": "고향이 생각나요", "Me too!": "저도요!", "Honestly, I'm not sure.": "솔직히 잘 모르겠어요", "It was nice ...ing": "얘기해서 즐거웠어요", "Hope you ...": "좋은 하루 보내세요", "See you ...": "다음 주에 또 봐요", "Thanks for ...": "추천해 줘서 고마워요", "It was nice talking to you!": "얘기해서 즐거웠어요!", "See you around!": "또 봐요!", "I'm curious about ...": "이 동네가 궁금해요", "What do you usually ...?": "주말에는 보통 뭐 하세요?", "It depends on ...": "그날 기분에 따라 달라요", "I can't wait to ...": "빨리 집에 가고 싶어요", "I wish I could ...": "여행을 갈 수 있으면 좋겠어요", "I think ...": "제 생각에는 좋은 것 같아요", "Have you ever ...?": "한국에 가 본 적 있어요?", "How come ...?": "왜 이렇게 일찍 일어났어요?"};
+function newIdea(){const k=S.free?'free':hintKey(STAGES[Math.min(S.idx,STAGES.length-1)]);const q=(S.lastB||'');if(S.expr&&/didn'?t catch|one more time|say it again|what was that|come again/i.test(q))return '위 표현을 써서 문장 만들기';const hit=(k==='chat'||k==='free'||k==='greet'||k==='close')?QEXPR.filter(x=>x.q.test(q)):[];let ex;if(hit.length){ex=hit.find(x=>x!==S.expr)||hit[0];ex=Object.assign({},ex)}else{const e0=EXPR[k]||EXPR.free;const pool=e0.filter(x=>x!==S.expr&&x.p!==(S.expr||{}).p);ex=Object.assign({},pick(pool.length?pool:e0));const ide=(IDEAS[k]||IDEAS.free);ex.ko=KO_BY_P[ex.p]||pick(ide).replace(/^예:\s*/,'')}S.expr=ex;return '위 표현을 써서 문장 만들기'}
+function markExpr(){const l=S.log[S.log.length-1];if(l&&l.who==='u'&&S.expr&&S.expr.re.test(l.text))l.used=S.expr.p}
+const FREE_TOPICS=["What kind of music are you into?","Have you tried any good food around here yet?","Do you play any sports?","Seen any good movies lately?","What's your favorite subject at school?","Do you have any pets?","What do you usually do after school?","Any plans for the summer?","Are you a morning person or a night person?","What do you usually drink back home?","Have you been to the beach here yet?","What's the hardest part about speaking English?","What's something you're excited about this week?","Are you more of a coffee person or a tea person?","What's the best thing that happened to you this week?","Do you have a favorite place to hang out?"];
+const FREE_BACK=["Me? Ooh, I love that too! Great minds think alike.","Um, me too, kind of.","Same, pretty much.","Me? I'm just here for the drama.","Oh, me? I just like a good chat, dear."];
+const ADJ=/\b(cute|pretty|beautiful|lovely|nice|great|amazing|awesome|friendly|sweet|kind|good|delicious|tasty|yummy|cool|fantastic|perfect|wonderful|adorable|cozy|cosy|funny|helpful|patient|talented|best|gorgeous|incredible|excellent|smells?)\b/;
+const SUBJ=/\b(you|your|this|it|shop|cafe|place|drink|cup|latte|coffee|art|vibe|music|smell|smells|service|staff|barista|drawing|leaf|name|apron|hair|shirt|design|decor)\b/;
+const isCompli=(n)=>COMPLI.test(n)||(ADJ.test(n)&&SUBJ.test(n)&&!/\b(have|hope (you )?(have|had)|enjoy) a (good|great|nice|wonderful|lovely|fantastic)? ?(day|one|evening|weekend|night|week|time|morning|afternoon)\b/.test(n)&&!/^(is|are|does|do|can|could|what|how|where)\b/.test(n));
+const COMPLI=/(lovely|nice|beautiful|pretty|great|cute|gorgeous) (drink|cup|latte|coffee)|looks (so |really )?lovely|you were (very |so |really )?(patient|nice|kind|helpful|great)|(so |very )?patient|helpful|love the vibe|you('re| are) (so |very |really )?(nice|kind|sweet|funny|cool|awesome|the best)|impressed|spelled it right|smells (so |really )?(good|amazing|great)|looks (so |really )?(good|amazing|great|delicious)|your english|\b(so |really |very )?(cute|pretty|beautiful|amazing|awesome|cool|nice|good|great|adorable|lovely)\b.*\b(drawing|art|leaf|cup|design|job|handwriting)\b|\b(drawing|art|leaf|design|handwriting)\b.*\b(cute|pretty|beautiful|amazing|awesome|cool|nice|good|great|adorable|lovely)\b|you'?re (so |really )?(good|talented|great) at|that'?s (so |really )?(cute|adorable)|love (the|your|it|that)/;
+const COMPLI_R=["Aw, thank you! You just made my day!","Oh! Um, thank you. I've been practicing.","Ha, thanks!","Thank you! I'll add it to my résumé. 'Professional leaf artist.'","Oh, aren't you sweet! Thank you, honey."];
+const FOOD=/blueberry muffin|banana bread|muffin|croissant|bagel|cookie|scone|sandwich|brownie|donut|doughnut/;
+const UNDECIDED=/\b(i don'?t know|not sure|can'?t decide|everything looks (so )?good|hard to (choose|decide)|so many (options|choices)|no idea what)\b/;
+const NEGANS=/^(no|nope|nah|not really|not yet|never|not at all)\b/;
+const FOLLOW_NEG=["No? Okay, so what are you up to today?","Oh. Um, okay. So what brings you here today?","No? What are you up to, then?","No? A mystery customer! Tell me one fun fact about you.","Oh no? Well, tell me a little about yourself, sweetie."];
+const REACT_NO=["Oh, okay! Good to know.","Oh. Okay, cool.","Gotcha.","Noted. I'm writing that in my diary.","Oh, I see, dear."];
+const COMEBACK=/come back|see you|see ya|\bbye\b|cya|next (time|week)|tomorrow|for sure/;
+const COMEBACK_R=["Yay! See you soon!","Oh, um, okay. See you.","See ya.","I'll be here. Sadly, always. Kidding!","Oh, I'll look forward to it, sweetie."];
+const LUCK=/wish me luck|pray for me/;
+const GOODLUCK=/good luck|have fun at|enjoy (your|the) (concert|game|shift|class)/;
+const GOODLUCK_R=["Aw, thank you! I'll tell you how it goes!","Oh, um, thanks. That's really nice.","Thanks!","Thanks! I'll need it.","Oh, thank you, sweetie."];
+const RHET=/am i right|you know\?|right\?$|isn'?t it|ain'?t it/;
+const LUCK_R=["Good luck! You've totally got this!","Oh, um, good luck! You'll do great.","Good luck!","Good luck! I put an extra shot of luck in there.","Good luck, sweetie. I'll be rooting for you."];
+const DESC={'flat white':"A flat white is espresso with a little velvety milk. Stronger than a latte!",'cortado':"A cortado is espresso with a splash of warm milk. Small but strong.",'caramel macchiato':"It's vanilla, milk, espresso, and caramel on top. Pretty sweet!",'macchiato':"A macchiato is espresso with a little milk foam on top. Strong!",'chai latte':"Chai is spiced black tea with milk. Like cinnamon in a cup!",'chai':"Chai is spiced black tea with milk. Like cinnamon in a cup!",'matcha latte':"Matcha is green tea powder with milk. Earthy and a little sweet.",'cold brew':"Cold brew is coffee soaked in cold water for a whole day. Smooth and strong!",'americano':"An americano is espresso with hot water. Like strong black coffee.",'cappuccino':"A cappuccino is espresso with lots of milk foam. Light and fluffy!",'latte':"A latte is espresso with lots of steamed milk. Smooth and mild.",'mocha':"A mocha is a latte with chocolate. Basically coffee and dessert!",'honey oat latte':"It's a latte with oat milk and honey. Sweet, but not too sweet.",'espresso':"Espresso is a tiny, super strong shot of coffee."};
+const DESC_PRE=["Ooh! ","Oh, um. ","","Great question. ","Oh, honey. "];
+const GENQ=[
+ {re:/(?:what'?s|what is) your favou?rite ([a-z]+)/,r:["Ooh, tough one! My favorite {x} changes every week. What's yours?","Um, I don't know. I can't pick a favorite {x}. What's yours?","Hard to say. You?","My favorite {x}? Whatever's free. What's yours?","Oh, that's hard, honey. I like them all. What's yours?"]},
+ {re:/how (was|is|'?s) your ([a-z]+)/,r:["It was great! Busy, but good. How about yours?","Um, it was okay. Thanks. And yours?","Fine. You?","Honestly? Fabulous. Mostly because of this coffee. Yours?","Oh, lovely, thank you for asking. And yours, dear?"]},
+ {re:/^(?:did|were|was) you ([a-z' -]{2,30}?)\??$/,r:["Yeah, it was great! How about you?","Um, yeah. It was okay. You?","Yep. You?","Obviously. I'm very busy and very fabulous. You?","Oh, yes, dear. And you?"]},
+ {re:/^can you (play|sing|dance|cook|draw|paint|speak|swim|drive|ride|bake|juggle|read)(?: [a-z' -]{0,20})?\??$/,r:["Ha, not really! I'm better at lattes.","Um, no. I'm way too shy.","Nope.","Absolutely. Terribly. Want a demonstration? No? Good.","Oh, only in the shower, dear."]},
+ {re:/^do you (?:ever |usually |also )?(?:play|watch|read|go|cook|draw|paint|sing|dance|ride|drive|travel|speak|know|listen|study|write|run|swim|bake|collect|use|take|eat|drink|exercise|work out|sleep|wake)\b[a-z' -]{0,25}?\??$/,r:["Yeah, sometimes! Do you?","Um, a little. Do you?","Sometimes. You?","Do I? Let's just say I'm very good at pretending. You?","Oh, now and then, honey. Do you?"]},
+ {re:/what do you think (?:about|of) ([a-z' -]{2,25}?)\??$/,r:["I think {x} {be} pretty cool! What do you think?","Um, I think it's okay? You?","It's fine. You?","{X}? Honestly, I have strong opinions. Mostly about espresso.","Oh, {x} {be} wonderful, honey. What about you?"]},
+ {re:/^why (?:do|did|are|is|don'?t|can'?t|would)\b/,r:["Ha, good question! I honestly don't know.","Um, I'm not sure why. Sorry.","No idea.","Because. That's all I've got. Mysterious, right?","Oh, I wonder that myself, dear."]},
+ {re:/do you (like|love|enjoy) ([a-z' -]{2,25}?)\??$/,r:["I love {x}! Do you?","Um, yeah, {x} {be} cool.","{X}? Sure.","{X}? Who doesn't!","Oh, I don't know much about {x}, honey, but my grandkids love it."]},
+ {re:/have you (ever )?(been to|tried|seen|watched|heard of|heard) ([a-z' -]{2,25}?)\??$/,r:["Not yet! Is it good?","Um, no, not yet. Is it good?","Nope. Good?","Not yet. Should I? Convince me.","Oh, not yet, dear. Tell me about it!"]},
+ {re:/do you have (a |an |any )?([a-z' -]{2,20}?)\??$/,r:["Hmm, no {x}, sadly! Do you?","Um, no, I don't. Do you?","Nope. You?","No {x}. Just jokes. Lots of jokes.","Oh, no, dear. Do you?"]},
+ {re:/are you (a |an )?([a-z' -]{2,20}?)\??$/,r:["Ha, kind of! Why?","Um, maybe a little?","Kind of.","Depends who's asking. Kidding, kind of!","Oh, maybe a little, honey."]}
+];
+function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
+const isNeg=n=>NEG.test(n.replace(/not (too |that |so |really |very )?(bad|busy|tired|stressed|sleepy)/g,''));
+const NEUTRAL=["Oh, nice!","Oh, cool.","Nice.","Ha! Fair enough.","Oh, how nice, dear."];
+const REJECT=/no thanks|something else|not that|anything else|other options?|i'?ll pass|not really feeling/;
+
+/* ---------- attribute requests ("something not too sweet", "a light drink"...) ---------- */
+const NEGPRE=/\b(not|no|haven'?t|hasn'?t|didn'?t|wasn'?t|weren'?t|couldn'?t|can'?t|won'?t|never|without|don'?t (?:want|like|need)|doesn'?t|isn'?t|aren'?t|less|never|hate|dislike|avoid|except|besides|other than|too much)\b(?:\s+\w+){0,3}\s*$/;
+function isNegAt(n,re){const m=n.match(re);return !!(m&&NEGPRE.test(n.slice(0,m.index)))}
+const ATTRS=[
+ {id:'nocaf',re:/caffeine|coffee/,need:'neg',d:'chamomile tea',why:'caffeine-free'},
+ {id:'bitter',re:/\bbitter|\bbold\b/,d:'americano',why:'bold and a little bitter',negd:'latte',negwhy:'smooth and not bitter'},
+ {id:'spicy',re:/\bspic(y|es)\b|cinnamon/,d:'chai latte',why:'warm and spicy'},
+ {id:'healthy',re:/healthy|healthier|detox|low.?cal|vitamin|good for (me|you)/,d:'green tea',why:'light and healthy'},
+ {id:'fruity',re:/\bfruit(y|s)?\b|berry|berries|tropical|citrus/,d:'strawberry smoothie',why:'fruity and fresh'},
+ {id:'creamy',re:/creamy|milky|foamy|smooth/,d:'latte',why:'smooth and creamy'},
+ {id:'cold',re:/\b(cold|iced?|chilled|ice)\b/,d:'ICED',why:'nice and cold'},
+ {id:'warm',re:/\b(warm|hot|cozy|cosy|heat(ing)?)\b/,d:'hot chocolate',why:'warm and cozy'},
+ {id:'fresh',re:/refreshing|\bfresh\b|\bcool(ing)?\b|summer|thirsty/,d:'lemonade',why:'cool and refreshing'},
+ {id:'lsweet',re:/(a (bit|little)|slightly|kind of|somewhat) sweet|sweet but not too (much|sweet)/,d:'vanilla latte',why:'a little sweet, but not too sweet'},
+ {id:'sweet',re:/\bsweet(er|est)?\b|sugary|dessert.?like/,d:'caramel macchiato',why:'sweet and creamy',negd:'latte',negwhy:'creamy but not sweet'},
+ {id:'strong',re:/\bstrong(er|est)?\b|intense|kick|wake me up|keep me (awake|up|going)|stay awake|energi[sz]|energy|sleepy|boost/,d:'cold brew',why:'nice and strong',negd:'latte',negwhy:'mild and creamy'},
+ {id:'light',re:/\blight(er)?\b|mild|gentle|soft|easy/,d:'green tea',why:'light and gentle'}
+];
+const GENOBJ=/\b(something|anything|drinks?|thing|things|one|ones|option|options|stuff|kind|type)\b/;
+const ATTR_PERS=["Ooh, try the {d}! It's {why}.","Um, maybe the {d}? It's… {why}, I think.","{D}. It's {why}.","The {d}. {Why}. Trust me, I'm a professional. Sort of.","Oh, the {d}, honey. It's {why}. You'll love it."];
+function attrRec(n){
+  n=n.replace(/\blight ice\b|\bgo light on\b|\bextra (hot|ice)\b|\bno ice\b|\bless ice\b/g,' ');
+  if(/\b(is|are) (it|that|this|the [a-z ]+) (pretty |very |really |too |so )?(sweet|strong|hot|cold|light|bitter)\b/.test(n))return null;
+  const wc=wordsOf(n).length;
+  if(!GENOBJ.test(n)&&!/\b(ideas?|suggest(ion)?s?|recommend)/.test(n)&&wc>3)return null;
+  const pi=pidx(S.pid);let hit=null,all=[];
+  for(const a of ATTRS){if(!a.re.test(n))continue;const neg=isNegAt(n,a.re);if(a.need==='neg'&&!neg)continue;all.push([a,neg]);}
+  if(!all.length)return null;
+  const has=id=>all.find(x=>x[0].id===id&&!x[1]);
+  let [a,neg]=all[0];let d,why;
+  if(has('cold')&&has('sweet')){d='iced caramel macchiato';why='sweet and cold'}
+  else if(has('cold')&&has('strong')){d='cold brew';why='cold and strong'}
+  else if(has('cold')&&has('fruity')){d='strawberry smoothie';why='fruity and cold'}
+  else if(has('warm')&&has('sweet')){d='hot chocolate';why='warm and sweet'}
+  else if(a.need==='neg'){d=a.d;why=a.why}
+  else if(neg){if(!a.negd)return null;d=a.negd;why=a.negwhy}
+  else{d=a.d==='ICED'?ICED_PICK[pi]:a.d;why=a.why}
+  if(a.need==='neg'&&!neg)return null;
+  return {d,why,text:ATTR_PERS[pi].replace('{d}',d).replace('{D}',cap(d)).replace('{why}',why).replace('{Why}',cap(why))};
+}
+const BYE=/\b(bye|gotta go|got to go|have to go|need to go|should go|see you|see ya|leave now|i'?m done|that'?s all)\b/;
+async function nextTopic(){
+  if(!S.topics.length){await say("Oh! My manager's looking at me. I'd better get back to work!");await endChat();return}
+  await say(S.topics.shift());
+}
+async function endChat(){await say(P[S.pid].lines.end);S.free=false;await finish()}
+async function handleFree(raw){
+  const p=P[S.pid],pi=pidx(S.pid);const n=norm(raw);if(!n)return;
+  S.log.push({who:'u',text:raw,st:'free'});markExpr();S.freeTurns++;koAttach(null);render();
+  if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){await endChat();return}
+  const isQ=isQuestion(raw,n);const qt=qText(raw);const intent=matchIntent(qt||n);
+  const st=statementReact(n);
+  if(BACK.test(n)&&!(intent&&intent.r)){await say(st||pick(p.react.chat1.concat(p.react.chat2)));await say(FREE_BACK[pi])}
+  else if(isCompli(n)&&!isQ)await say(COMPLI_R[pi]);
+  else if(isQ&&intent&&intent.r)await say(irText(intent,pi,qt||n));
+  else if(isQ&&genQ(qt))await say(genQ(qt));
+  else if(isQ){flag('unsure');await say(UNSURE[pi])}
+  else{const af=!st&&!S.lastAct?actFollow(raw,n,pi):null;if(af){S.lastAct=true;await say(af);return}S.lastAct=false;await say(fill(st||pick(p.react.chat1.concat(p.react.chat2))))}
+  await nextTopic();
+}
+async function handle(raw){
+  if(S.free)return handleFree(raw);
+  const st=STAGES[S.idx], p=P[S.pid], pi=pidx(S.pid);
+  const n=norm(raw); if(!n)return;
+  S.lastRaw=raw;
+  S.log.push({who:'u',text:raw,st});markExpr();S.hintNote=false;koAttach(st);render();
+  const wc=wordsOf(n).length;
+  const isQ=isQuestion(raw,n);
+  if(REPEAT.test(n)&&wc<=6){flag('repeat');const lq=[...S.log].reverse().find(m=>m.who==='b'&&/\?$/.test(m.text));await say("Sure! "+(lq?lq.text:fill(p.lines[st])));return}
+  const ok=stageMatch(st,n,raw,isQ);
+  const qt=qText(raw);
+  const qIntent=qt?matchIntent(qt):null;
+  const intent=(qt&&matchIntent(qt))||matchIntent(n);
+  const back=BACK.test(n)||(intent&&intent.id==='howareyou');
+  if(ok){
+    S.fails[st]=0;flag('ok');
+    let sc=scoreTurn(raw,n,st,S.lastB);
+    if(S.asked[st]&&sc<60)sc=60;
+    record(st,S.asked[st]?S.asked[st]+' / '+raw:raw,sc);
+    captureSlots(st,n);
+    if(st==='close'){
+      if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='thanks'){await say(irText(qIntent,pi,qt));await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
+      else await say(isCompli(n)?COMPLI_R[pi]:LUCK.test(n)?LUCK_R[pi]:GOODLUCK.test(n)?GOODLUCK_R[pi]:COMEBACK.test(n)?COMEBACK_R[pi]:back||/you (too|2|to)$|have a|take care|good one|hope|cheers|\bta\b|stay (warm|dry|safe)/.test(n)?p.back.close:pick(["Of course!","Anytime!","You're welcome!"]));
+      await advance();return;
+    }
+    let r=CHAT.has(st)?statementReact(n):null;
+    const offScript=(st==='chat1'||st==='chat2')&&!S.followed[st]&&!p.expect[st].test(n.replace(/\?/g,''));
+    if(st==='order'&&iRe('wrong').re.test(n))r=iRe('wrong').r[pi];
+    if(!r&&CHAT.has(st)&&!isQ&&!S.followed[st]&&!S.rush&&!(st==='greet'&&isNeg(n))){const af=actFollow(raw,n,pi);if(af){S.followed[st]=true;flag('topic');await say(af);return}}
+    if(!r&&offScript&&!NEGANS.test(n))r=NEUTRAL[pi];
+    if(sc===10&&CHAT.has(st)&&!S.followed[st]&&!S.rush&&!offScript&&!(st==='greet'&&isNeg(n))&&!(st==='greet'&&isNeg(n))){S.followed[st]=true;await say(r||(st!=='greet'&&NEGANS.test(n)?FOLLOW_NEG[pi]:p.follow[st]));return}
+    if(!r&&st!=='greet'&&CHAT.has(st)&&NEGANS.test(n))r=REACT_NO[pi];
+    if(!r)r=st==='greet'?pick(isNeg(n)?p.react.greetNeg:p.react.greetPos):pick(p.react[st]);
+    await say(fill(r));
+    if(st==='order'&&S.slots.drinks)await say(pick(["So that's "+listJoin(S.slots.drinks.map(aOf))+". Got it!","Okay, "+['','one','two','three','four'][S.slots.drinks.length]+" drinks: "+listJoin(S.slots.drinks.map(aOf))+"."]));
+    if(st==='order'&&S.food)await say("And a "+S.food+", got it!");
+    if(back)await say(p.back[st]||p.back.greet);
+    else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='howsay')await say(irText(qIntent,pi,qt));
+    else if(isQ&&qt&&genQ(qt))await say(genQ(qt));
+    else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(UNSURE[pi])}
+    await advance();return;
+  }
+  if(st==='order'&&!findDrink(n)&&!(S.offer&&YES.test(n))){const ar=attrRec(n);if(ar){S.asked[st]=raw;flag('intent:attr');S.offer=ar.d;S.lastRec=ar.d;await say(ar.text);await say(pick(['Want to try it?','Should I make you one?','Want one?']));return}}
+  if(st==='order'&&S.offer&&REJECT.test(n)&&!findDrink(n)){S.offer=null;S.asked[st]=raw;flag('intent:reject');await say(pick(['No problem! ','Sure! ','Okay! '])+AVAIL_NONE[pi]);return}
+  if(st==='order'&&UNDECIDED.test(n)&&!findDrink(n)){
+    S.asked[st]=raw;flag('intent:undecided');S.lastRec=REC[pi];S.offer=REC[pi];
+    await say(iRe('recommend').r[pi]);await say(pick(['Want to try it?','Should I make you one?']));return;
+  }
+  if(st==='order'&&isQ&&AVAIL.test(n)&&!(intent&&intent.id==='teakinds')&&(findDrink(n)||!(intent&&intent.r))){
+    S.asked[st]=raw;flag('avail');const d=findDrink(n);
+    if(d){S.offer=d;await say(AVAIL_R[pi].replace('{d}',d).replace(/^./,c=>c.toUpperCase()))}
+    else await say(AVAIL_NONE[pi]);
+    return;
+  }
+  const QONLY=['grocery','trails','far','blive','bread','comedy','petname','garden','nameok','drinksize','whatsin','isgood','teakinds','sizehelp','weather','sports','music','pets','hobby','school','directions','eat','sights','favorite','city','line','busy','time'];
+  if(intent&&(isQ||(intent.r&&!QONLY.includes(intent.id))||intent.id==='howareyou')){
+    S.asked[st]=raw;flag('intent:'+intent.id);
+    if(intent.id==='recommend'&&/\b(ice|iced|cold|cool)\b/.test(n)){S.lastRec=ICED_PICK[pi];if(st==='order')S.offer=ICED_PICK[pi];await say(ICED_REC[pi]);if(st==='order'){await say(pick(['Want to try it?','Should I make you one?']));return}await reask(st,raw);return}
+    if(intent.id==='recommend'&&st==='order'&&S.offer){await say(pick(['Honestly, still the '+S.offer+'! Want one?','My pick is still the '+S.offer+'. Should I make it?']));return}
+    if(intent.id==='recommend'){S.lastRec=REC[pi];if(st==='order'){S.offer=REC[pi];await say(intent.r[pi]);await say(pick(['Want to try it?','Should I make you one?']));return}}
+    if(intent.offer&&st==='order'){const d=intent.offer==='*'?findDrink((qt||n).replace(/.*\bwith\b/,'')):intent.offer;if(d){S.offer=d;S.lastRec=d;await say(irText(intent,pi,qt||n));await say(pick(['Want one?','Want to try it?','Should I make you one?']));return}}
+    if(intent.id==='strong'&&st==='order'){S.offer='cold brew';S.lastRec='cold brew';await say(intent.r[pi]);await say(pick(['Want one?','Should I make you one?']));return}
+    const d=findDrink(qt||n);
+    const fp=(qt||n).match(FOOD);
+    if(/how much|price|cost/.test(qt||n)&&fp){await say(cap(fp[0])+'? That one is three fifty.')}
+    else if(intent.id==='whatsin'&&d){await say(DESC_PRE[pi]+(DESC[d]||intent.r[pi]))}
+    else await say(intent.r?irText(intent,pi,qt||n):(p.back[st]||p.back.greet));
+    if(st==='order'&&d&&['whatsin','isgood','price','sweet','drinksize','temp','nosugar','diet'].includes(intent.id)){S.offer=d;await say(pick(['Want to try it?','Want one?','Should I make you one?']));return}
+    await reask(st,raw);return;
+  }
+  if(isQ&&wc>=3){
+    S.asked[st]=raw;const g=genQ(qt);flag(g?'genq':'unsure');
+    await say(g||UNSURE[pi]);
+    await reask(st,raw);return;
+  }
+  S.fails[st]=(S.fails[st]||0)+1;
+  flag(S.fails[st]>=2?'giveup':'clarify');
+  if(S.fails[st]>=2&&CHAT.has(st)&&!isQ){flag('ok-short');record(st,raw,10);await say(NEUTRAL[pi]);await advance();return}
+  if(S.fails[st]>=2){
+    record(st,raw,0);
+    await say(p.giveup);await advance();return;
+  }
+  S.hintsOpen=true;S.hintNote=true;
+  await say(pick(p.clarify));
+}
+
+/* ---------- conversation log (so Claude can read what went wrong) ---------- */
+let DB=null;(async()=>{try{DB=await window.claude?.use?.('db')}catch(e){DB=null}})();
+let logTimer=null,logBusy=false,logAgain=false;
+function logSave(){clearTimeout(logTimer);logTimer=setTimeout(logWrite,1500)}
+async function logWrite(){
+  if(!DB||!S||!S.log.length)return;
+  if(logBusy){logAgain=true;return}
+  logBusy=true;
+  const body={at:S.startAt,updated:Date.now(),persona:S.pid,done:!!S.done,lang:LANG,
+    total:STAGES.reduce((a,x)=>a+adj(x),0),
+    misses:S.log.filter(m=>m.who==='u'&&/clarify|giveup|unsure/.test(m.flag||'')).length,
+    turns:S.log.slice(0,200).map(m=>m.who==='u'?{u:m.text,st:m.st||'',f:m.flag||'',ko:m.orig||undefined}:{b:m.text})};
+  try{await DB.doc('logs/'+S.sid).set(body)}catch(e){}
+  logBusy=false;if(logAgain){logAgain=false;logWrite()}
+}
+
+/* ---------- rendering ---------- */
+const app=document.getElementById('app');
+function setLang(l){LANG=l;store.set('stc.lang',l);render()}
+function langToggle(){return `<div class="seg" role="group" aria-label="힌트 언어"><button data-lang="ko" aria-pressed="${LANG==='ko'}">한국어 설명</button><button data-lang="en" aria-pressed="${LANG==='en'}">English</button></div>`}
+function savedList(){return store.get('stc.saved',[])}
+function saveChunk(en,ko){const l=savedList();if(!l.some(x=>x.en===en)){l.unshift({en,ko,at:Date.now()});store.set('stc.saved',l)}S&&(S.flash=en);render()}
+
+function renderStart(){
+  const hist=store.get('stc.history',[]).slice(0,5), saved=savedList();
+  app.innerHTML=`
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="eyebrow">Corner café · 7 steps · no exam English</span>
+    <h1>Small Talk Café</h1>
+    <p class="muted">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 영어로 자유롭게 입력하세요. 점수는 대화가 끝난 뒤 영수증에서만 보여 드립니다.</p>
+  </header>
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'바리스타 20명':'오늘의 바리스타 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
+    ${SHOWALL?'':'<p class="muted" style="font-size:.85rem">바리스타 20명 중 5명이 날마다 바뀝니다. 내일은 다른 사람이 서 있습니다.</p>'}
+    <div class="personas">${(SHOWALL?GROUPS.flat():todays()).map(id=>{const p=P[id];return `<button class="pcard" data-p="${id}"><span class="role">${p.role}</span><span class="nm">${p.name}</span><span class="ds">${p.desc}</span><span class="say">“${esc(p.lines.greet)}”</span></button>`}).join('')}</div>
+  </section>
+  <section class="panel">
+    <div class="row" style="justify-content:space-between"><h3>힌트 설명 언어</h3>${langToggle()}</div>
+    <p class="muted" style="font-size:.85rem">대화 중 힌트와 영수증의 조언이 이 언어로 나옵니다.</p>
+  </section>
+  <section class="panel">
+    <h3>점수 기준</h3>
+    <div class="legend">
+      <span class="tier s10 num">10</span><span>통함: 짧게 답해도 뜻이 통함 <span class="muted">“Good.”</span></span>
+      <span class="tier s30 num">30</span><span>덧붙임: 정보나 이유를 하나 더 <span class="muted">“Good, I just finished school.”</span></span>
+      <span class="tier s60 num">60</span><span>되묻기: 질문을 상대에게 돌림 <span class="muted">“... How about you?”</span></span>
+      <span class="tier s100 num">100</span><span>이끌기: 반응하고, 덧붙이고, 되물어 대화를 끌고 감</span>
+    </div>
+  </section>
+  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.total} / 700</span></li>`).join('')}</ul></section>`:''}
+  <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">대화 중 힌트에서 ‘저장’을 누르면 여기에 모입니다.</p>`}</section>`;
+  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
+  app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
+  app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
+  bindLang();
+}
+function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang))}
+
+function start(pid){
+  S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:''};
+  render();
+  say(P[pid].lines.greet).then(()=>{const i=document.getElementById('say');i&&i.focus()});
+}
+function hintKey(st){return CHAT.has(st)&&st!=='greet'?'chat':st}
+function renderChat(){
+  const p=P[S.pid], st=STAGES[Math.min(S.idx,STAGES.length-1)];
+  const draft=(document.getElementById('say')||{}).value||'';
+  const hk=S.free?'chat':hintKey(st);
+  app.innerHTML=`
+  <div class="bar">
+    <div class="who"><span class="eyebrow">${p.role}</span><h2>${p.name}</h2></div>
+    <button class="btn" id="quit">처음으로</button>
+  </div>
+  <div class="steps" aria-label="진행 단계">${STAGES.map((s,i)=>`<span class="${i<S.idx?'done':i===S.idx&&!S.done?'on':''}">${STAGE_KO[s]}</span>`).join('')}</div>
+  <div class="log" id="log" aria-live="polite">
+    ${S.log.map((m,i)=>`<div class="msg ${m.who}">${m.who==='b'?glossHTML(m.text):esc(m.text)}${m.orig?`<small class="kofrom">${esc(m.orig)}<br>${m.pairs.map(([k,e])=>esc(k)+' → '+esc(e)).join(' · ')}${m.st&&m.st!=='free'?' (−'+PENALTY*m.pairs.length+'점)':''}</small>`:''}${m.used?`<small class="kofrom">표현 '${esc(m.used)}'을(를) 사용했어요. 잘했어요</small>`:''}${m.who==='b'?`<button class="spk" data-say="${i}" aria-label="듣기">듣기</button>`:''}${S.gloss&&S.gloss.i===i?`<div class="glbox"><b>${esc(S.gloss.k)}</b> ${glossBody(S.gloss.k)}<div class="row"><button data-gsay="${esc(S.gloss.k)}">발음</button><button data-gsave="${esc(S.gloss.k)}">${savedList().some(x=>x.en===S.gloss.k)?'저장됨':'저장'}</button><span class="muted">${S.free||S.done?'추가 대화라 감점 없음':`뜻을 볼 때마다 이 단계 점수 −${PENALTY}`}</span></div></div>`:''}</div>`).join('')}
+    ${S.busy?`<div class="typing">${p.name} is typing…</div>`:''}
+  </div>
+  <div class="composer">
+    ${S.done?`<button class="btn primary" id="toReceipt">영수증 받기</button>`:S.ended&&!S.busy?`<div class="row"><button class="btn primary" id="more">더 이야기하기</button><button class="btn" id="stop">대화 마치기</button></div>`:S.ended?'':`
+    ${S.hintsOpen?`<div class="hints">
+      ${S.hintNote?`<p class="note">${LANG==='ko'?'바리스타가 잘 못 알아들었어요. 아래 표현을 참고해서 다시 말해 보세요.':"The barista didn't catch that. Try again with one of these."}</p>`:''}
+      ${(S.hk&&QH[S.hk]?QH[S.hk].h:HINTS[hk]).map(([en,ko,enx])=>`<div class="chip"><div class="t"><b>${esc(en)}</b><small>${esc(LANG==='ko'?ko:enx)}</small></div><div class="acts"><button data-use="${esc(en)}">쓰기</button><button data-save="${esc(en)}" data-ko="${esc(ko)}">${savedList().some(x=>x.en===en)?'저장됨':'저장'}</button></div></div>`).join('')}
+    </div>`:''}
+    <div id="kofind" class="hints" hidden></div>
+    ${S.expr&&!S.done&&S.ph&&S.ph.startsWith('위 표현')?`<div class="muted" style="font-size:13px;margin:0 0 6px;line-height:1.5">${esc(S.expr.ko||'')}<br>표현 : <b>${esc(S.expr.p)}</b></div>`:''}
+    <form id="f"><input id="say" autocomplete="off" placeholder="${esc(S.ph||'예: 영어로 편하게 대답해 보기')}" value="${esc(draft)}" ${S.busy?'disabled':''}><button class="btn primary" ${S.busy?'disabled':''}>보내기</button></form>
+    <div class="row">${S.free?`<button class="btn" id="stop" style="font-size:.85rem">대화 마치기</button>`:''}<button class="btn" id="hint" style="font-size:.85rem">${S.hintsOpen?'힌트 닫기':'힌트 보기'}</button>${langToggle()}</div>`}
+  </div>`;
+  const log=document.getElementById('log');log.lastElementChild&&log.lastElementChild.scrollIntoView({block:'nearest'});
+  app.querySelector('#quit').onclick=()=>{logWrite();S=null;render()};
+  if(S.done){app.querySelector('#toReceipt').onclick=()=>{S.receipt=true;render();window.scrollTo(0,0)};return}
+  const stopB=app.querySelector('#stop');if(stopB)stopB.onclick=()=>{if(S.busy)return;S.ended=false;S.free=false;endChat()};
+  if(S.ended){const m=app.querySelector('#more');if(m)m.onclick=()=>{S.ended=false;S.free=true;S.hintsOpen=false;nextTopic().then(()=>{const i=document.getElementById('say');i&&i.focus()})};return}
+  const sayEl=document.getElementById('say');
+  sayEl.addEventListener('input',()=>koFind(sayEl.value));
+  if(draft)koFind(draft);
+  app.querySelector('#f').onsubmit=e=>{e.preventDefault();if(S.busy)return;const v=document.getElementById('say').value.trim();if(!v)return;let sendV=v;S.pendingKo=null;if(/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(v)){const c=koConvert(v);if(!c.ok||!/[a-z]/i.test(c.text)){koFind(v,true);return}sendV=c.text;S.pendingKo={orig:v,pairs:c.pairs}}document.getElementById('say').value='';const kb=document.getElementById('kofind');if(kb){kb.hidden=true;kb.innerHTML=''}handle(sendV).then(()=>{logSave();const i=document.getElementById('say');i&&i.focus()})};
+  app.querySelector('#hint').onclick=()=>{S.hintsOpen=!S.hintsOpen;render()};
+  app.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const i=document.getElementById('say');i.value=b.dataset.use.replace(/ \.\.\.|\.\.\./,' ');i.focus()});
+  app.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>saveChunk(b.dataset.save,b.dataset.ko));
+  app.querySelectorAll('.gl').forEach(b=>b.onclick=()=>{const i=+b.closest('.msg').querySelector('[data-say]').dataset.say;const k=b.dataset.k;
+    if(S.gloss&&S.gloss.i===i&&S.gloss.k===k){S.gloss=null;render();return}
+    S.gloss={i,k};
+    if(!S.free&&!S.done&&!S.ended){const st=STAGES[S.idx];S.looked[st]=S.looked[st]||[];if(!S.looked[st].includes(k))S.looked[st].push(k)}
+    if(!GL[k]&&!CONTR[k]&&!(DICT[k]&&!DICT[k].err)){delete DICT[k];lookupWord(k).then(()=>{if(S&&S.gloss&&S.gloss.k===k)render()})}
+    render()});
+  app.querySelectorAll('.gl.w').forEach(b=>{if(S.gloss&&b.dataset.k===S.gloss.k&&b.closest('.msg')&&+b.closest('.msg').querySelector('[data-say]').dataset.say===S.gloss.i)b.classList.add('on')});
+  app.querySelectorAll('[data-gsay]').forEach(b=>b.onclick=()=>{try{const u=new SpeechSynthesisUtterance(b.dataset.gsay);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}});
+  app.querySelectorAll('[data-gsave]').forEach(b=>b.onclick=()=>saveChunk(b.dataset.gsave,glossKo(b.dataset.gsave)));
+  app.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>{try{const u=new SpeechSynthesisUtterance(S.log[+b.dataset.say].text);u.lang='en-US';u.rate=.95;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}});
+  bindLang();
+}
+function koFind(v,blocked){
+  const box=document.getElementById('kofind');if(!box)return;
+  const runs=(v.match(HANGUL)||[]).map(x=>x.trim()).filter(Boolean);
+  if(!runs.length){box.hidden=true;box.innerHTML='';return}
+  let html=blocked?`<p class="note">이 한국어는 자동으로 바꿀 수 없어요. 아래에서 영어 표현을 골라 바꾼 뒤 보내 주세요. (아는 단어는 한국어로 써도 자동으로 영어로 바뀌고, 한 단어마다 −${PENALTY}점)</p>`:`<p class="note">이 표현을 찾으셨나요?</p>`;
+  for(const r of runs){
+    const m=findKo(r);
+    if(m.length){html+=m.map(e=>`<div class="chip"><div class="t"><b>${esc(e.en)}</b><small>${esc(e.ko)} · ${esc(e.ex)}</small></div><div class="acts"><button data-ins="${esc(r)}" data-en="${esc(e.en.split(' / ')[0])}" data-ko="${esc(e.ko)}">넣기</button><button data-ex="${esc(e.ex)}" data-en="${esc(e.en)}" data-ko="${esc(e.ko)}">예문 쓰기</button></div></div>`).join('')}
+    else{const q=encodeURIComponent(r);html+=`<div class="chip"><div class="t"><b>“${esc(r)}”</b><small>표현 사전에 없어요. 사전에서 찾아보거나, 아는 말로 돌려 말해 보세요: “I don't know the word, but it's like...”</small></div><div class="acts"><a class="btnlink" href="https://en.dict.naver.com/#/search?query=${q}" target="_blank" rel="noopener">네이버 사전</a><a class="btnlink" href="https://papago.naver.com/?sk=ko&tk=en&st=${q}" target="_blank" rel="noopener">파파고</a></div></div>`}
+  }
+  box.innerHTML=html;box.hidden=false;
+  const inp=document.getElementById('say');
+  box.querySelectorAll('[data-ins]').forEach(b=>b.onclick=()=>{inp.value=inp.value.replace(b.dataset.ins,b.dataset.en).replace(/\s+/g,' ');saveChunk2(b.dataset.en,b.dataset.ko);koFind(inp.value);inp.focus()});
+  box.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.ex;saveChunk2(b.dataset.en,b.dataset.ko);koFind(inp.value);inp.focus()});
+}
+function saveChunk2(en,ko){const l=savedList();if(!l.some(x=>x.en===en)){l.unshift({en,ko,at:Date.now()});store.set('stc.saved',l)}}
+function renderReceipt(){
+  const p=P[S.pid];
+  const total=STAGES.reduce((a,s)=>a+adj(s),0);
+  const T=TIPS[LANG], TN=TIER_NAME[LANG];
+  const model=s=>p.model[s]||MODEL[s];
+  const now=new Date();
+  app.innerHTML=`
+  <header style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Your receipt</span><h1>오늘의 대화</h1><p class="muted">단계마다 가장 잘한 답 하나로 계산했습니다. 다른 사람과 비교하지 않고, 내 지난 기록과만 비교합니다.</p></header>
+  <div class="receipt">
+    <div class="hd"><b>SMALL TALK CAFÉ</b><span>barista: ${p.name.toUpperCase()} (${p.role})</span><span>${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+    <div class="dash"></div>
+    ${STAGES.map(s=>{const b=S.best[s]||{text:'—',score:0};const lk=S.looked[s]?S.looked[s].length:0;return `<div class="line">
+      <div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><span class="tier s${b.score}">${TN[b.score]} ${lk?`${b.score} − ${lk*PENALTY} = ${adj(s)}`:b.score}</span></div>
+      ${lk?`<div class="tip">${LANG==='ko'?'뜻 보기':'Looked up'} ${lk}${LANG==='ko'?'회':'x'}: ${esc(S.looked[s].join(', '))}</div>`:''}
+      <div class="said">“${esc(b.text)}”</div>
+      ${b.score<100?`<div class="tip">${b.score>0&&STAGE_TIP[LANG][s]?STAGE_TIP[LANG][s]:T[b.score]}</div><div class="model">${esc(model(s))}</div>`:''}
+    </div>`}).join('<div class="dash"></div>')}
+    ${(()=>{const fx=fixesFor(S.log.filter(m=>m.who==='u').map(m=>m.text));return fx.length?`<div class="dash"></div><div class="line"><div class="top"><span>${LANG==='ko'?'표현 다듬기':'Polish your English'}</span></div>${fx.map(({f,t})=>`<div class="said">“${esc(t)}”</div><div class="tip">${esc(LANG==='ko'?f.ko:f.en)}</div><div class="model">${esc(f.fix)}</div>`).join('')}</div>`:''})()}
+    <div class="dash"></div>
+    <div class="total"><span>TOTAL</span><span class="num">${total} / 700</span></div>
+    ${S.freeTurns?`<div class="top" style="display:flex;justify-content:space-between"><span>${LANG==='ko'?'추가 대화 (점수 없음)':'Extra chat (not scored)'}</span><span class="num">${S.freeTurns} ${LANG==='ko'?'번 말함':'turns'}</span></div>`:''}
+    <div class="hd muted"><span>${drinkLabel()} · for ${S.slots.name}</span><span>Thank you! Come again.</span></div>
+  </div>
+  <div class="row"><button class="btn primary" id="again">${p.name}와 다시 하기</button><button class="btn" id="home">다른 바리스타 고르기</button></div>`;
+  app.querySelector('#again').onclick=()=>start(S.pid);
+  app.querySelector('#home').onclick=()=>{S=null;render()};
+}
+function render(){if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+render();
+</script>
