@@ -2517,9 +2517,9 @@ function renderStart(){
   const hist=gamesList().slice(-5).reverse(), saved=savedList(), pr=myProg(), u=AUTH.user, ch=todayChal();
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:8px">
-    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
-    <h1>Small Talk Café</h1>
-    <p class="muted">바리스타를 골라 영어로 주문하고 수다를 떨어 보세요. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Everyday places · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
+    <h1>Small Talk</h1>
+    <p class="muted">카페, 호텔, 병원 같은 장소에서 영어로 말해 보세요. 바리스타를 골라 카페 대화를 하거나, 아래에서 장소를 바꿔 연습할 수 있습니다. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
   </header>
   <button class="mestrip" id="prof">${u&&u.photo?`<img class="av sm" src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<span class="av sm">${u&&u.name?esc(u.name.slice(0,1)):'🙂'}</span>`}<span class="t"><span class="row" style="gap:6px"><b>${u?esc(u.name||'나'):'게스트'}</b>${lvBadge(pr.lv)}</span><small>${u?'기록이 계정에 저장돼요':AUTH.on?'구글로 로그인하면 다른 기기에서도 레벨이 이어져요':'레벨과 기록은 이 기기에 저장돼요'}</small></span><span class="go">내 프로필 ›</span></button>
   ${dailyStrip()}
@@ -2549,7 +2549,7 @@ function renderInfo(){
   </header>
   <section class="panel">
     <h3>어떤 곳인가요?</h3>
-    <p class="muted" style="font-size:.88rem">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나눠 봅니다. 시험 영어가 아니라 실제로 쓰는 말을 연습하는 곳이라, 영어로 자유롭게 입력하면 됩니다.</p>
+    <p class="muted" style="font-size:.88rem">미국 동네 카페에서 주문하고 바리스타와 스몰토크를 나누거나, 호텔·병원·식당 같은 장소를 골라 연습합니다. 시험 영어가 아니라 실제로 쓰는 말을 연습하는 곳이라, 영어로 자유롭게 입력하면 됩니다.</p>
   </section>
   <section class="panel">
     <h3>대화 순서 (${STAGES.length}단계)</h3>
@@ -2677,7 +2677,7 @@ function renderReceipt(){
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:6px"><span class="eyebrow">Your receipt</span><h1>오늘의 대화</h1><p class="muted">단계마다 가장 잘한 답 하나로 계산했습니다. 다른 사람과 비교하지 않고, 내 지난 기록과만 비교합니다.</p></header>
   <div class="receipt">
-    <div class="hd"><b>SMALL TALK CAFÉ</b><span>${S.scene?'staff':'barista'}: ${p.name.toUpperCase()} (${S.scene?S.scene.who:p.role})</span><span>${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+    <div class="hd"><b>${S.scene?'SMALL TALK · '+esc(S.scene.ko):'SMALL TALK CAFÉ'}</b><span>${S.scene?'staff':'barista'}: ${p.name.toUpperCase()} (${S.scene?S.scene.who:p.role})</span><span>${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div>
     <div class="dash"></div>
     ${STAGES.map(s=>{const b=S.best[s]||{text:'—',score:0};const lk=S.looked[s]?S.looked[s].length:0,hc=hintCost(s);return `<div class="line">
       <div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><span class="tier s${b.score}">${TN[b.score]} ${lk||hc?`${b.score} − ${lk*PENALTY+hc} = ${adj(s)}`:b.score}</span></div>
