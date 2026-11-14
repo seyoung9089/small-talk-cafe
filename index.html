@@ -157,6 +157,26 @@ html.chatlock,html.chatlock body{overflow:hidden;overscroll-behavior:none}
 --highlight-lightest:#18294A;--highlight-light:#21396A;--highlight-dark:#2E73E6;--highlight-darkest:#5A9CFF;--me:#2266D9;--t10:#8F9098;--t30:#6FB0FF;--t60:#5A9CFF;--t100:#9CC6FF;color-scheme:dark}
 :root[data-theme="dark"] .btn.primary,:root[data-theme="dark"] .seg button[aria-pressed="true"],:root[data-theme="dark"] .chip .acts button:hover{background:var(--me)}
 :root[data-theme="dark"] .btn.primary:hover{background:var(--highlight-dark)}
+
+/* ---------- 레벨 · 프로필 ---------- */
+.lvb{display:inline-flex;align-items:center;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:200px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.lvb.lv3{background:var(--success-light);color:var(--success-dark)}.lvb.lv4{background:var(--warning-light);color:var(--warning-dark)}
+.me{display:flex;gap:14px;align-items:center}
+.av{flex:none;width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem}
+.av.sm{width:40px;height:40px;font-size:1rem}
+.mestrip{border:0;text-align:left;background:var(--neutral-light-light);border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:center;width:100%}
+.mestrip:hover{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.mestrip .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.mestrip .t small{color:var(--muted);font-size:.78rem;line-height:1.35}
+.mestrip .go{flex:none;font-size:.8rem;font-weight:700;color:var(--accent)}
+.chalbar{display:flex;flex-direction:column;gap:2px;font-size:.85rem;padding:10px 14px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line)}
+.chalbar .k{font-size:.65rem;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats div{background:var(--neutral-light-light);border-radius:14px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.stats b{font-size:1.2rem;font-weight:800}.stats span{font-size:.7rem;color:var(--muted);line-height:1.3}
+@media (max-width:360px){.stats{grid-template-columns:repeat(2,1fr)}}
+.lvup{font-family:var(--display);font-weight:800;font-size:1.1rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap;animation:pop .5s var(--ease)}
+.hints .chal{font-size:.8rem;color:var(--muted)}.hints .chal b{color:var(--ink)}
+.lvres .gain{font-size:1.25rem;font-weight:800;color:var(--accent)}
 </style>
 </head>
 <body>
@@ -1079,6 +1099,37 @@ next|다음 손님!
 weird|이상한
 kidding|농담하는
 seriously|진지하게, 진짜로`.split('\n').forEach(l=>{const [k,v]=l.split('|');GL[k.trim().toLowerCase()]=v.trim()});
+const GL_LV=`long time no see|오랜만이야
+a zoo|(사람이 많아) 정신없는 곳
+no rush|서두를 필요 없어요
+in the mood for|~가 당기다, ~하고 싶은 기분이다
+gotcha|알겠어요(got you)
+real talk|진지하게 말하면, 솔직히
+random question|갑자기 생각난 질문인데
+not gonna lie|솔직히 말하면
+you're all set|다 됐어요, 준비 끝났어요
+running on|~로 버티는 중이다
+bear with me|좀 이해해 줘요, 잠깐만 참아 줘요
+total chaos|완전 난리
+dude|친구야, 야(친근한 말)
+hit me|(어서) 말해 봐, 줘 봐
+what's it gonna be|뭘로 할래요?
+say less|더 말 안 해도 알겠어(완전 이해)
+low-key|은근히, 살짝
+dying to|~하고 싶어 죽겠다
+hold up|잠깐만
+no pressure|부담 갖지 마
+real quick|아주 잠깐, 빨리
+good to go|준비 다 됐어, 가도 돼
+no worries|괜찮아요, 신경 쓰지 마요
+legit|진짜로, 제대로
+that's sick|끝내준다(좋다는 뜻의 속어)
+dunno|don't know(몰라)
+whatcha|what are you
+getcha|get you
+lemme|let me(내가 ~할게)
+kinda|kind of(약간, 좀)
+sorta|sort of(약간, 좀)`;GL_LV.split('\n').forEach(l=>{const [k,v]=l.split('|');GL[k.trim().toLowerCase()]=v.trim()});
 const GRE=new RegExp("(?<![a-z'])("+Object.keys(GL).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+")(?![a-z'])","gi");
 function wordsHTML(t){let o='',l=0;t.replace(/[A-Za-z]+(?:['’][A-Za-z]+)*/g,(m,off)=>{o+=esc(t.slice(l,off))+`<button class="gl w" data-k="${esc(m.toLowerCase().replace(/’/g,"'"))}">${esc(m)}</button>`;l=off+m.length;return m});return o+esc(t.slice(l))}
 function glossHTML(text){let out='',last=0;text.replace(GRE,(m,g,off)=>{out+=wordsHTML(text.slice(last,off))+`<button class="gl" data-k="${esc(m.toLowerCase())}">${esc(m)}</button>`;last=off+m.length;return m});return out+wordsHTML(text.slice(last))}
@@ -1121,7 +1172,8 @@ function glossBody(k){
 }
 function glossKo(k){if(GL[k])return GL[k];if(CONTR[k])return CONTR[k];const d=DICT[k];return d&&d.senses?d.senses[0].def:''}
 const PENALTY=5;
-function adj(st){const b=S.best[st];if(!b)return 0;const n=S.looked[st]?S.looked[st].length:0;return Math.max(0,b.score-PENALTY*n)}
+function hintCost(st){return S.hinted&&S.hinted[st]&&S.best[st]?(HINT_COST[S.lv]||0):0}
+function adj(st){const b=S.best[st];if(!b)return 0;const n=S.looked[st]?S.looked[st].length:0;return Math.max(0,b.score-PENALTY*n-hintCost(st))}
 
 /* ---------- hints & ideas for each barista question ---------- */
 const QH={};(()=>{let cur=null;`Q|Oh yeah? Anything exciting happen today?
@@ -1505,10 +1557,11 @@ function captureSlots(st,n){
 }
 
 /* ---------- conversation engine ---------- */
-async function say(text){
+async function say(text,key){
   S.busy=true;render();
-  await sleep(Math.min(1200,350+text.length*12));
-  S.log.push({who:'b',text});S.lastB=text;S.busy=false;setHintKey(text);S.ph=newIdea();render();
+  const lv=S.lv||2;await sleep(Math.min(1200,350+text.length*12)*(lv>=4?.6:lv===1?1.15:1));/* Lv4는 더 빨리 답함 */
+  /* 화면에는 레벨 말투로 바꾼 문장, 대화 판단(lastB·힌트 키)에는 원래 문장 */
+  S.log.push({who:'b',text:levelize(text)});S.lastB=key||text;S.busy=false;setHintKey(key||text);S.ph=newIdea();render();
 }
 function koAttach(st){if(!S.pendingKo)return;const m=S.log[S.log.length-1];m.orig=S.pendingKo.orig;m.pairs=S.pendingKo.pairs;if(st&&!S.free){S.looked[st]=S.looked[st]||[];for(const[k,e] of m.pairs){const key=k+'→'+e;if(!S.looked[st].includes(key))S.looked[st].push(key)}}S.pendingKo=null}
 function flag(f){for(let i=S.log.length-1;i>=0;i--)if(S.log[i].who==='u'){S.log[i].flag=f;break}}
@@ -1522,12 +1575,17 @@ async function advance(){
   if(S.idx>=STAGES.length){await say(pick(["Oh hey, I'm on break in a minute. Want to chat a bit more?","It's pretty quiet now, actually. Want to hang out and chat a little?"]));S.ended=true;render();return}
   S.hk=null;
   if(STAGES[S.idx]==='size'&&S.presize){record('size',S.foodOnly?'(음식만 주문)':S.slots.size+' (주문할 때 함께 말함)',30);S.idx++;if(!S.foodOnly)await say(pick(['Got it, '+S.slots.size+'!','Okay, '+S.slots.size+'.']))}
-  await say(fill(P[S.pid].lines[STAGES[S.idx]]));
+  {const L=stageLine(STAGES[S.idx]);await say(L.text,L.key)}
 }
 async function finish(){
   S.done=true;S.ended=false;logSave();
   const total=STAGES.reduce((a,s)=>a+adj(s),0);
   const hist=store.get('stc.history',[]);hist.unshift({pid:S.pid,total,n:STAGES.length,at:Date.now()});store.set('stc.history',hist.slice(0,20));
+  /* 레벨: 이번 대화 평균 점수 + 도전 표현 보너스를 XP로 */
+  const avg=Math.round(total/STAGES.length),before=myProg(),c=todayChal(S.lv),hit=chalHit(c);
+  const g=gamesList();if(!g.some(x=>x.at===S.startAt)){g.push({at:S.startAt,pid:S.pid,s:avg,b:hit?CHAL_BONUS:0,lv:S.lv});store.set('stc.games',g)}
+  S.result={before,after:myProg(),gain:avg+(hit?CHAL_BONUS:0),chal:c,hit};
+  if(AUTH.user)syncNow();
   render();
 }
 async function reask(st,raw){
@@ -1855,22 +1913,25 @@ function savedList(){return store.get('stc.saved',[])}
 function saveChunk(en,ko){const l=savedList();if(!l.some(x=>x.en===en)){l.unshift({en,ko,at:Date.now()});store.set('stc.saved',l)}S&&(S.flash=en);render()}
 
 function renderStart(){
-  const hist=store.get('stc.history',[]).slice(0,5), saved=savedList();
+  const hist=gamesList().slice(-5).reverse(), saved=savedList(), pr=myProg(), u=AUTH.user, ch=todayChal();
   app.innerHTML=`
   <header style="display:flex;flex-direction:column;gap:8px">
     <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">Corner café · ${STAGES.length} steps · no exam English</span><span class="row" style="flex:none;gap:6px"><button class="btn themebtn" id="info">사용 안내</button><button class="btn themebtn" id="theme" aria-label="화면 밝기 바꾸기">${isDark()?'밝은 화면':'어두운 화면'}</button></span></div>
     <h1>Small Talk Café</h1>
     <p class="muted">바리스타를 골라 영어로 주문하고 수다를 떨어 보세요. 점수는 대화가 끝난 뒤에만 보여 드립니다.</p>
   </header>
+  <button class="mestrip" id="prof">${u&&u.photo?`<img class="av sm" src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<span class="av sm">${u&&u.name?esc(u.name.slice(0,1)):'🙂'}</span>`}<span class="t"><span class="row" style="gap:6px"><b>${u?esc(u.name||'나'):'게스트'}</b>${lvBadge(pr.lv)}</span><small>${u?'기록이 계정에 저장돼요':AUTH.on?'구글로 로그인하면 다른 기기에서도 레벨이 이어져요':'레벨과 기록은 이 기기에 저장돼요'}</small></span><span class="go">내 프로필 ›</span></button>
+  <div class="chalbar"><span class="k">TODAY'S CHALLENGE · 쓰면 +${CHAL_BONUS} XP</span><span><b>${esc(ch.p)}</b> <span class="muted">${esc(ch.ko)}</span></span></div>
   <section style="display:flex;flex-direction:column;gap:10px">
     <div class="row" style="justify-content:space-between"><h2>${SHOWALL?'바리스타 20명':'오늘의 바리스타 · '+(new Date().getMonth()+1)+'월 '+new Date().getDate()+'일'}</h2><span class="row"><button class="btn" id="rand">아무나 만나기</button><button class="btn" id="all">${SHOWALL?'오늘의 5명만':'20명 전체 보기'}</button></span></div>
     <div class="personas">${(SHOWALL?GROUPS.flat():todays()).map(id=>{const p=P[id];return `<button class="pcard" data-p="${id}"><span class="role">${p.role}</span><span class="nm">${p.name}</span><span class="ds">${p.desc}</span><span class="say">“${esc(p.lines.greet)}”</span></button>`}).join('')}</div>
   </section>
-  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid].name} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${Math.round(h.total/(h.n||7))} / 100</span></li>`).join('')}</ul></section>`:''}
+  ${hist.length?`<section class="panel"><h3>내 지난 기록</h3><ul class="list">${hist.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'바리스타'} · ${new Date(h.at).toLocaleDateString('ko-KR')}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul></section>`:''}
   <section class="panel"><h3>저장한 표현 <span class="num muted">${saved.length}</span></h3>${saved.length?`<ul class="list">${saved.slice(0,12).map(s=>`<li><span class="en">${esc(s.en)}</span><span class="muted">${esc(s.ko.split('.')[0])}</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 없습니다.</p>`}</section>`;
   app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>start(b.dataset.p));
   app.querySelector('#theme').onclick=()=>{setTheme(isDark()?'light':'dark');render()};
   app.querySelector('#info').onclick=()=>{INFO=true;render();scrollTo(0,0)};
+  app.querySelector('#prof').onclick=()=>{PROFILE=true;render();scrollTo(0,0)};
   app.querySelector('#rand').onclick=()=>start(pick(SHOWALL?GROUPS.flat():todays()));
   app.querySelector('#all').onclick=()=>{SHOWALL=!SHOWALL;renderStart()};
   bindLang();
@@ -1911,6 +1972,12 @@ function renderInfo(){
     </div>
   </section>
   <section class="panel">
+    <h3>레벨</h3>
+    <p class="muted" style="font-size:.88rem">대화를 끝까지 하면 그 대화의 점수(100점 만점)가 XP로 쌓입니다. XP가 기준을 넘고, 최근 3번 대화 평균도 기준 이상이면 다음 레벨로 올라갑니다. 한 번 운 좋게 잘 본 점수로는 올라가지 않도록 평균을 함께 봅니다. 레벨이 바뀌었는지는 영수증에서 알려 드려요.</p>
+    <ul class="list">${[1,2,3,4].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul>
+    <p class="muted" style="font-size:.88rem">날마다 바뀌는 ‘오늘의 도전 표현’을 대화 중에 쓰면 +${CHAL_BONUS} XP를 더 받습니다. 레벨이 올라도 내 프로필에서 낮은 레벨 말투를 골라 연습할 수 있어요.</p>
+  </section>
+  <section class="panel">
     <h3>점수는 언제 보이나요?</h3>
     <p class="muted" style="font-size:.88rem">대화 중에는 점수를 보여 주지 않습니다. 대화가 끝나면 영수증에서 단계마다 가장 잘한 답 하나로 계산해 100점 만점 평균으로 보여 드립니다. 다른 사람과 비교하지 않고 내 지난 기록과만 비교합니다.</p>
   </section>`;
@@ -1920,9 +1987,10 @@ function renderInfo(){
 function bindLang(){app.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang))}
 
 function start(pid){
-  S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:''};
+  S={sid:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),startAt:Date.now(),pid,idx:0,log:[],turns:[],best:{},fails:{},followed:{},asked:{},offer:null,lastRec:null,looked:{},gloss:null,hk:null,reasks:{},free:false,ended:false,freeTurns:0,topics:FREE_TOPICS.slice().sort(()=>Math.random()-.5),ph:'',slots:{drink:'latte',size:'medium',name:'friend'},busy:false,done:false,hintsOpen:false,hintNote:false,lastB:'',lv:talkLv(),hinted:{},heard:[],asides:[]};
   render();
-  say(P[pid].lines.greet).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
+  const L=stageLine('greet');
+  say(L.text,L.key).then(()=>{const i=document.getElementById('say');i&&i.focus({preventScroll:true})});
 }
 function hintKey(st){return CHAT.has(st)&&st!=='greet'?'chat':st}
 function renderChat(){
@@ -1944,12 +2012,13 @@ function renderChat(){
     ${S.done?`<button class="btn primary" id="toReceipt">영수증 받기</button>`:S.ended&&!S.busy?`<div class="row"><button class="btn primary" id="more">더 이야기하기</button><button class="btn" id="stop">대화 마치기</button></div>`:S.ended?'':`
     ${S.hintsOpen?`<div class="hints">
       ${S.hintNote?`<p class="note">${LANG==='ko'?'바리스타가 잘 못 알아들었어요. 아래 표현을 참고해서 다시 말해 보세요.':"The barista didn't catch that. Try again with one of these."}</p>`:''}
-      ${(S.hk&&QH[S.hk]?QH[S.hk].h:HINTS[hk]).map(([en,ko,enx])=>`<div class="chip"><div class="t"><b>${esc(en)}</b><small>${esc(LANG==='ko'?ko:enx)}</small></div><div class="acts"><button data-use="${esc(en)}">쓰기</button><button data-save="${esc(en)}" data-ko="${esc(ko)}">${savedList().some(x=>x.en===en)?'저장됨':'저장'}</button></div></div>`).join('')}
+      ${(()=>{const c=todayChal(S.lv);return `<p class="chal">오늘의 도전 표현: <b>${esc(c.p)}</b> · 쓰면 +${CHAL_BONUS} XP</p>`})()}
+      ${(()=>{const q=S.hk&&QH[S.hk],base=q?QH[S.hk].h:HINTS[hk],lv=S.lv||2;if(lv<3)return base;if(q)return base.slice(0,lv>=4?2:3);const nat=LV_HINTS[hk]||[];return lv>=4?nat.slice(0,2):nat.slice(0,2).concat(base.slice(0,2))})().map(([en,ko,enx])=>`<div class="chip"><div class="t"><b>${esc(en)}</b><small>${esc(LANG==='ko'&&(S.lv||2)<3?ko:enx)}</small></div><div class="acts"><button data-use="${esc(en)}">쓰기</button><button data-save="${esc(en)}" data-ko="${esc(ko)}">${savedList().some(x=>x.en===en)?'저장됨':'저장'}</button></div></div>`).join('')}
     </div>`:''}
     <div id="kofind" class="hints" hidden></div>
     ${S.expr&&!S.done&&S.ph&&S.ph.startsWith('위 표현')?`<div class="muted" style="font-size:13px;margin:0 0 6px;line-height:1.5">${esc(S.expr.ko||'')}<br>표현 : <b>${esc(S.expr.p)}</b></div>`:''}
     <form id="f"><input id="say" autocomplete="off" placeholder="${esc(S.ph||'예: 영어로 편하게 대답해 보기')}" value="${esc(draft)}" ${S.busy?'disabled':''}><button class="btn primary" ${S.busy?'disabled':''}>보내기</button></form>
-    <div class="row">${S.free?`<button class="btn" id="stop" style="font-size:.85rem">대화 마치기</button>`:''}<button class="btn" id="hint" style="font-size:.85rem">${S.hintsOpen?'힌트 닫기':'힌트 보기'}</button>${langToggle()}</div>`}
+    <div class="row">${S.free?`<button class="btn" id="stop" style="font-size:.85rem">대화 마치기</button>`:''}<button class="btn" id="hint" style="font-size:.85rem">${S.hintsOpen?'힌트 닫기':'힌트 보기'+(HINT_COST[S.lv]&&!S.free&&!S.hinted[STAGES[S.idx]]?' (−'+HINT_COST[S.lv]+'점)':'')}</button>${langToggle()}</div>`}
   </div>`;
   const isNew=S.log.length>(S.seen||0);S.seen=S.log.length;const log=document.getElementById('log');
   if(isNew||wasBottom||S.busy)logToBottom();else{log.scrollTop=oldTop;const gb=log.querySelector('.glbox');if(gb){const lr=log.getBoundingClientRect(),gr=gb.getBoundingClientRect();if(gr.bottom>lr.bottom)log.scrollTop+=gr.bottom-lr.bottom+8}}
@@ -1962,7 +2031,7 @@ function renderChat(){
   sayEl.addEventListener('input',()=>koFind(sayEl.value));
   if(draft)koFind(draft);
   app.querySelector('#f').onsubmit=e=>{e.preventDefault();if(S.busy)return;const v=document.getElementById('say').value.trim();if(!v)return;let sendV=v;S.pendingKo=null;if(/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(v)){const c=koConvert(v);if(!c.ok||!/[a-z]/i.test(c.text)){koFind(v,true);return}sendV=c.text;S.pendingKo={orig:v,pairs:c.pairs}}document.getElementById('say').value='';const kb=document.getElementById('kofind');if(kb){kb.hidden=true;kb.innerHTML=''}handle(sendV).then(()=>{logSave();const i=document.getElementById('say');i&&i.focus({preventScroll:true})})};
-  app.querySelector('#hint').onclick=()=>{S.hintsOpen=!S.hintsOpen;render()};
+  app.querySelector('#hint').onclick=()=>{S.hintsOpen=!S.hintsOpen;if(S.hintsOpen&&!S.free&&HINT_COST[S.lv])S.hinted[STAGES[S.idx]]=true;render()};
   app.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const i=document.getElementById('say');i.value=b.dataset.use.replace(/ \.\.\.|\.\.\./,' ');i.focus({preventScroll:true})});
   app.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>saveChunk(b.dataset.save,b.dataset.ko));
   app.querySelectorAll('.gl').forEach(b=>b.onclick=()=>{const i=+b.closest('.msg').querySelector('[data-say]').dataset.say;const k=b.dataset.k;
@@ -2004,8 +2073,9 @@ function renderReceipt(){
   <div class="receipt">
     <div class="hd"><b>SMALL TALK CAFÉ</b><span>barista: ${p.name.toUpperCase()} (${p.role})</span><span>${now.toLocaleDateString('ko-KR')} ${now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div>
     <div class="dash"></div>
-    ${STAGES.map(s=>{const b=S.best[s]||{text:'—',score:0};const lk=S.looked[s]?S.looked[s].length:0;return `<div class="line">
-      <div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><span class="tier s${b.score}">${TN[b.score]} ${lk?`${b.score} − ${lk*PENALTY} = ${adj(s)}`:b.score}</span></div>
+    ${STAGES.map(s=>{const b=S.best[s]||{text:'—',score:0};const lk=S.looked[s]?S.looked[s].length:0,hc=hintCost(s);return `<div class="line">
+      <div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><span class="tier s${b.score}">${TN[b.score]} ${lk||hc?`${b.score} − ${lk*PENALTY+hc} = ${adj(s)}`:b.score}</span></div>
+      ${hc?`<div class="tip">${LANG==='ko'?'힌트 사용':'Used a hint'} −${hc}</div>`:''}
       ${lk?`<div class="tip">${LANG==='ko'?'뜻 보기':'Looked up'} ${lk}${LANG==='ko'?'회':'x'}: ${esc(S.looked[s].join(', '))}</div>`:''}
       <div class="said">“${esc(b.text)}”</div>
       ${b.score<100?`<div class="tip">${b.score>0&&STAGE_TIP[LANG][s]?STAGE_TIP[LANG][s]:T[b.score]}</div><div class="model">${esc(model(s))}</div>`:''}
@@ -2016,6 +2086,8 @@ function renderReceipt(){
     ${S.freeTurns?`<div class="top" style="display:flex;justify-content:space-between"><span>${LANG==='ko'?'추가 대화 (점수 없음)':'Extra chat (not scored)'}</span><span class="num">${S.freeTurns} ${LANG==='ko'?'번 말함':'turns'}</span></div>`:''}
     <div class="hd muted"><span>${drinkLabel()} · for ${S.slots.name}</span><span>Thank you! Come again.</span></div>
   </div>
+  ${receiptLevel()}
+  ${receiptNative()}
   <div class="row"><button class="btn primary" id="again">${p.name}와 다시 하기</button><button class="btn" id="home">다른 바리스타 고르기</button></div>`;
   app.querySelector('#again').onclick=()=>start(S.pid);
   app.querySelector('#home').onclick=()=>{S=null;render()};
@@ -2033,7 +2105,7 @@ addEventListener('resize',vvSync);
 document.addEventListener('scroll',e=>{const l=e.target;if(l&&l.id==='log')l.dataset.bottom=(l.scrollHeight-l.scrollTop-l.clientHeight<40)?'1':'0'},true);
 document.addEventListener('focusin',e=>{if(e.target&&e.target.id==='say'&&app.classList.contains('chatmode')){setTimeout(()=>{vvSync();logToBottom()},60);setTimeout(()=>{vvSync();logToBottom()},350)}});
 vvSync();
-function render(){const chat=!!(S&&!S.receipt);app.classList.toggle('chatmode',chat);if(!chat)app.classList.remove('kb');document.documentElement.classList.toggle('chatlock',chat);if(!S&&INFO)renderInfo();else if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
+function render(){const chat=!!(S&&!S.receipt);app.classList.toggle('chatmode',chat);if(!chat)app.classList.remove('kb');document.documentElement.classList.toggle('chatlock',chat);if(!S&&PROFILE)renderProfile();else if(!S&&INFO)renderInfo();else if(!S)renderStart();else if(S.receipt)renderReceipt();else renderChat()}
 /* ---------- extended small talk (chat3–chat6): music · food · pets · best thing this week ---------- */
 (()=>{
 const NEW=['chat3','chat4','chat5','chat6'];
@@ -2074,6 +2146,181 @@ const TIPK={chat3:"좋아하는 음악을 말하고 'What about you?'로 되물�
 const TIPE={chat3:"Name the music you like, then ask 'What about you?'",chat4:"Say what you ate and how it tasted, then ask 'Have you tried it?'",chat5:"Add the pet's name or a detail, then ask 'Do you have any pets?'",chat6:"Say the good thing and why, then ask 'How about your week?'"};
 Object.assign(MODEL,MOD);Object.values(P).forEach(p=>{if(p.model)Object.assign(p.model,MOD)});
 Object.assign(STAGE_TIP.ko,TIPK);Object.assign(STAGE_TIP.en,TIPE);
+/* ================= 레벨 시스템 (로그인 없이도 이 기기에 저장됨) ================= */
+/* 레벨은 대화 기록(games)만 보고 매번 처음부터 다시 계산합니다. 그래서 두 기기의 기록을 합쳐도 XP가 두 번 더해지지 않습니다. */
+const LV={1:{ko:'새내기',en:'Newbie',talk:'짧고 또박또박 말해요. 힌트를 마음껏 볼 수 있어요.'},
+ 2:{ko:'단골',en:'Regular',talk:'지금처럼 자연스러운 속도로 말해요. 힌트도 그대로예요.'},
+ 3:{ko:'현지인',en:'Local',talk:'gonna·kinda 같은 줄임말과 관용구를 섞어 말해요. 힌트는 영어 설명, 열면 그 단계 −5점.'},
+ 4:{ko:'원어민 느낌',en:'Native vibes',talk:'빠르게 수다 떨고 농담도 섞어요. 힌트는 2개만, 열면 그 단계 −10점.'}};
+const LV_XP={2:150,3:400,4:800};   // 그 레벨이 되려면 모아야 하는 XP
+const LV_AVG={2:30,3:50,4:70};      // 그리고 최근 3번 평균이 이 점수 이상이어야 올라갑니다(운 방지). 30=덧붙임, 50=되묻기에 가까움, 70=대화를 이끄는 편
+const HINT_COST={1:0,2:0,3:5,4:10};
+const CHAL_BONUS=10;
+const avgOf=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;
+function gamesList(){let g=store.get('stc.games',null);
+  if(!g){/* 예전 기록(stc.history)을 처음 한 번만 옮겨 옵니다 */
+    g=store.get('stc.history',[]).map(h=>({at:h.at,pid:h.pid,s:Math.round(h.total/(h.n||7)),b:0})).sort((a,b)=>a.at-b.at);store.set('stc.games',g)}
+  return g}
+function progOf(games){let xp=0,lv=1,best=0,chal=0;const rec=[];
+  for(const g of games){xp+=g.s+(g.b||0);rec.push(g.s);best=Math.max(best,g.s);if(g.b)chal++;
+    const r3=rec.slice(-3);while(lv<4&&xp>=LV_XP[lv+1]&&r3.length>=3&&avgOf(r3)>=LV_AVG[lv+1])lv++}
+  return {xp,lv,best,chal,n:games.length,recent:rec.slice(-3),avg3:avgOf(rec.slice(-3))}}
+function myProg(){return progOf(gamesList())}
+function talkLv(){const p=myProg();if(window.__TEST_LV)return window.__TEST_LV;const c=store.get('stc.talkLv',null);return c&&c>=1&&c<=p.lv?c:p.lv}
+function lvBadge(lv){return `<span class="lvb lv${lv}">Lv${lv} ${LV[lv].ko}</span>`}
+function nextNeed(pr){if(pr.lv>=4)return '최고 레벨입니다. 바리스타와 마음껏 수다 떨어 보세요.';
+  const need=LV_XP[pr.lv+1]-pr.xp, okAvg=pr.recent.length>=3&&pr.avg3>=LV_AVG[pr.lv+1];
+  const a=need>0?`XP ${need} 더`:'XP 충분';
+  const b=pr.recent.length<3?`대화 ${3-pr.recent.length}번 더(평균 계산용)`:okAvg?`최근 3번 평균 ${pr.avg3}점, 통과`:`최근 3번 평균 ${pr.avg3}점 → ${LV_AVG[pr.lv+1]}점 이상 필요`;
+  return `Lv${pr.lv+1} ${LV[pr.lv+1].ko}까지: ${a} · ${b}`}
+function xpBar(pr){const lo=pr.lv>1?LV_XP[pr.lv]:0,hi=pr.lv<4?LV_XP[pr.lv+1]:pr.xp||1;const pct=pr.lv>=4?100:Math.max(0,Math.min(100,(pr.xp-lo)/(hi-lo)*100));
+  return `<div class="pb" aria-label="경험치"><i style="width:${pct}%"></i></div><div class="pl" style="font-weight:600"><span>XP ${pr.xp}</span><span class="muted">${pr.lv<4?'다음 레벨 '+hi:'MAX'}</span></div>`}
+
+/* ---------- 오늘의 도전 표현 (날마다 바뀜, 쓰면 +10 XP) ---------- */
+const CHAL={easy:[
+ {p:"How about you?",ko:"당신은요? 질문을 되돌려 줍니다.",ex:"Pretty good! How about you?",re:/\b(how|what) about you\b/},
+ {p:"Actually, ...",ko:"사실은요, 말을 덧붙이거나 바꿀 때",ex:"Actually, can I get it iced?",re:/\bactually\b/},
+ {p:"That sounds fun!",ko:"재밌겠다! 상대 말에 반응하기",ex:"Oh, that sounds fun!",re:/\bsounds? (so |really )?(fun|great|nice|cool|amazing|awesome)\b/},
+ {p:"What do you recommend?",ko:"뭐 추천해요?",ex:"Hmm, what do you recommend?",re:/\brecommend\b/},
+ {p:"I just ...",ko:"방금 ~했어요. 근황 덧붙이기",ex:"I just finished my homework.",re:/\bi just\b/},
+ {p:"Me too!",ko:"저도요! 공감하기",ex:"Me too! I love pizza.",re:/\bme too\b|\bsame here\b/},
+ {p:"No way!",ko:"말도 안 돼! 놀랐을 때",ex:"No way! That's so cool.",re:/\bno way\b/},
+ {p:"Have a good one!",ko:"좋은 하루 보내요! 가벼운 작별 인사",ex:"Thanks! Have a good one!",re:/\bhave a good one\b/},
+ {p:"I'm really into ...",ko:"요즘 ~에 푹 빠져 있어요",ex:"I'm really into K-pop these days.",re:/\bi'?m (really |so |kind of )?into\b/},
+ {p:"It was nice talking to you!",ko:"얘기해서 즐거웠어요!",ex:"It was nice talking to you!",re:/\bnice (talking|chatting) (to|with) you\b/},
+ {p:"Can I get ..., please?",ko:"~ 주실래요? 가장 자연스러운 주문",ex:"Can I get a vanilla latte, please?",re:/\bcan i (get|have)\b/},
+ {p:"Is it pretty sweet?",ko:"꽤 단가요? 짧게 되묻기",ex:"A medium, please. Is it pretty sweet?",re:/\bis it (pretty |really |too )?(sweet|strong|good|spicy)\b/}],
+ hard:[
+ {p:"Not gonna lie, ...",ko:"솔직히 말하면, ~",ex:"Not gonna lie, I'm kinda tired.",re:/\bnot gonna lie\b|\bngl\b/},
+ {p:"I'm down.",ko:"좋아, 콜! 제안에 찬성할 때",ex:"Iced? Yeah, I'm down.",re:/\bi'?m (so )?down\b/},
+ {p:"kinda",ko:"kind of(약간)의 말하는 버전",ex:"I'm kinda hungry.",re:/\bkinda\b/},
+ {p:"Can't complain.",ko:"뭐 괜찮아요(불평할 게 없어요)",ex:"Can't complain! How about you?",re:/\bcan'?t complain\b/},
+ {p:"It's been a long day.",ko:"긴 하루였어요(피곤해요)",ex:"It's been a long day, honestly.",re:/\b(it'?s been|been) a long (day|week)\b/},
+ {p:"Sounds good to me.",ko:"전 좋아요",ex:"Medium? Sounds good to me.",re:/\bsounds good to me\b/},
+ {p:"Same here.",ko:"저도 마찬가지예요",ex:"Same here! I love that place.",re:/\bsame here\b/},
+ {p:"For real?",ko:"진짜요? 놀라거나 신기할 때",ex:"For real? That's awesome!",re:/\bfor real\b/},
+ {p:"I'm all set.",ko:"(주문 등) 이제 됐어요, 다 됐어요",ex:"That's it, I'm all set. Thanks!",re:/\b(i'?m|we'?re) all set\b/},
+ {p:"Catch you later!",ko:"나중에 봐요! 가벼운 작별",ex:"Thanks! Catch you later!",re:/\bcatch you later\b/},
+ {p:"I could go for ...",ko:"~가 당기네요",ex:"I could go for something iced.",re:/\bi could go for\b/},
+ {p:"That hits the spot.",ko:"딱 원하던 맛이에요",ex:"Mmm, that hits the spot.",re:/\bhits? the spot\b/}]};
+function todayChal(lv){const pool=(lv||talkLv())>=3?CHAL.hard:CHAL.easy;return pool[((dayNum%pool.length)+pool.length)%pool.length]}
+function chalHit(c){return S.log.some(m=>m.who==='u'&&c.re.test(norm(m.text)))}
+
+/* ---------- 레벨별 바리스타 말투 ---------- */
+/* Lv1: 머뭇거림(um, like,)을 빼고 아주 짧은 질문은 또박또박 풀어서. Lv3: 줄임말. Lv4: 빠른 말투까지. 대화 판단 로직은 원래 문장을 그대로 씁니다. */
+const LV1_CLEAR={greet:"How are you today?",order:"What would you like to drink?",size:"What size would you like? Small, medium, or large?",name:"What is your name?"};
+const SWAP3=[[/\bgoing to (?=(be|go|do|make|get|have|try|see|need|eat|study|play|watch|come|take|love|start|rain|happen)\b)/gi,'gonna ','gonna','going to (~할 거야)'],
+ [/\bwant to\b/gi,'wanna','wanna','want to (~하고 싶다)'],[/\bkind of\b/gi,'kinda','kinda','kind of (약간, 좀)'],[/\bsort of\b/gi,'sorta','sorta','sort of (약간, 좀)'],
+ [/\bgot to\b/gi,'gotta','gotta','got to (~해야 해)'],[/\bno problem\b/gi,'no worries','no worries','괜찮아요, 신경 쓰지 마요'],
+ [/\bHave a (nice|good|great) day\b/g,'Have a good one','have a good one','좋은 하루 보내요(가벼운 작별 인사)'],[/\bvery\b/g,'super','super','아주, 엄청(very의 말하는 버전)']];
+const SWAP4=[[/\bget you\b/gi,'getcha','getcha','get you'],[/\bWhat are you\b/g,'Whatcha','whatcha','What are you'],[/\bwhat are you\b/g,'whatcha','whatcha','what are you'],
+ [/\bLet me\b/g,'Lemme','lemme','Let me (내가 ~할게)'],[/\bI don't know\b/g,'I dunno','dunno',"I don't know"],[/\bhave to\b/g,'gotta','gotta','have to (~해야 해)'],
+ [/\bthat's awesome\b/gi,"that's sick","that's sick",'끝내준다(좋다는 뜻의 속어)'],[/\breally good\b/g,'legit good','legit','진짜로, 제대로'],
+ [/(^|[.!?…]\s+)(?:Do|Are|Have) you (?=\w)/g,'$1You ','You ...?','Do/Are/Have you ...?에서 앞말을 뺀 빠른 질문 (예: You new here?)']];
+/* 단계 질문 앞에 붙는 한마디: 레벨 3·4에서만. k=[표현, 뜻] */
+const ASIDE={3:{
+ greet:[{t:"Not gonna lie, it's been a zoo in here today.",k:[["not gonna lie","솔직히 말하면"],["a zoo","(사람이 많아) 정신없는 곳"]]},{t:"Man, it's been a long morning.",k:[["man","와, 이야(감탄사)"]]}],
+ order:[{t:"No rush, take your time.",k:[["no rush","서두를 필요 없어요"]]},{t:"Whatever you're in the mood for.",k:[["in the mood for","~가 당기다, ~하고 싶은 기분이다"]]}],
+ size:[{t:"Gotcha.",k:[["gotcha","알겠어요(got you)"]]}],
+ name:[{t:"Cool, cool.",k:[["cool, cool","좋아요, 알겠어요(맞장구)"]]}],
+ chat:[{t:"Random question, but I'm curious.",k:[["random question","갑자기 생각난 질문인데"]]},{t:"Okay, real talk.",k:[["real talk","진지하게 말하면, 솔직히"]]},{t:"Not gonna lie, I've been wondering.",k:[["not gonna lie","솔직히 말하면"]]}],
+ close:[{t:"Alright, you're all set!",k:[["you're all set","다 됐어요, 준비 끝났어요"]]}]},
+ 4:{
+ greet:[{t:"Okay, I'm running on, like, three hours of sleep, so bear with me.",k:[["running on","~로 버티는 중이다"],["bear with me","좀 이해해 줘요, 잠깐만 참아 줘요"]]},{t:"Dude, the milk guy was super late today. Total chaos. Anyway!",k:[["total chaos","완전 난리"],["dude","친구야, 야(친근한 말)"]]}],
+ order:[{t:"Alright, hit me.",k:[["hit me","(어서) 말해 봐, 줘 봐"]]},{t:"Okay, menu time. No pressure.",k:[["no pressure","부담 갖지 마"]]}],
+ size:[{t:"Say less.",k:[["say less","더 말 안 해도 알겠어(완전 이해)"]]},{t:"Bet.",k:[["bet","좋아, 알겠어(속어)"]]}],
+ name:[{t:"Love it.",k:[["love it","좋다, 맘에 들어"]]},{t:"Sweet.",k:[["sweet","좋아, 잘됐다"]]}],
+ chat:[{t:"Okay, low-key, I've been dying to ask.",k:[["low-key","은근히, 살짝"],["dying to","~하고 싶어 죽겠다"]]},{t:"Wait, hold up.",k:[["hold up","잠깐만"]]},{t:"Ha, okay, okay. Next question, no pressure.",k:[["no pressure","부담 갖지 마"]]},{t:"Real quick, and be honest.",k:[["real quick","아주 잠깐, 빨리"]]}],
+ close:[{t:"And boom, done!",k:[["boom","짠!, 딱!(완성했을 때)"]]},{t:"Okay, you're good to go!",k:[["good to go","준비 다 됐어, 가도 돼"]]}]}};
+function heard(k,ko){if(!S)return;S.heard=S.heard||[];if(!S.heard.some(h=>h[0]===k))S.heard.push([k,ko])}
+function levelize(t){const lv=S&&S.lv||2;if(lv===2)return t;
+  if(lv===1)return t.replace(/\b(\w+)…\s*\1\b/gi,'$1').replace(/,\s*(?:um+|uh+),\s*/gi,' ').replace(/\b(?:um+|uh+),?\s*(?:…\s*)?/gi,'').replace(/,\s*like,\s*/g,' ').replace(/(\w)…\s*(\w)/g,'$1 $2').replace(/…/g,'.').replace(/\s+([,.!?])/g,'$1').replace(/,\s*,/g,',').replace(/(^|[.!?]\s+)([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\s{2,}/g,' ').trim();
+  let o=t;for(const [re,to,k,ko] of (lv>=4?SWAP3.concat(SWAP4):SWAP3)){re.lastIndex=0;if(re.test(o)){re.lastIndex=0;o=to.includes('$')?o.replace(re,to):o.replace(re,m=>/^[A-Z]/.test(m)?to.charAt(0).toUpperCase()+to.slice(1):to);heard(k,ko)}}
+  return o}
+function stageLine(st){const base=fill(P[S.pid].lines[st]);const lv=S.lv||2;
+  if(lv===1&&LV1_CLEAR[st]&&wordsOf(norm(base)).length<=3)return {text:base+' '+LV1_CLEAR[st],key:base};
+  if(lv>=3){const pool=(ASIDE[lv][CHAT.has(st)&&st!=='greet'?'chat':st]||[]).filter(a=>!(S.asides||[]).includes(a.t));
+    if(pool.length&&Math.random()<(lv>=4?.75:.5)){const a=pick(pool);S.asides=(S.asides||[]).concat(a.t);a.k.forEach(([k,ko])=>heard(k,ko));const m=base.match(/^(.*[.!…]\s+)([^.!…]*\?)\s*$/);return {text:m?m[1]+a.t+' '+m[2]:a.t+' '+base,key:base}}}
+  return {text:base,key:base}}
+/* 레벨 3 이상 힌트에 먼저 나오는 원어민 표현 */
+const LV_HINTS={
+ greet:[["Not too bad, you?","나쁘지 않아요, 당신은요? 짧고 자연스러운 대답","Short, natural, and asks back."],["Can't complain!","괜찮아요(불평할 게 없어요)","Means 'pretty good'."],["Honestly? Kinda tired, but good.","솔직히? 좀 피곤한데 괜찮아요","Honest and casual."]],
+ order:[["Lemme get a ..., please.","~ 주세요(Let me get의 빠른 말)","Fast, casual way to order."],["I could go for something iced.","시원한 게 당기네요","Say what you feel like."],["What's good here?","여기 뭐가 맛있어요?","Ask for a pick."]],
+ size:[["Medium's good.","미디엄이면 돼요","Short and relaxed."],["Go big or go home. Large!","크게 가자! 라지요","A fun way to pick large."],["Whatever's most popular.","제일 많이 시키는 걸로요","Let them choose."]],
+ name:[["It's ..., but you can call me ...","~인데 ~라고 불러도 돼요","Name + nickname."],["Don't worry, everyone spells it wrong!","걱정 마요, 다들 철자 틀려요!","Joke about your name."],["It's ..., like the K-drama character.","~예요, 그 드라마 인물처럼요","Give them a hook."]],
+ chat:[["Not gonna lie, ...","솔직히 말하면, ~","Start an honest answer."],["Low-key, I ...","은근히 저 ~해요","Casual, soft way to admit something."],["Wait, for real? Same!","잠깐, 진짜요? 저도요!","React big, then relate."]],
+ close:[["Catch you later!","나중에 봐요!","Casual goodbye."],["You're the best, thanks!","최고예요, 고마워요!","Warm thanks."],["See you next time!","다음에 또 봐요!","Promise to come back."]]};
+/* 영수증: 원어민이라면 이렇게 (단계별 한 줄 + 핵심 표현 설명) */
+const NATIVE={greet:["Not too bad! Just got outta class, so I'm kinda fried. You?","got outta = got out of(막 끝나고 나왔다), fried = 완전 지친"],
+ order:["Lemme get an iced vanilla latte. Actually, what's good here?","Lemme get = Let me get(주문할 때 아주 흔함), what's good here? = 여기 뭐가 맛있어요?"],
+ size:["Medium's good. Is it super sweet, though?","Medium's good = 미디엄이면 돼요, though = (문장 끝) 근데"],
+ name:["It's Seyoung, but you can just call me Sey.","you can just call me ~ = 그냥 ~라고 불러요"],
+ chat1:["Yeah, I just moved here, actually. Still kinda figuring stuff out. What about you?","figuring stuff out = 이것저것 알아 가는 중"],
+ chat2:["Nothing big. Probably just chill with friends. You got any plans?","chill = 느긋하게 놀다, You got any plans? = Do you have any plans?의 말하는 버전"],
+ chat3:["I'm really into K-pop lately. Low-key obsessed. You?","be into = ~를 좋아하다, low-key = 은근히, obsessed = 푹 빠진"],
+ chat4:["Oh, the tacos down the street are legit. Have you been?","legit = 진짜 괜찮은, Have you been? = 가 봤어요?"],
+ chat5:["Yeah, I've got a little dog. She's a total goofball. You have any pets?","I've got = I have, goofball = 장난꾸러기"],
+ chat6:["Honestly? I finally aced my English test. Super pumped about it. How was your week?","aced = 시험을 완전 잘 봤다, pumped = 신난"],
+ close:["Thanks so much! Catch you later!","Catch you later = 나중에 봐요(가벼운 작별)"]};
+
+/* ---------- 영수증: 레벨 결과 + 원어민은 이렇게 말해요 ---------- */
+function receiptLevel(){const R=S.result;if(!R)return '';const up=R.after.lv>R.before.lv;
+  return `<section class="panel lvres">
+    ${up?`<div class="lvup">레벨 업! ${lvBadge(R.after.lv)}</div><p style="font-size:.9rem">이제 바리스타가 ${esc(LV[R.after.lv].talk)}</p><div class="dash"></div>`:''}
+    <div class="row" style="justify-content:space-between"><h3>오늘 얻은 XP</h3><span class="gain num">+${R.gain}</span></div>
+    <p style="font-size:.88rem">${R.hit?`오늘의 도전 표현 <b>${esc(R.chal.p)}</b> 성공! 보너스 +${CHAL_BONUS} XP가 들어 있어요.`:`<span class="muted">오늘의 도전 표현 <b>${esc(R.chal.p)}</b>을(를) 다음 대화에서 써 보세요. 예: ${esc(R.chal.ex)} (+${CHAL_BONUS} XP)</span>`}</p>
+    <div class="row" style="justify-content:space-between"><span style="font-weight:700;font-size:.88rem">내 레벨</span>${lvBadge(R.after.lv)}</div>
+    <div class="prog">${xpBar(R.after)}</div>
+    <p class="muted" style="font-size:.85rem">${nextNeed(R.after)}</p>
+  </section>`}
+function receiptNative(){
+  const low=STAGES.filter(s=>NATIVE[s]).map(s=>[s,S.best[s]?adj(s):-1]).sort((a,b)=>a[1]-b[1]).slice(0,2);
+  const h=(S.heard||[]).slice(0,8);
+  return `<section class="panel"><h3>원어민은 이렇게 말해요</h3>
+    <p class="muted" style="font-size:.82rem">점수가 낮았던 단계를 원어민이 편하게 말하면 이렇습니다. 소리 내어 따라 해 보세요.</p>
+    ${low.map(([s])=>`<div class="line"><div class="top"><span>${LANG==='ko'?STAGE_KO[s]:STAGE_EN[s]}</span><button class="btn themebtn" data-nsave="${esc(NATIVE[s][0])}" data-nko="${esc(NATIVE[s][1])}">${savedList().some(x=>x.en===NATIVE[s][0])?'저장됨':'저장'}</button></div><div class="tip">내 답: “${esc(S.best[s]?S.best[s].text:'—')}”</div><div class="model">${esc(NATIVE[s][0])}</div><div class="tip">${esc(NATIVE[s][1])}</div></div>`).join('')}
+    ${h.length?`<div class="dash"></div><h3>오늘 바리스타가 쓴 원어민 표현</h3><ul class="list">${h.map(([k,ko])=>`<li><span class="en">${esc(k)}</span><span class="muted" style="text-align:right">${esc(ko)}</span></li>`).join('')}</ul>`:(S.lv||2)<3?`<p class="muted" style="font-size:.82rem">Lv3 현지인부터는 바리스타가 이런 표현을 직접 섞어 말해요.</p>`:''}
+  </section>`}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-nsave]');if(b){saveChunk2(b.dataset.nsave,b.dataset.nko);b.textContent='저장됨'}});
+
+/* ---------- 로그인: 지금은 사용하지 않음 (보관본: extras/google-login.js). 기록은 이 기기(localStorage)에만 저장 ---------- */
+const AUTH={on:false,ready:true,user:null,busy:false,err:'',sync:''};
+function syncNow(){}function signIn(){}function signOutNow(){}
+/* ---------- 내 프로필 ---------- */
+let PROFILE=false;
+function renderProfile(){
+  const pr=myProg(),g=gamesList(),tl=talkLv(),u=AUTH.user,chal=todayChal();
+  const recent=g.slice(-10).reverse();
+  app.innerHTML=`
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start"><span class="eyebrow" style="padding-top:6px">My profile</span><button class="btn themebtn" id="back">← 처음으로</button></div>
+    <div class="me">
+      ${u&&u.photo?`<img class="av" src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<span class="av">${u&&u.name?esc(u.name.slice(0,1)):'🙂'}</span>`}
+      <div style="min-width:0"><h1 style="font-size:1.4rem">${u?esc(u.name||'이름 없음'):'게스트'}</h1><p class="muted" style="font-size:.85rem">레벨과 기록은 이 기기에 저장돼요.</p></div>
+    </div>
+  </header>
+  <section class="panel">
+    <div class="row" style="justify-content:space-between"><h3>내 레벨</h3>${lvBadge(pr.lv)}</div>
+    <div class="prog">${xpBar(pr)}</div>
+    <p class="muted" style="font-size:.85rem">${nextNeed(pr)}</p>
+    <div class="row" style="justify-content:space-between;margin-top:4px"><span style="font-size:.85rem;font-weight:700">바리스타 말투</span><div class="seg" role="group" aria-label="바리스타 말투 난이도">${[1,2,3,4].filter(l=>l<=pr.lv).map(l=>`<button data-tl="${l}" aria-pressed="${tl===l}">Lv${l}</button>`).join('')}</div></div>
+    <p class="muted" style="font-size:.85rem">Lv${tl} ${LV[tl].ko}: ${LV[tl].talk}${pr.lv>1?' 올라간 레벨까지는 언제든 골라서 연습할 수 있어요.':''}</p>
+  </section>
+  <section class="stats">
+    <div><b class="num">${pr.n}</b><span>총 대화</span></div>
+    <div><b class="num">${pr.best}</b><span>최고 점수</span></div>
+    <div><b class="num">${pr.recent.length?pr.avg3:'–'}</b><span>최근 3번 평균</span></div>
+    <div><b class="num">${pr.chal}</b><span>도전 표현 성공</span></div>
+  </section>
+  <section class="panel"><h3>오늘의 도전 표현</h3><p><b>${esc(chal.p)}</b> <span class="muted">${esc(chal.ko)}</span></p><p class="muted" style="font-size:.85rem">예: ${esc(chal.ex)} · 대화 중에 쓰면 +${CHAL_BONUS} XP</p></section>
+  <section class="panel"><h3>최근 기록</h3>${recent.length?`<ul class="list">${recent.map(h=>`<li><span>${P[h.pid]?P[h.pid].name:'바리스타'} · ${new Date(h.at).toLocaleDateString('ko-KR')}${h.b?' · 도전 성공':''}</span><span class="num">${h.s} / 100</span></li>`).join('')}</ul>`:`<p class="muted" style="font-size:.88rem">아직 끝까지 한 대화가 없어요. 바리스타를 골라 첫 대화를 해 보세요.</p>`}</section>
+  <section class="panel"><h3>레벨 안내</h3><ul class="list">${[1,2,3,4].map(l=>`<li style="flex-direction:column;gap:2px"><span>${lvBadge(l)} <span class="muted" style="font-size:.8rem">${l>1?`XP ${LV_XP[l]} + 최근 3번 평균 ${LV_AVG[l]}점 이상`:'처음 시작'}</span></span><span class="muted" style="font-size:.85rem">${LV[l].talk}</span></li>`).join('')}</ul></section>`;
+  app.querySelector('#back').onclick=()=>{PROFILE=false;render();scrollTo(0,0)};
+  const li=app.querySelector('#login');if(li)li.onclick=signIn;
+  const lo=app.querySelector('#logout');if(lo)lo.onclick=signOutNow;
+  app.querySelectorAll('[data-tl]').forEach(b=>b.onclick=()=>{store.set('stc.talkLv',+b.dataset.tl);if(AUTH.user)syncNow();render()});
+}
+
 render();
 </script>
 
