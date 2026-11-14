@@ -342,7 +342,7 @@ let SHOWALL=false;let INFO=false;
 // r = replies in order [maya, leo, sam, rico, dottie]
 const INTENTS=[
  {id:'age',re:/how old are you|your age/,r:["I'm twenty-two!","Um, nineteen.","Twenty-five.","Old enough to make bad jokes. Thirty.","Oh, I'm sixty-three, dear. Don't tell anyone."]},
- {id:'job',re:/what do you do( for (a )?living| for work)?\??$|what'?s your (job|major)|what is your (job|major)|do you work here (full|part)/,r:["I'm a barista! And I study art on the side.","Um, I work here. And I'm in school.","Barista. Full time.","I'm a barista and a part-time comedian. Mostly part-time.","Oh, I run this little shop, dear. Forty years now."]},
+ {id:'job',re:/what do you do( for (a )?living| for work)?\??$|what'?s your (job|major)|what is your (job|major)|do you work here (full|part)/,r:["I'm a barista! And I study art on the side.","Um, I work here. And I'm in school.","Barista. Full time.","I'm a barista and a part-time comedian. Mostly part-time.","Oh, I make the coffee and the pies here, dear. Fifteen years now."]},
  {id:'help',re:/can you help me|could you help me|need (some )?help|help me (with|find|choose|decide|pick)/,r:["Of course! What do you need?","Oh, um, sure. What do you need?","Sure. What's up?","Help? That's literally my job. Well, partly. What's up?","Of course, honey. What do you need?"]},
  {id:'lesssweet',re:/not (too |very |so |that )?sweet (drink|one|thing)|(something|anything|drink|one)( that'?s| that is| is)? not (too |very |so |that )?sweet|less sweet (drink|option|one)|least sweet/,offer:'latte',r:["Try a plain latte! It's creamy, but not sweet at all.","Um, a plain latte isn't sweet. Or an americano.","Plain latte. Not sweet.","A plain latte. It's sweet like me, which means not very. Kidding!","Oh, a plain latte, honey. Nice and gentle, not sweet."]},
  {id:'flavors',re:/(other|another|what|which|any|more) (flavou?rs?|favou?rs?|syrups?)|flavou?r options/,r:["We have vanilla, caramel, hazelnut, and honey! Honey is my favorite.","Um, vanilla, caramel, hazelnut, and honey.","Vanilla, caramel, hazelnut, honey.","Vanilla, caramel, hazelnut, honey, and my secret flavor: confidence.","Oh, vanilla, caramel, hazelnut, and honey, sweetie."]},
@@ -370,7 +370,7 @@ const INTENTS=[
  {id:'blive',re:/do you live (near|around|close|here)|where do you live|you live (nearby|around here|close)/,r:["Yep! I live like ten minutes away.","Um, yeah, kind of close. I take the bus.","Five minutes away.","I live close. Close enough to still be late every day.","Oh, right around the corner, dear. Forty years now."]},
  {id:'bread',re:/what (kind of |kinds of )?(comics|books?|manga|novels?)|what do you (like to )?read|favorite (comic|book|manga)/,r:["Mostly art books! And some fantasy novels.","Oh, um, superhero comics, mostly. And some manga.","Don't read much. No time.","Joke books. For research.","Oh, mystery novels, honey. I love a good mystery."]},
  {id:'comedy',re:/stand.?up|comedy|comedian|are you (always )?(this )?funny|open mic/,r:["Ha! No, but Rico at the other shop thinks he's a comedian.","Me? Oh, no. I'm way too shy.","No. Not my thing.","Every Thursday at the open mic downtown! Two people laughed last time. A new record.","Oh, no, honey. But I laugh at everyone's jokes."]},
- {id:'petname',re:/(dog|cat|pet|corgi|hamster)'?s? name|name of (your|the) (dog|cat|pet|corgi|hamster)|what'?s (his|her) name|what is (his|her) name/,r:["My cat's name is Mochi! She's so lazy.","My hamster's name is Bean. He's, um, very small.","No pets. No time.","Biscuit! He's a corgi, and he's the boss of me.","My cat is named Pepper, sweetie. She's old and very spoiled."]},
+ {id:'petname',re:/(dog|cat|pet|corgi|hamster)'?s? name|name of (your|the) (dog|cat|pet|corgi|hamster)|what'?s (his|her) name|what is (his|her) name/,r:["My cat's name is Mochi! She's so lazy.","My goldfish's name is Bob. He's, um, orange.","No pets. No time.","Biscuit! He's a corgi, and he's the boss of me.","My cats are Salt and Pepper, sweetie. And my parrot is Captain."]},
  {id:'garden',re:/garden|do you grow|grow (any|your)|plants?\b/,r:["Nope, but I have like five plants in my room!","Um, no. I can't even keep a cactus alive.","No garden. Apartment.","My garden is one sad plant named Steve.","Oh, yes! My tomatoes are the best in the neighborhood, honey."]},
  {id:'nameok',re:/is (that|it) (okay|ok|fine|alright)\??$|hard to (spell|say)|can you spell it|is that a weird name/,r:["Of course! It's a really pretty name.","Oh, yes. Of course.","Sure.","Totally fine. Way easier to spell than mine.","Of course, sweetheart. It's lovely."]},
  {id:'stay',re:/(can|could|may) i (stay|sit|study|work|hang out) (here|for|a while|long)|(is it|it'?s) (ok(ay)?|fine|alright) (if i|to) (stay|sit|study|work)|how long can i (stay|sit)|stay (here )?(for )?(a )?(long|while|all day|few hours)|mind if i (stay|sit|study)/,r:["Totally! Stay as long as you want. Lots of people study here all day.","Oh, um, yes. You can stay as long as you like. It's quiet.","Sure, stay as long as you want.","Stay forever! Just buy a muffin every few hours so my boss is happy.","Of course, honey. Stay as long as you like. Make yourself at home."]},
@@ -391,7 +391,7 @@ const INTENTS=[
  {id:'likejob',re:/(like|enjoy|love) (your job|working here|it here|work)/,r:["I love it! I get to talk to people all day.","Yeah, I like it. The people are nice.","Yeah, it's good. Fast-paced.","I love it. Free coffee and a captive audience for my jokes.","Oh, I love it. I get to meet sweet people like you."]},
  {id:'busy',re:/(always|so|this|that) busy|busy today|crowded|is it busy|(a lot of|lots of|many) (students|people|customers)/,r:["Mornings are crazy! It gets quieter after ten, though.","Um, yeah. Mornings are really busy.","Mornings, yeah. Every day.","Busy? This is our quiet time. You should see Mondays.","Oh, it gets busy in the mornings, but I like it."]},
  {id:'weather',re:/weather|\brain|sunny|hot (today|out)|cold (today|out)|nice (day|out)|beautiful day/,r:["Right? It's so nice out today! Perfect iced coffee weather.","Yeah, it's… pretty nice today.","Yeah, nice day.","The weather? Great. Unlike my jokes.","Oh, it's a beautiful day, isn't it? Perfect for a walk."]},
- {id:'fromwhere',re:/where are you from|are you from (here|around)|did you grow up|where did you grow/,r:["I grew up here! Born and raised.","I'm from Ohio, actually. I moved here for school.","Grew up here.","I'm from Texas. That's why I talk so much.","I've lived here my whole life, sweetie."]},
+ {id:'fromwhere',re:/where are you from|are you from (here|around)|did you grow up|where did you grow/,r:["I grew up here! Born and raised.","I'm from Ohio, actually. I moved here for school.","Grew up here.","I'm from Texas. That's why I talk so much.","I grew up two towns over, sweetie. But I've lived on this street for forty years."]},
  {id:'weekend',re:/(your|you) .*(weekend|plans)|doing this weekend|plans for the weekend/,r:["I'm going to a concert on Saturday!","I'll probably just read at home.","Working. Then soccer.","Taking my corgi to the dog park. He has more friends than me.","I'll be in my garden, dear. The tomatoes need me."]},
  {id:'school',re:/do you (go to|study)|are you a student|in college|go to school/,r:["Yep! I study art at the community college.","Yeah, I'm a college student. I'm studying computer science.","Not anymore. Just work.","I took one acting class once. Does that count?","Oh, no, dear. I finished school a long, long time ago."]},
  {id:'hobby',re:/for fun|hobb|free time|like to do/,r:["I paint! And I'm learning to skateboard. Badly.","I read comics and play video games.","Soccer. Every weekend.","Stand-up comedy. You can tell, right?","Gardening and baking, honey."]},
@@ -399,7 +399,7 @@ const INTENTS=[
  {id:'eat',re:/(place|places|somewhere).*(eat|food|lunch|dinner)|restaurant/,r:["There's an amazing taco place across the street!","Um, the sandwich shop next door is good.","Taco place across the street.","The pizza place on the corner. Tell them Rico sent you. They won't know me, but tell them.","Oh, the diner on Main Street, dear. Best pancakes in town."]},
  {id:'sights',re:/things to do|should i (see|visit)|places to visit|fun around here|tourist/,r:["Go to the park by the river! It's so pretty at sunset.","The library downtown is really nice. And quiet.","River park. Nice walk.","The river park. Bring snacks. The ducks are aggressive.","Oh, visit the farmers market on Saturday, sweetie."]},
  {id:'sports',re:/\b(the game|basketball|football|baseball|soccer|team)\b/,r:["I don't really follow sports, but my brother loves basketball!","Um, I don't really watch sports, sorry.","Did you see the game last night? Crazy ending.","Sports? I only know one move. It's called the coffee pour.","Oh, my grandson plays baseball. I go to all his games."]},
- {id:'pets',re:/\b(pets?|do you have a (dog|cat))\b/,r:["I have a cat named Mochi! She's so lazy.","I have a hamster. His name is Bean.","No pets. No time.","I have a corgi named Biscuit. He's the boss.","I have an old cat named Pepper, dear."]},
+ {id:'pets',re:/\b(pets?|do you have a (dog|cat))\b/,r:["I have a cat named Mochi! She's so lazy.","I have a goldfish. His name is Bob.","No pets. No time.","I have a corgi named Biscuit. He's the boss.","I have two cats and a parrot, dear."]},
  {id:'compliment',re:/(love|like|cool|nice|cute|great) (this|your) (place|shop|cafe|café|vibe|shirt|apron|hair|music|decor)|great vibe|smells (so )?good/,r:["Aww, thank you! That made my day!","Oh, um, thank you. That's nice of you.","Thanks!","Thank you! I'll add that to my résumé.","Oh, aren't you sweet! Thank you, honey."]},
  {id:'hours',re:/what time do you (close|open)|when do you (close|open)|(opening|closing) time|open (late|tomorrow|on sunday)|your hours/,r:["We close at eight! Plenty of time.","Um, we close at 8 p.m.","Open six to eight.","We close at eight. Then I go home and practice jokes in the mirror.","We're open from six to eight, dear."]},
  {id:'time',re:/what time is it|do you (know|have) the time/,r:["Oh, it's almost ten!","Um, it's about ten o'clock.","Almost ten.","Coffee o'clock. Also, about ten.","It's just about ten, sweetie."]},
@@ -1866,6 +1866,366 @@ const DUNNO_R=[["That's okay! No pressure.","Ha, that's fine! Some questions are
 const SOFT_FAIL=[["Hmm, I didn't quite get that! ","Oops, I missed that. "],["Um, sorry, I didn't get that. ","Sorry, I, um, missed that. "],["Sorry, missed that. ","Didn't catch that. "],["Sorry, my brain buffered. ","Wait, you lost me there. "],["Oh, I didn't quite catch that, dear. ","Sorry, sweetie, I missed that. "]];
 const UNSURE2=[["Hmm, I've never thought about that!","Oh, that's a hard one. I don't know!"],["Um, I don't really know. Sorry.","Hmm. I, um, have no idea."],["No clue.","Hm. Don't know."],["I'll get back to you on that. In five to ten years.","That's above my pay grade. Which is low."],["Oh, you've got me there, dear.","Oh, I couldn't tell you, honey."]];
 function unsureR(pi){return pickNew([UNSURE[pi]].concat(UNSURE2[pi]))}
+/* ---------- 스몰토크 질문(바리스타 자신에 대한 질문) ----------
+   r[pi] = [maya, leo, sam, rico, dottie] 순서. 각 대답 = 자기 이야기 + 끝에 되묻는 질문.
+   대화 단계(인사·잡담·자유 대화)에서는 되묻고 사용자의 대답을 기다립니다.
+   주문·사이즈·이름 단계에서는 되묻는 질문을 떼고 원래 질문으로 돌아갑니다.
+   svc:true = 주문 단계에서는 기존 추천 대답이 우선. 프로필: plan/barista-profiles.md */
+const F='favou?rite';
+const TALK=[
+ {id:'korea',ko:'한국·K-문화',re:new RegExp([
+   "(have|did) you (ever )?(been|gone|go|went|visited?) (to )?(south )?korea","(been|go|went) to (seoul|busan)",
+   "do you (like|love|know|listen to|watch|eat|enjoy|ever eat|ever watch|ever listen to) (any )?(k-?pop|k-?dramas?|korean|kimchi|bts|blackpink|newjeans|stray kids|twice|bibimbap|bulgogi|tteokbokki|webtoons?)",
+   "(what do you think|how do you feel|what'?s your opinion) (about|of) (korea|korean|k-?pop|k-?dramas?)",
+   "(do you know|have you heard (of|about)) (anything about )?(korea|k-?pop|bts|blackpink|korean)","(ever )?(tried|eaten|had) korean (food|bbq|barbecue|fried chicken)","korean (food|bbq|barbecue|fried chicken|dramas?|music|culture)"].join('|')),
+  r:[["I've never been, but I really want to try real Korean BBQ! And I love K-dramas. Have you been to Korea?","Korea is on my list! I watched a K-drama last month and cried at every episode. Do you watch K-dramas?"],
+     ["Um, I've never been. But I read a lot of Korean webtoons. They're really good. Do you read webtoons?","Um, not yet. I want to go someday, though. What's Korea like?"],
+     ["Never been. Tried Korean fried chicken once. Loved it. Is it really that good in Korea?","Haven't been. Want to, though. You from there?"],
+     ["Not yet, but I tried Korean fried chicken and it changed my life. What should I eat first when I go?","Never been. But I know one K-pop dance move. Just one. Want to see it? No? What should I see in Korea?"],
+     ["Oh, I've never been, dear, but my granddaughter loves K-pop. She plays it in the car! Do you like K-pop, honey?","Oh, I tried kimchi once, dear. Spicy, but so good! Do you make it at home?"]]},
+ {id:'catsdogs',ko:'고양이 vs 강아지',re:/cats? or dogs?|dogs? or cats?|(are you|you'?re) (more )?(a )?(cat|dog) (person|lover)|do you (like|prefer) (cats|dogs)( or| more|\??$)|team (cat|dog)/,
+  r:[["Cats! My cat Mochi would never forgive me otherwise. Are you a cat person or a dog person?","Cats, obviously. But I'd pet any dog I see. What about you?"],
+     ["Um, I like both. But I only have a goldfish. Do you like cats or dogs more?","Um, cats, I think. They're quiet like me. You?"],
+     ["Dogs. But no time for one. You?","Dogs. Easy question. You?"],
+     ["Dogs. My corgi Biscuit is listening, so I have to say that. Cats or dogs for you?","Dogs. Cats are fine, but they judge me. Which one for you?"],
+     ["Oh, I have two cats, dear, so I'm a cat lady! But I love dogs too. And you, honey?","Oh, cats, sweetie. Salt and Pepper would be upset if I said dogs. What about you?"]]},
+ {id:'coffeetea',ko:'커피 vs 차',re:/coffee or tea|tea or coffee|(are you|you'?re) (a )?(coffee|tea) (person|drinker|lover)|how (much|many) (coffee|cups)( of coffee)? do you|do you (even |actually |still )?(drink|like) (coffee|tea)\??$|(sick|tired) of coffee|how many coffees|drink (a lot of|lots of|much|so much) coffee/,
+  r:[["Coffee! Look where I work. I drink like three a day. Are you more of a coffee or tea person?","Coffee all the way. My honey oat latte is my best friend. What about you?"],
+     ["Um, tea, actually. Don't tell my boss. Do you like coffee or tea more?","Um, I drink tea at home. Milk tea, mostly. What about you?"],
+     ["Coffee. Lots. Four cups, maybe. You?","Coffee. Black. You?"],
+     ["Coffee. Tea is just leaf water. Kidding! Kind of. What's your pick?","I drink so much coffee I can hear colors. Coffee or tea for you?"],
+     ["Oh, tea, dear. Chamomile every night. And you, sweetie?","Oh, I love a cup of tea, honey. Coffee makes my heart dance too fast. Do you like tea?"]]},
+ {id:'lastweekend',ko:'지난 주말',re:/(how was|how'?s|how did) your weekend( go)?|what did you do (on |over |during |this past |last |for the )?(the )?weekend|(did you |you )?(have|do) (a good|a nice|a fun|anything fun|anything|something fun)( fun)? (last |this past |over the |on the )?weekend|(do|did) anything (fun |special |cool )?(last |this past |over the )weekend|last weekend|what did you do (on |last )(saturday|sunday)/,
+  r:[["It was so fun! I went to an art market with my friends and bought tiny earrings. How was your weekend?","I painted all Saturday and ate way too many tacos. Did you do anything fun last weekend?"],
+     ["Um, I stayed home and played a new game. It was nice and quiet. What did you do last weekend?","Um, it was okay. I read comics and did homework. How was yours?"],
+     ["Worked. Played soccer. We won. Yours?","Soccer on Sunday. Slept the rest. You?"],
+     ["I took my corgi to the dog park. He made three friends. I made zero. How was your weekend?","Great! I told jokes at a birthday party. Two people laughed. One was me. What did you do?"],
+     ["Oh, I went to my grandson's baseball game, dear. He hit the ball! How was your weekend, honey?","Oh, I worked in my garden, dear, and baked a pie. Did you have a nice weekend?"]]},
+ {id:'weekendplan',ko:'주말 계획',re:/(any|got any|have any|what are your|what'?s your|your) (fun |big |special )?plans? (for |this |on |over )(the )?(weekend|saturday|sunday)|what are you (doing|up to|gonna do|going to do|planning( to do)?) (this|on the|for the|over the|on) (weekend|saturday|sunday)|(doing|planning) anything (fun |special |cool )?(this|for the|on the|over the) weekend|plans for the weekend|your weekend plans|this weekend/,
+  r:[["I'm going to a concert on Saturday! The Paper Kites! I'm so excited. What are you doing this weekend?","Concert on Saturday, then painting on Sunday. What about you? Any fun plans?"],
+     ["Um, I'll probably just read at home. Maybe play a game. Do you have any plans this weekend?","Um, nothing big. A new comic comes out, so I'll read it. What about you?"],
+     ["Working Saturday. Soccer Sunday. You?","Double shift, then soccer. Plans?"],
+     ["Taking Biscuit to the dog park. He has more friends than me. What about you?","I'm practicing jokes for Thursday. On my dog. He's a tough crowd. Any plans?"],
+     ["Oh, I'll be in my garden, dear. The tomatoes need me. And you, honey? Any plans?","Oh, my grandkids are coming for dinner on Sunday. I'm making pie! What are you up to this weekend, dear?"]]},
+ {id:'afterwork',ko:'퇴근 후·오늘 밤',re:/what (do|are|will) you (usually |normally )?(do|doing|gonna do|going to do|plan to do|up to) (after work|after your shift|after this|tonight|later( today)?|when you get off|after you get off|when you'?re done|when your shift ends)|(any|got|have any|what are your) plans (for )?(tonight|after work|later|after your shift)|when do you get off( work)?|when does your shift (end|finish)|what time do you (finish|get off)|what do you do after work/,
+  r:[["I'm going to paint at the park, or hang out with my friends! What are you doing after this?","I'll go home and paint, probably. Or binge a baking show. What about you?"],
+     ["Um, I'll take the bus home and play games. That's it. What about you?","Um, homework, probably. And then comics. Do you have plans later?"],
+     ["Sleep. Then soccer. You?","Going home. Sleeping. Your plans?"],
+     ["I walk my corgi. Then he walks me. Then we nap. What are you doing later?","I practice my jokes in the mirror. The mirror never laughs. What about you?"],
+     ["Oh, I'll go home and water my garden, dear. Then a cup of tea. And what about you, honey?","Oh, I'll feed my cats and my parrot, dear. He sings for dinner! What are you doing later?"]]},
+ {id:'yesterday',ko:'어제·어젯밤 한 일',re:/what did you do (yesterday|last night|last evening)|how was your (night|evening|yesterday)|(do|did) (you )?(do )?anything (fun |special |cool )?(yesterday|last night)|what were you (doing|up to) (yesterday|last night)|yesterday|last night/,
+  r:[["I had painting class! We painted fruit for three hours. What did you do yesterday?","I watched a movie with my brother and ate too much popcorn. How about you?"],
+     ["Um, I did coding homework all night. It was, um, a lot. What did you do?","Um, I read comics until really late. That's why I'm tired. What about you?"],
+     ["Soccer game. We won. You?","Worked. Slept. You?"],
+     ["I practiced my jokes on my corgi. He fell asleep. Rude. What did you do yesterday?","I made chili. Texas style. My neighbors can still smell it. What about you?"],
+     ["Oh, I baked an apple pie for my neighbors, dear. What did you do yesterday, honey?","Oh, I had a quiet night, dear. Tea and a mystery novel. And you?"]]},
+ {id:'morning',ko:'오늘 아침·출근 전',re:/what did you do (this morning|before work|before your shift|before (you )?(came|come|got) here|earlier( today)?)|what did you (have|eat|get) for breakfast|(did|have) you (have|eat|eaten|had) breakfast|what time did you (wake|get) up|when did you (wake|get) up|how was your morning/,
+  r:[["I sketched ducks at the park before work! And I had a muffin. What did you do this morning?","I woke up early and painted for an hour. Then pancakes! Did you have breakfast?"],
+     ["Um, I had an eight a.m. class. Then I came here. Did you have class this morning?","Um, I just had toast. And I almost missed the bus. What about you?"],
+     ["Opened the shop at five thirty. Coffee for breakfast. You?","Woke up at five. Came here. You?"],
+     ["My corgi stole my sock, and I chased him for ten minutes. Great workout. What did you do this morning?","I had cereal for breakfast. With coffee instead of milk. Kidding. Mostly. What did you have?"],
+     ["Oh, I got up at five, dear, and watered my garden. Then I walked here. Did you have a good breakfast, honey?","Oh, I had oatmeal and tea, dear. My parrot ate some too. What did you have this morning?"]]},
+ {id:'lunch',ko:'점심·저녁 메뉴',re:/what did you (have|eat|get) for (lunch|dinner)|(did|have) you (eat|eaten|had|have) (lunch|dinner)( yet)?|what are you (having|eating|gonna eat|going to eat|getting) for (lunch|dinner)|what'?s for (lunch|dinner)|where do you (eat|get) lunch|what do you (usually )?(eat|have) for (lunch|dinner)|what did you eat( today)?\??$/,
+  r:[["Fish tacos from the taco truck around the corner! What did you have for lunch?","Not yet! I'm thinking tacos. Again. What about you? Did you eat?"],
+     ["Um, a grilled cheese. From here. It's really good. Did you eat already?","Um, not yet. Maybe ramen later. What did you have?"],
+     ["Burrito. Ate it in two minutes. You?","Not yet. Burrito later. You eat?"],
+     ["Pizza. With pineapple. I will not be taking questions. What did you have?","Not yet. I'm living on coffee and confidence. Did you eat?"],
+     ["Oh, I had a bowl of tomato soup, dear. From my own tomatoes! Did you have lunch, honey?","Oh, not yet, sweetie. Maybe a sandwich later. Have you eaten?"]]},
+ {id:'today',ko:'오늘 한 일·요즘 근황',re:/what did you do today|what have you been (up to|doing)( today| lately| recently)?|what'?ve you been up to|what (are|r) you up to (today|lately|these days)|(did )?anything (fun |interesting |exciting |good |cool )?happen (today|to you)|(how was|how'?s|how has) your (shift|day) (been|so far)|what are you doing today/,
+  r:[["It's been so busy! But a lady gave me a free muffin, so it's a great day. What have you been up to today?","I aced my art project this week, so I'm still happy! What about your day? Anything fun?"],
+     ["Um, just work and class today. Nothing exciting. How about you?","Um, I learned to make a leaf in the latte foam today. It's, um, small but I'm proud. What did you do today?"],
+     ["Work. All day. Double shift. You?","Morning rush. That's my day. Yours?"],
+     ["I made a latte with a tiny bear on it. Nobody noticed. What have you been up to today?","I told a joke and a customer laughed. Big day for me. What about you?"],
+     ["Oh, I walked here, worked in my garden, and now I'm talking to you, dear! What have you been up to today?","Oh, a quiet day, honey. Pies and coffee. Tell me about yours!"]]},
+ {id:'whatsnew',ko:'새 소식',re:/what'?s new( with you)?|anything new|what'?s up with you|what'?s going on (with you|in your life)|how'?s life|what'?s new in your life|any news/,
+  r:[["I aced my art project! My teacher hung it up in the hallway! What's new with you?","I'm learning to skateboard! Badly, but I'm trying. What's new with you?"],
+     ["Um, I learned leaf latte art. That's, um, my big news. What about you?","Um, not much. I got a new comic book. Anything new with you?"],
+     ["Nothing much. Same old. You?","Not much. Just work. You?"],
+     ["My corgi learned to roll over. He's smarter than me now. What's new with you?","I got a new joke. It's terrible. Want to hear it later? What's new with you?"],
+     ["Oh, my tomatoes are finally ripe, dear! That's big news for me. What's new with you, honey?","Oh, my parrot learned a new song, dear. He sings it all day! And what's new with you?"]]},
+ {id:'favspot',ko:'동네에서 좋아하는 곳',re:new RegExp("your "+F+" (place|spot|park|restaurant|cafe|store|shop) (around here|in (this |the )?(town|city|neighborhood|area))|where do you (like to )?(go|hang out|spend time) (around here|after work|on your days? off|in (this|the) (town|city|neighborhood))|your "+F+" (place|spot) to (go|hang out|eat|relax)|where do you (like to )?hang out"),
+  r:[["The park by the river! I sketch there all the time. Do you have a favorite spot yet?","The taco truck around the corner. It's not fancy, but I love it. Where do you like to go?"],
+     ["Um, the library downtown. It's really quiet. Do you like libraries?","Um, the comic shop on Main Street. I go every Friday. Where do you hang out?"],
+     ["Soccer field by the school. You?","Here, honestly. Or home. You?"],
+     ["The arcade. I'm the air hockey champion. Self-declared. Where's your favorite place?","The dog park. Biscuit is the mayor there. Where do you like to go?"],
+     ["Oh, my own garden, dear. It's my happy place. Where do you like to go, honey?","Oh, the diner on Main Street, dear. Best pancakes in town. Have you been there?"]]},
+ {id:'favdrink',ko:'좋아하는 음료',svc:true,re:new RegExp("your "+F+" (drink|coffee|beverage|tea|latte)\\b|what do you (usually |always )?(drink|order|get)( here| every day| on your break)?\\??$|what'?s your (go-to|usual)( drink| order)?|what do you drink (every day|on your break|at work)"),
+  r:[["The honey oat latte! I drink one every shift. What's your favorite drink?","Honey oat latte, iced. Always. What do you usually get?"],
+     ["Um, a chai latte. It's, um, warm and sweet. What do you like to drink?","Um, I like milk tea. What's your favorite drink?"],
+     ["Black coffee. Fast and simple. Yours?","Americano. Big one. You?"],
+     ["A cold brew with one ice cube. Very specific. I'm a mystery. What's your favorite?","Whatever's free. Kidding. Mocha. What's yours?"],
+     ["Oh, chamomile tea, dear. Every night. What's your favorite drink, honey?","Oh, a hot chocolate with a little cinnamon, dear. What do you like?"]]},
+ {id:'dessert',ko:'좋아하는 디저트·간식',svc:true,re:new RegExp("your "+F+" (dessert|sweets?|snack|candy|ice cream( flavou?r)?|cake|pastry|treat|cookie|chocolate)|do you (like|have|eat) (sweets|desserts|candy|chocolate|a sweet tooth)|sweet tooth|what (kind of )?(desserts?|snacks|sweets) do you like"),
+  r:[["Churros! With chocolate sauce. What's your favorite dessert?","Anything with chocolate. I have a huge sweet tooth. Do you like sweets?"],
+     ["Um, chocolate donuts. My coworker brought some once. Do you like donuts?","Um, mint chocolate ice cream. People say it tastes like toothpaste. Do you like it?"],
+     ["Ice cream. Vanilla. Simple. You?","Not a big sweets guy. Chips, maybe. You?"],
+     ["Pecan pie. I'm from Texas, it's the law. What's your favorite dessert?","Cookies. I eat them like a cookie monster, but with better manners. Do you like sweets?"],
+     ["Oh, my apple pie, dear. My mother's recipe! Do you like pie, honey?","Oh, I can't say no to a warm cookie, sweetie. What's your favorite treat?"]]},
+ {id:'favfood',ko:'좋아하는 음식',re:new RegExp("your "+F+" (food|meal|dish|thing to eat|kind of food|restaurant)|what (kind of |kinds of |type of |sort of )?food do you (like|love|enjoy|eat|prefer)|what do you (like|love|enjoy) to eat|do you have a "+F+" (food|dish|meal)|what'?s the best (food|thing|meal) you'?ve (ever )?(eaten|had)|what (do|did) you (usually )?eat\\??$|what foods? do you like|do you like (spicy|sweet|mexican|italian|chinese|japanese|thai|indian|fast|street) food|your "+F+" (kind of |type of )?(pizza|ramen|taco|sandwich|burger|noodles|pasta|sushi)"),
+  r:[["Tacos! Always tacos. Fish tacos are the best. What's your favorite food?","I'm obsessed with tacos. I could eat them every day. What do you like to eat?"],
+     ["Um, probably ramen. Real ramen, not the instant kind. What's your favorite food?","Um, I like ramen. And grilled cheese. Simple stuff. What about you?"],
+     ["Pizza. Or burritos. Anything fast. You?","Burritos. Cheap, fast, good. Yours?"],
+     ["Pizza. With pineapple. Fight me. What's your favorite food?","Texas barbecue. I'm from Texas, so I have to say it. What do you like to eat?"],
+     ["Oh, a warm bowl of soup, dear. And apple pie, of course. What's your favorite food, honey?","Oh, I love a good roast chicken, dear. What do you like to eat?"]]},
+ {id:'music',ko:'좋아하는 음악·가수',re:new RegExp("what (kind of |kinds of |type of |sort of |genre of )?music (do you|are you|you)|(what|who) do you (usually |like to )?listen to|your "+F+" (song|singer|band|artist|music|album|rapper|group|genre|musician)|who'?s your "+F+" (singer|band|artist)|do you (like|listen to|love) (music|pop|rock|hip-?hop|rap|jazz|classical|country)\\b|what are you listening to|(what|any) (good )?songs? (do you|are you)"),
+  r:[["I love pop and indie! Taylor Swift on repeat. What music do you like?","An indie band called The Paper Kites! I'm seeing them on Saturday. Who's your favorite singer?"],
+     ["Um, quiet piano music. And lo-fi. It helps me focus. What do you listen to?","Um, mostly game music, actually. Is that weird? What kind of music do you like?"],
+     ["Whatever's on the radio. Pop, I guess. You?","Pop. Don't really pick. You?"],
+     ["Sea shanties. Don't ask. Okay, ask. They're great for cleaning. What music do you like?","Country, because Texas. And sea shanties, because I'm weird. What about you?"],
+     ["Oh, old jazz, dear. Ella Fitzgerald is my favorite. What music do you like, honey?","Oh, I love the old songs, sweetie. I danced to them when I was young. What do young people listen to now?"]]},
+ {id:'movie',ko:'좋아하는 영화',re:new RegExp("your "+F+" (movie|film|movies|films)|what (kind of |kinds of |type of )?(movies|films) do you|(have you )?(seen|watched) (any |a )?(good )?(movies?|films?)( lately| recently)?|do you (like|watch|love) (movies|films|horror|action movies|marvel)|what movie|did you see (the new|any) movie|go to the movies|(last|latest) movie"),
+  r:[["I love animated movies! I cried twice at one last week. What's your favorite movie?","Anything by Studio Ghibli! The art is so pretty. What kind of movies do you like?"],
+     ["Um, superhero movies. I saw one last week. It was okay. Do you like superhero movies?","Um, I like sci-fi movies. Space stuff. What about you?"],
+     ["Action movies. Haven't had time lately. You?","Action. Fast cars. You?"],
+     ["Horror movies. I scream every time. Loudly. In the theater. What movies do you like?","Comedies, obviously. I take notes. What's your favorite movie?"],
+     ["Oh, old black-and-white films, dear. Roman Holiday is my favorite. Do you like old movies, honey?","Oh, I watched a lovely old film last night, dear. What kind of movies do you like?"]]},
+ {id:'tvshow',ko:'좋아하는 드라마·쇼',re:new RegExp("(what|any) (good )?(shows?|series|dramas?|tv shows?|anime|youtube channels?) (are you|do you|have you|you)|your "+F+" (show|tv show|series|drama|anime|cartoon|youtuber|youtube channel)|do you watch (tv|netflix|anime|youtube|dramas?|k-?dramas?|any shows)|(are you )?watching (anything|any shows?|netflix|anything good)|what do you watch|binge|(watched|seen|watching) anything good|(are you )?into (anime|k-?dramas|dramas|tv shows|cartoons)"),
+  r:[["Baking shows! I can't bake, but I love watching. What shows do you watch?","I'm binging a K-drama right now. I can't stop! Do you watch any shows?"],
+     ["Um, anime, mostly. I'm watching a really long one right now. Do you watch anime?","Um, I watch a lot of game videos on YouTube. What do you watch?"],
+     ["Sports highlights. That's it. You?","Soccer games. No time for shows. You?"],
+     ["Stand-up specials. For research. Also a cooking show where everyone cries. What do you watch?","Reality shows. I yell at the TV. What are you watching these days?"],
+     ["Oh, mystery shows, dear. I always guess who did it! Do you watch any shows, honey?","Oh, cooking shows, sweetie. Then I say, 'I can do that better.' What do you watch?"]]},
+ {id:'book',ko:'좋아하는 책',re:new RegExp("your "+F+" (book|author|novel|comic|manga|webtoon|writer)|what (kind of |kinds of |type of )?(books?|novels?|comics?|manga) do you|do you (like to |ever )?read( a lot| books)?\\??$|what are you reading|(reading|read) anything (good|interesting)|what do you (like to )?read|(read|reading) (any )?good books"),
+  r:[["Fantasy novels! And art books. I love dragons. Do you like reading?","I'm reading a fantasy book about a painter who is also a witch. So good! What do you like to read?"],
+     ["Um, superhero comics. And manga. I like quiet stories. Do you read comics?","Um, I'm reading a manga about a cafe, actually. It's funny. What do you like to read?"],
+     ["Don't read much. No time. You?","Sports news. That counts. You?"],
+     ["Joke books. For research. What do you like to read?","I read the back of cereal boxes. Very educational. Do you read a lot?"],
+     ["Oh, mystery novels, dear. I love a good mystery. Do you like to read, honey?","Oh, I'm in a book club, dear. We read a new mystery every month. What do you like to read?"]]},
+ {id:'games',ko:'게임',re:new RegExp("do you (play|like|love) (any )?(video ?games|games|computer games|mobile games|phone games|minecraft|roblox|fortnite|valorant|lol|league( of legends)?|overwatch|pokemon|mario|board games)|are you a gamer|your "+F+" (game|video game|board game)|what (kind of |kinds of |type of )?(video )?games? do you (play|like)|do you game"),
+  r:[["Mario Kart with my brother! I always lose. Do you play video games?","Not a lot, but I love cozy games where you build a farm. What games do you like?"],
+     ["Um, yeah. A lot. Mostly puzzle games and RPGs. Do you play games?","Um, I'm playing a long fantasy game right now. Sixty hours. What do you play?"],
+     ["Soccer games. On the console. You?","FIFA. Sometimes. You?"],
+     ["Air hockey at the arcade. I'm the champion. Self-declared. Do you play games?","I play board games and lose every time. My dog wins. What do you play?"],
+     ["Oh, I do crossword puzzles, dear. And bingo on Fridays! Do you play games, honey?","Oh, my grandson taught me a phone game, dear. I'm terrible! What do you play?"]]},
+ {id:'instrument',ko:'악기·노래',re:/do you play (an |any )?(instruments?|guitar|the guitar|piano|the piano|drums|the drums|violin|the violin|ukulele|the ukulele|flute|the flute|cello)|can you play (an |any |the )?(instruments?|guitar|piano|drums|violin|ukulele|flute)|can you sing|do you (like to )?sing|are you (a )?(good )?(singer|musician)/,
+  r:[["I play the ukulele! Badly, but happily. Do you play any instruments?","A little ukulele. I know four songs. Can you play anything?"],
+     ["Um, a little piano. Only when no one is listening. Do you play an instrument?","Um, piano, a little. Mostly game music. What about you?"],
+     ["Nope. No time. You?","No. Can't sing either. You?"],
+     ["I play the kazoo. Professionally. Kidding. Do you play anything?","I sing in the shower. My neighbors hate it. Can you sing?"],
+     ["Oh, I play the piano at church, dear. Do you play anything, honey?","Oh, I sing while I bake, dear. My parrot sings along! Do you like to sing?"]]},
+ {id:'sport',ko:'운동·스포츠',re:new RegExp("do you (play|like|watch|follow|do|enjoy) (any )?(sports?|soccer|basketball|baseball|football|tennis|volleyball|badminton|hockey|golf|swimming|yoga)|your "+F+" (sport|team|player|athlete|soccer team|basketball team)|what sports? do you|are you (into|good at) sports|do you (work out|exercise|go to the gym|run)\\b|are you (on|in) a team|do you like (to )?(exercise|work out)|who do you root for"),
+  r:[["Not really, but I'm learning to skateboard! I fall a lot. Do you play any sports?","My brother loves basketball, so I watch with him sometimes. Do you like sports?"],
+     ["Um, not really. I like walking, though. Do you play sports?","Um, I'm not very sporty. I play sports games, though. What about you?"],
+     ["Soccer. Thursdays and weekends. You play?","Soccer. Big fan. Your team?"],
+     ["Basketball. I'm short, but I'm loud. Do you play anything?","I play basketball with my friends. I'm the worst one, but I'm the loudest. Do you like sports?"],
+     ["Oh, I do water aerobics on Tuesdays, dear! And I watch my grandson play baseball. Do you play any sports, honey?","Oh, I walk every morning, dear. Good for the knees. What about you?"]]},
+ {id:'hobby',ko:'취미·여가',re:/(what do you|what you|what do u) (like to |usually |love to )?do (for fun|in your free time|in your spare time|when you'?re not working|outside (of )?work|on your days? off|when you have time|on weekends|in your downtime)|(any|your|what are your|what'?s your|do you have (any )?)(hobby|hobbies)|what are you into|hobb(y|ies)|free time|spare time|for fun\??$|what do you like doing|your favou?rite thing to do/,
+  r:[["I paint! And I'm learning to skateboard. Badly. What do you like to do for fun?","Painting, mostly. I carry my sketchbook everywhere. Do you have any hobbies?"],
+     ["Um, I read comics and play video games. What about you? What do you like to do?","Um, I play games. And I'm learning to code a little game. Do you have a hobby?"],
+     ["Soccer. Every weekend. You?","Soccer, mostly. And sleep. Hobbies?"],
+     ["Stand-up comedy. You can tell, right? What do you do for fun?","Open mic on Thursdays and walking my corgi. What are your hobbies?"],
+     ["Oh, gardening and baking, honey. What do you like to do for fun, dear?","Oh, my garden, my pies, and my book club, dear. Do you have any hobbies?"]]},
+ {id:'school',ko:'학교·전공',re:/are you (a |still a )?(student|in college|in school|at college|in university)|do you (go to|study at|attend|still go to) (school|college|university|class)|what (do|did) you (study|major in)|what'?s your major|what is your major|what year are you|where did you go to (school|college|university)|do you study\??$|are you in school/,
+  r:[["Yep! I study art at the community college. Painting, mostly. Are you a student too?","I'm an art student! It's my second year. What about you? Are you in school?"],
+     ["Um, yeah. I'm in college. I study computer science. Do you go to school around here?","Um, computer science. It's hard, but I like it. Are you a student?"],
+     ["Not anymore. Just work. You in school?","No. Full-time here. You?"],
+     ["I took one acting class once. Does that count? Are you a student?","I studied at the school of life. And one acting class. Are you in school?"],
+     ["Oh, no, dear. I finished school a long, long time ago. Are you a student, honey?","Oh, I'm too old for school, sweetie. But I'm still learning! Are you studying?"]]},
+ {id:'subject',ko:'좋아하는 과목',re:new RegExp("your "+F+" (subject|class|course)|what (subject|class|classes|subjects) (do|did) you (like|love|enjoy|hate)|(were|are) you (good at|a good student|good in) (school|math|english|science)|did you like (school|math|english|science)|what were you like in school|worst subject"),
+  r:[["Art, obviously! And a little bit of history. What's your favorite subject?","Art class! Math was my worst, though. What subject do you like?"],
+     ["Um, I liked English. Lots of reading. And computer class. What's your favorite subject?","Um, coding class. It's like a puzzle. What do you like?"],
+     ["Math. One right answer. Simple. You?","Math. Hated English. You?"],
+     ["Lunch. Is lunch a subject? It should be. What's your favorite?","Drama class. Big surprise, right? What's your favorite subject?"],
+     ["Oh, home economics, dear. I baked my first pie there. What's your favorite subject, honey?","Oh, I loved music class, dear. What about you?"]]},
+ {id:'dreamjob',ko:'꿈·장래 희망',re:/what do you want to (be|do) (in the future|when you grow up|after (college|school|graduation|you graduate)|someday|later|in life|with your life)|your dream( job)?(\?|$)|what'?s your dream(\?|$)|(what are|what'?s|what is) your (goal|goals|plans for the future|future plans)|what did you want to be (as a kid|when you were (a kid|little|young|a child))|(do you|will you) (want to )?(work here forever|always work here)|what do you want to do next|dream job/,
+  r:[["I want to open a little art gallery someday! What's your dream?","My dream is to sell my paintings. Even one! What do you want to be in the future?"],
+     ["Um, I want to make my own video game someday. A quiet one. What do you want to do?","Um, maybe a game designer. If I'm brave enough. What about you?"],
+     ["Own my own coffee cart someday. You?","My own shop. Small one. Your dream?"],
+     ["A comedy show on TV. Or at least one laugh per show. What's your dream?","I want my own comedy special. My dog will be the opening act. What do you want to be?"],
+     ["Oh, I'd love to write a little cookbook for my grandkids, dear. What's your dream, honey?","Oh, at my age, dear, I just want a good garden and happy grandkids. What's your dream?"]]},
+ {id:'fromwhere',ko:'고향',re:/where (are|r) (you|u) (originally )?from|are you (originally )?from (here|around here|around|this (city|town|area))|where did you grow up|did you grow up (here|around here|in this)|where'?s your hometown|what'?s your hometown|where is your hometown|where were you born|are you a local/,
+  r:[["I grew up here! Born and raised. Where are you from?","Right here! I've never lived anywhere else. What about you? Where's your hometown?"],
+     ["Um, I'm from Ohio. I moved here for college. Where are you from?","Um, Ohio. It's, um, pretty quiet there. Where did you grow up?"],
+     ["Grew up here. You?","Here. Local. You?"],
+     ["I'm from Texas. That's why I talk so much. Where are you from?","Texas! Everything's bigger there. Except me. Where are you from?"],
+     ["Oh, I grew up two towns over, dear. But I've lived on this street for forty years. Where are you from, honey?","Oh, not far, sweetie. I've been on this street for forty years. And where's home for you?"]]},
+ {id:'live',ko:'사는 곳·출근 방법',re:/where do you live|do you live (near|around|close|nearby|here|far)|you live (nearby|around here|close|far)|how (do|did) you (get|come) (here|to work)|how far (away )?(do you live|is your (house|home|place|apartment))|do you (take the bus|drive|walk|bike) (here|to work)|how do you commute|do you live alone|do you live with|how long have you lived (here|in this|around)/,
+  r:[["Like ten minutes away! I ride my bike here. Do you live nearby?","Close! I bike here every morning. Where do you live?"],
+     ["Um, kind of close. I take the bus. Do you live around here?","Um, about twenty minutes by bus. I read comics on the way. What about you?"],
+     ["Five minutes away. I walk. You?","Close. I walk here. You live near?"],
+     ["Close enough to still be late every day. Do you live around here?","I drive my old car. It's older than me. It makes noises. Do you live nearby?"],
+     ["Oh, right around the corner, dear. I walk here every morning. Do you live close by, honey?","Oh, just down the street, sweetie. Forty years now! Where do you live?"]]},
+ {id:'family',ko:'가족',re:/do you have (any )?(brothers?|sisters?|siblings?|kids|children|a family|grandkids|grandchildren)|tell me about your family|how many (people (are )?in your family|brothers|sisters|siblings|kids|children|grandkids)|(are you|r u) (married|an only child|the oldest|the youngest)|your (family|parents|mom|dad|mother|father|brother|sister|siblings|husband|wife|kids|grandkids)\b|do you live with your (parents|family)/,
+  r:[["I have an older brother! He loves basketball and he eats all my snacks. Do you have any siblings?","It's me, my mom, my brother, and my cat Mochi. My mom makes the best hot chocolate. What about your family?"],
+     ["Um, I have a little sister. She's in Ohio with my parents. I miss them. Do you have siblings?","Um, my family is in Ohio. I call my mom every Sunday. What about you?"],
+     ["Three brothers. Loud house. You?","Big family. Lots of brothers. You have siblings?"],
+     ["I have one sister. She says she's the funny one. She's wrong. Do you have any siblings?","My mom calls me every day from Texas. Every. Day. What's your family like?"],
+     ["Oh, I have two daughters and four grandkids, dear! And my husband Harold. What about your family, honey?","Oh, my grandkids are the light of my life, dear. Do you have brothers or sisters?"]]},
+ {id:'pets',ko:'반려동물',re:/do you have (a |any )?(pets?|dogs?|cats?|animals?|puppy|puppies|kitten|kittens|fish|hamster|bird)\b|what (kind of )?pets? do you have|tell me about your (pet|dog|cat|pets)|do you like (animals|pets)|have you (ever )?had a pet/,
+  r:[["Yes! A cat named Mochi. She's fluffy and white, and she sleeps on my sketchbook. Do you have any pets?","I have a cat! Mochi. She's a total diva. What about you? Any pets?"],
+     ["Um, I have a goldfish. His name is Bob. He swims in circles. Do you have a pet?","Um, just a goldfish. Bob. He's, um, a good listener. Do you have any pets?"],
+     ["No pets. No time. I have a cactus. You?","Just a cactus. Hard to kill. You have pets?"],
+     ["A corgi named Biscuit! Short legs, big attitude. He's the boss of me. Do you have any pets?","Yes. Biscuit, my corgi. He steals my socks. Do you have a pet?"],
+     ["Oh, two cats, Salt and Pepper, and a parrot named Captain, dear. He sings! Do you have any pets, honey?","Oh, yes, dear. Two cats and one very loud parrot. Do you have a pet?"]]},
+ {id:'travel',ko:'여행 경험',re:new RegExp("do you (like to |like |love |love to |enjoy |ever )?travel|have you (ever )?(traveled|travelled|been abroad|been overseas|been out of the country|been to (another|other|a lot of|many) countr)|where have you (traveled|travelled|been)\\??$|(best|"+F+") (place|trip|country|city|vacation) you'?ve (ever )?(been|visited|gone|been to)|your "+F+" (place|country|city|trip|vacation) (to visit|you'?ve been)|your best trip|been (abroad|overseas)|do you travel|have you (ever )?been to (japan|china|europe|paris|london|new york|canada|mexico|hawaii|california|florida|italy|france|spain|vietnam|thailand|australia|england|the us|america)"),
+  r:[["I went to Mexico City with my family. The art museums were amazing! Do you like to travel?","I love traveling, but I don't have much money. Mostly road trips! Where have you been?"],
+     ["Um, not much. I went to Chicago once. It was big. Have you traveled a lot?","Um, I don't travel much. It makes me nervous. Do you like to travel?"],
+     ["Not much. Camping once. You travel?","Drove to the Grand Canyon once. Big hole. You?"],
+     ["I went to New York to see comedy clubs. I laughed. They didn't laugh at me. Do you like to travel?","Road trips across Texas. Texas is big. It took forever. Where have you traveled?"],
+     ["Oh, my husband and I went to Italy for our anniversary, dear. So beautiful! Do you like to travel, honey?","Oh, I've been to Italy and Canada, dear. Where have you been, sweetie?"]]},
+ {id:'wanttogo',ko:'가 보고 싶은 곳',re:/where (do|would) you (want|like|love|wanna) to (go|travel|visit|live)|if you could (go|travel|live|visit) anywhere|(dream|bucket list) (trip|vacation|destination|place|country)|where would you (go|live|travel)|what country (do|would) you (want|like) to (visit|go)|anywhere you want to go/,
+  r:[["Japan! I want to see Kyoto and eat real mochi. Where do you want to go?","Paris, for the art museums! Where would you go if you could go anywhere?"],
+     ["Um, Japan. For the manga shops. Where would you like to go?","Um, Japan, I think. Or somewhere quiet with snow. What about you?"],
+     ["Spain. To watch soccer. You?","Barcelona. For the soccer. Yours?"],
+     ["Italy. To prove pineapple pizza is good. They won't agree. Where do you want to go?","The moon. Fewer people, no lines. Kidding. Italy. What about you?"],
+     ["Oh, Ireland, dear. Green hills and old songs. Where would you like to go, honey?","Oh, I'd love to see Ireland, sweetie. What's your dream trip?"]]},
+ {id:'season',ko:'좋아하는 계절·날씨',re:new RegExp("your "+F+" (season|weather|time of (the )?year|month)|do you like (summer|winter|spring|fall|autumn|the rain|snow|hot weather|cold weather|the cold|the heat)|(summer|winter|spring|fall) or (summer|winter|spring|fall)|what season do you like|what kind of weather do you like|which season"),
+  r:[["Fall! The colors are so pretty to paint. What's your favorite season?","I love fall. Pumpkin everything! What about you?"],
+     ["Um, winter. It's quiet, and I can stay inside. Do you like winter?","Um, I like snow. It snows a lot in Ohio. What's your favorite season?"],
+     ["Summer. Soccer season. You?","Summer. Hate the cold. You?"],
+     ["Fall. Halloween is my holiday. Pumpkin spice is my personality. What's your favorite season?","Not summer. Texas summers tried to cook me. What about you?"],
+     ["Oh, spring, dear. Everything grows in my garden! What's your favorite season, honey?","Oh, I love spring, sweetie. Flowers everywhere. Do you like spring?"]]},
+ {id:'language',ko:'외국어',re:/do you speak (any )?(other |another |a second |more than one )?(languages?|spanish|korean|french|chinese|japanese|german|italian)|how many languages|(can|do) you speak (korean|spanish|french|chinese|japanese|german|italian)|are you learning (a |any |another )?(language|korean|spanish|french|japanese|chinese)|do you know (any )?(korean|spanish|french|japanese|chinese)( words)?|what languages? do you speak/,
+  r:[["A little Spanish! I took it in high school. Do you speak any other languages?","Just English and a tiny bit of Spanish. How many languages do you speak?"],
+     ["Um, I'm learning a little Japanese. From anime. Does that count? What languages do you speak?","Um, only English. I know some Japanese words, though. Do you speak Korean?"],
+     ["English. Some Spanish. You?","Some Spanish. That's it. You?"],
+     ["English, Spanish, and sarcasm. I'm fluent in all three. How many do you speak?","I speak Spanish. My mom made sure. What languages do you speak?"],
+     ["Oh, a little Italian from my trip, dear. Grazie! What languages do you speak, honey?","Oh, just English, sweetie. But I'd love to learn a Korean word. Will you teach me one?"]]},
+ {id:'morningnight',ko:'아침형 vs 저녁형',re:/(are you|you'?re) (a |more of a |more )?(morning|night|evening) (person|people|type)|early bird|night owl|morning (person )?or (a )?night|do you (like|prefer) (mornings|nights|the morning)|what time do you (usually |normally )?(wake up|get up|go to bed|go to sleep|sleep)|when do you (usually )?(wake up|go to bed|sleep)/,
+  r:[["Morning person! I love the sunrise. Are you a morning person?","Mornings, for sure! I'm up at six with my sketchbook. What about you?"],
+     ["Um, night person. Definitely. I stay up late reading. Are you a night owl too?","Um, I'm not a morning person. Mornings are hard. What about you?"],
+     ["Morning. Have to be. You?","Morning. Up at five. You?"],
+     ["Night person. My jokes get better after ten p.m. What about you?","Night owl. Mornings are a scam. Are you a morning person?"],
+     ["Oh, morning, dear. I'm up at five every day. Are you an early bird, honey?","Oh, I'm up with the sun, sweetie. What about you?"]]},
+ {id:'cook',ko:'요리',re:/(can|do) you (cook|bake)|are you a good (cook|baker)|what do you (like to )?(cook|make|bake)( at home)?|do you (like|love|enjoy) (to )?(cook|cooking|bake|baking)|what'?s your best (dish|recipe|food)|what can you (cook|make)|your (signature|special) dish/,
+  r:[["I can make tacos and pancakes! That's it. Can you cook?","Kind of! I make really good pancakes. Do you like to cook?"],
+     ["Um, I can make instant ramen. Does that count? Can you cook?","Um, not really. I can make grilled cheese. What about you?"],
+     ["Eggs. Toast. That's it. You?","Basic stuff. No time. You cook?"],
+     ["I make a Texas chili that can wake the dead. Can you cook?","I can burn water. Kidding. I make chili. Do you cook?"],
+     ["Oh, yes, dear. Pies, soups, roasts, you name it! Do you like to cook, honey?","Oh, I've been cooking for fifty years, dear. My apple pie is famous. Can you cook?"]]},
+ {id:'color',ko:'좋아하는 색',re:new RegExp("your "+F+" colou?r|what colou?rs? do you (like|love)|what'?s your colou?r"),
+  r:[["Yellow! Like sunflowers. What's your favorite color?","Yellow, for sure. It's so happy. What about you?"],
+     ["Um, blue. Like, a dark blue. What's your favorite color?","Um, blue, I think. What's yours?"],
+     ["Green. You?","Black. Easy. Yours?"],
+     ["Orange. Like my corgi. What's your favorite color?","Orange. It's loud, like me. What's yours?"],
+     ["Oh, rose pink, dear. Like my roses. What's your favorite color, honey?","Oh, I love a soft pink, sweetie. What about you?"]]},
+ {id:'animal',ko:'좋아하는 동물',re:new RegExp("your "+F+" animal|what animals? do you (like|love)|if you (were|could be) (an|any) animal"),
+  r:[["Otters! They hold hands when they sleep. What's your favorite animal?","Cats, obviously. Then otters. What about you?"],
+     ["Um, penguins. They're kind of awkward, like me. What's your favorite animal?","Um, penguins. What's yours?"],
+     ["Dogs. You?","Dogs. Simple. Yours?"],
+     ["Corgis. It's not even close. What's your favorite animal?","A corgi, or a sloth. A sloth works less than me. Which animal do you like?"],
+     ["Oh, birds, dear. My parrot Captain is my best friend. What's your favorite animal, honey?","Oh, I love little birds, sweetie. What about you?"]]},
+ {id:'holiday',ko:'좋아하는 명절·기념일',re:new RegExp("your "+F+" (holiday|festival|day of the year)|(how|what) do you (usually )?(celebrate|do (for|on)) (christmas|thanksgiving|halloween|the holidays|holidays|new year'?s?)|do you (like|celebrate|love) (christmas|thanksgiving|halloween|the holidays|holidays)|(dressing|dress) up for halloween|what are you (doing|going to be) for (halloween|christmas|thanksgiving)|excited (for|about) (the holidays|christmas|halloween|thanksgiving)"),
+  r:[["Halloween! I make my own costume every year. What's your favorite holiday?","Halloween, for sure. Last year I was a sunflower. What holiday do you like?"],
+     ["Um, Thanksgiving. My mom's cooking is the best. What's your favorite holiday?","Um, Thanksgiving. I go home to Ohio. What about you?"],
+     ["New Year's. Day off. You?","New Year's. I sleep. Yours?"],
+     ["April Fools' Day. It's basically my birthday. What's your favorite holiday?","Halloween. My corgi dresses up as a hot dog. What's your favorite holiday?"],
+     ["Oh, Christmas, dear. I bake cookies for the whole street! What's your favorite holiday, honey?","Oh, Christmas, sweetie. All the grandkids come home. What about you?"]]},
+ {id:'birthday',ko:'생일',re:/when'?s your birthday|when is your birthday|your birthday\b|how do you celebrate your birthday|how old will you be/,
+  r:[["October! I always have a little Halloween party. When's your birthday?","In October! I want a cake with a cat on it. When's yours?"],
+     ["Um, March. I usually just eat cake at home. When's your birthday?","Um, in March. What about you?"],
+     ["July. You?","July. Don't really celebrate. Yours?"],
+     ["December. People forget it because of Christmas. I don't. When's yours?","Every day, if you bring cake. Kidding. December. When's your birthday?"],
+     ["Oh, in May, dear. My grandkids bake me a cake! When's your birthday, honey?","Oh, May, sweetie. And when is yours?"]]},
+ {id:'friends',ko:'친구',re:/what do you (usually |like to )?do with (your )?friends|(do you have|got) (a lot of |many |any )?friends( here)?|your best friend|do you hang out with (your )?friends|who do you hang out with|your friends\b/,
+  r:[["We go to museums and thrift shops! What do you do with your friends?","My best friend and I paint together on Sundays. What do you do with your friends?"],
+     ["Um, we play online games together. At night. What do you do with your friends?","Um, I don't have many friends here yet. Just a few. Do you have friends here?"],
+     ["Soccer. Then pizza. You?","Play soccer. Eat after. You?"],
+     ["My friends come to my open mic and pretend to laugh. Great friends. What do you do with your friends?","We go to the arcade and I win. Always. What do you do with your friends?"],
+     ["Oh, my book club ladies, dear. We talk more than we read! What do you do with your friends, honey?","Oh, my friends and I play bingo on Fridays, dear. What about you?"]]},
+ {id:'relax',ko:'쉬는 법·스트레스',re:/how do you (relax|unwind|de-?stress|deal with stress|chill|recharge|rest)|what do you do (when|if) you'?re (stressed|tired|bored|sad|upset)|(how|what) do you do to (relax|chill|rest)|do you (ever )?get stressed|what makes you (happy|relax)/,
+  r:[["I paint and listen to music! It always helps. How do you relax?","A long walk by the river. Then tacos. What do you do when you're stressed?"],
+     ["Um, lo-fi music and a comic book. That's my perfect night. How do you relax?","Um, I play a quiet game. It helps. What about you?"],
+     ["Sleep. Lots of sleep. You?","Soccer. Run it out. You?"],
+     ["I watch funny videos and walk my corgi. And I eat pizza. How do you relax?","I tell jokes. If nobody laughs, I laugh. What do you do?"],
+     ["Oh, a cup of tea in my garden, dear. How do you relax, honey?","Oh, I bake when I'm stressed, dear. Lots of pies! What helps you relax?"]]},
+ {id:'sleep',ko:'잠·피곤함',re:/how did you sleep|did you sleep (well|okay|ok|good|enough)|(are|r) (you|u) (tired|sleepy|exhausted)|get (enough|much|any) sleep|how much (sleep|did you sleep)|you look tired/,
+  r:[["I slept great! I'm a morning person, so I'm happy. Did you sleep well?","Like a baby! Eight hours. How about you?"],
+     ["Um, not really. I stayed up reading comics. Are you tired too?","Um, I'm a little sleepy. I had class early. Did you sleep well?"],
+     ["Five hours. Fine. You?","Tired. Double shift. You?"],
+     ["I slept like a baby. I woke up crying at three a.m. Kidding! How did you sleep?","My corgi slept on my face. So, not great. Did you sleep well?"],
+     ["Oh, I slept fine, dear. My parrot woke me at five, as always! Did you sleep well, honey?","Oh, a little tired, sweetie, but happy. Did you get enough sleep?"]]},
+ {id:'excited',ko:'기대되는 일',re:/what are you (looking forward to|excited (about|for))|(anything|something) (you'?re )?(looking forward to|exciting coming up|coming up)|what'?s (next|coming up) for you|are you excited (about|for) anything|what'?s the best part of your (day|week)/,
+  r:[["My concert this weekend! I'm so excited. What are you looking forward to?","Saturday's concert! I already picked my outfit. What about you?"],
+     ["Um, a new comic book comes out on Friday. What are you looking forward to?","Um, going home to Ohio for Thanksgiving. What about you?"],
+     ["Sunday. Day off. You?","My day off. Sleep. You?"],
+     ["Payday. Very exciting. Very short. What are you looking forward to?","My Thursday open mic. I have a new joke about pigeons. What are you excited about?"],
+     ["Oh, my grandkids are coming for dinner, dear! What are you looking forward to, honey?","Oh, my roses are about to bloom, sweetie. What about you?"]]},
+ {id:'jobbest',ko:'일의 좋은 점·힘든 점',re:/(what'?s|what is) the (best|worst|hardest|most fun|funniest|weirdest|favou?rite|toughest) (part|thing) (about|of) (your job|working here|being a barista|the job|this job|work)|(is|was) (it|this job|your job|working here) (hard|difficult|stressful|tiring|fun|easy)|(funniest|weirdest|craziest|strangest) (customer|order|thing)|do you (get|have|meet) (rude|weird|crazy|mean|funny) customers|(is it|it'?s) hard (to make|being a barista)|do you like (your )?(coworkers|boss|manager)/,
+  r:[["The best part is talking to people like you! The hard part is remembering every order. What do you think would be hard about this job?","I love meeting people! But the morning rush is crazy. Have you ever had a part-time job?"],
+     ["Um, the best part is latte art. The hard part is talking to customers. I get nervous. Do you get nervous talking to people?","Um, it's my first job, so everything is hard. But I like it. Do you have a job?"],
+     ["Best part: it's fast. Worst part: the morning rush. You work?","Fast-paced. I like that. Hard part? Rude people. You work?"],
+     ["The best part is my audience. The worst part is my audience doesn't laugh. Have you ever worked in a cafe?","A guy once ordered a coffee with no coffee. That was my weirdest order. Do you have a job?"],
+     ["Oh, the best part is people like you, dear. The hard part is my knees! Do you have a job, honey?","Oh, I love it, sweetie. I know every regular's order by heart. Do you have a part-time job?"]]},
+ {id:'social',ko:'SNS',re:/do you (use|have|like) (instagram|insta|tiktok|social media|youtube|twitter|snapchat|facebook|a youtube channel)|(are you|you) on (instagram|insta|tiktok|social media|snapchat|facebook)|can i follow you|what'?s your (instagram|insta|handle|tiktok|snapchat)/,
+  r:[["I post my paintings on Instagram! It's mostly art and Mochi. Do you use Instagram?","Yep, mostly for my art. And cat photos. What apps do you use?"],
+     ["Um, I don't really post. I just look. Do you post a lot?","Um, I watch YouTube a lot. That's it. What about you?"],
+     ["Not really. No time. You?","Barely. You?"],
+     ["My corgi has a TikTok. He's more famous than me. Do you use TikTok?","I post my latte art. Three likes. One is my mom. Do you post a lot?"],
+     ["Oh, my granddaughter set up a Facebook for me, dear. I mostly post my tomatoes! Do you use that, honey?","Oh, I'm not very good with phones, sweetie. Do you use social media a lot?"]]},
+ {id:'talent',ko:'잘하는 것·장기',re:/what are you (good at|best at|really good at|great at)|(do you have|any) (a |any )?(hidden |special )?talents?|what'?s your (talent|special skill|hidden talent)|what can you do really well/,
+  r:[["I'm good at drawing faces! I can draw you in two minutes. What are you good at?","Remembering faces! And drawing them. What's your special talent?"],
+     ["Um, puzzles. And coding. I'm not good at talking, though. What are you good at?","Um, I can solve a Rubik's cube. Kind of fast. What about you?"],
+     ["Making drinks fast. Really fast. You?","Speed. Ten drinks a minute. Your talent?"],
+     ["I can make a tiny bear in latte foam. And bad jokes. Lots of bad jokes. What are you good at?","I can talk for an hour about nothing. You've seen it. What's your talent?"],
+     ["Oh, baking, dear. And remembering everyone's name! What are you good at, honey?","Oh, I can make a pie with my eyes closed, sweetie. What's your talent?"]]},
+ {id:'superpower',ko:'만약에 질문(초능력 등)',re:/if you (could|had) (have )?(a|any|one) (superpower|wish|power)|what superpower|if you could (do|change|be) anything|if you (won|had) (a million dollars|the lottery|lots of money)|if you could (meet|eat|have) (anyone|anything|any)|(with|had) a million dollars/,
+  r:[["Teleporting! I'd go to Paris for lunch. What about you? What superpower would you want?","I'd want to paint with my mind. So fast! What would you pick?"],
+     ["Um, invisibility. So I don't have to talk to people. Sorry. What would you pick?","Um, maybe reading really fast. More comics. What about you?"],
+     ["Stopping time. More sleep. You?","Super speed. Already halfway there. You?"],
+     ["The power to make everyone laugh. Wait, I already have it. Mostly. What would you want?","Flying. No more traffic. Just me and the birds. What superpower would you want?"],
+     ["Oh, I'd want to make everyone feel at home, dear. What about you, honey?","Oh, I'd like to make my knees young again, sweetie! What would you wish for?"]]}
+];
+const TALK_OK=[["Ooh, I love that!","No way, that's so cool!","Ha, nice! Good to know."],["Oh, cool. That's nice.","Oh. Nice. I, um, like that.","Cool, cool."],["Nice.","Cool.","Ha, solid."],["Okay, I respect that.","Great answer. Ten points.","Noted. That's going in my novel."],["Oh, how lovely, dear!","Oh, isn't that nice, honey.","Well, good for you, sweetie."]];
+/* 나머지 15명(같은 성격 유형의 다른 바리스타): 자기 설정이 있는 질문은 따로 쓴 대답,
+   그 밖에는 기본 5명의 대답 중 '기본 바리스타만의 설정'(고양이 Mochi, 텍사스 등)이 없는 것만 씁니다. */
+const TALK_X={
+ jasmine:{sport:["I'm on the cheer team! Go Tigers! Do you play any sports?"],school:["Yes! I'm in college, and I'm on the cheer team! Are you a student? You look so smart!"],weekendplan:["We have a big game on Saturday! You should come! What are you doing this weekend?"],hobby:["Cheer practice, obviously! And dancing in my room. What do you do for fun?"]},
+ priya:{fromwhere:["I'm from India originally, but I grew up here! Where are you from?"],travel:["I love it! I've been to eight countries. Next is Japan in the spring! Where have you traveled?"],wanttogo:["Japan! I'm going in the spring. And then Peru! Where would you go?"],weekendplan:["I'm planning my Japan trip! So many maps. What are you doing this weekend?"]},
+ tyler:{sport:["Soccer! I play for the school team and practice every day. Do you play any sports?"],hobby:["Running and soccer, all day! What do you do for fun?"],weekendplan:["Big game on Saturday! What about you?"],school:["Yep! I play soccer for the school team. Are you a student?"],morning:["I went for a morning run! Five miles. What did you do this morning?"]},
+ hannah:{book:["Um, mysteries. I'm reading one right now. I can't guess the ending. Do you like reading?"],hobby:["Um, reading. Mostly reading. And tea. What do you like to do?"],favspot:["Um, here, after work. It's peaceful. Where do you like to go?"]},
+ ethan:{school:["Um, I'm a grad student. I study biology. Lots of bugs. Are you a student?"],sleep:["Um, not much. I stayed up writing a paper. Did you sleep well?"],dreamjob:["Um, a biology professor, maybe. If I ever finish my paper. What's your dream?"],today:["Um, I wrote my paper all morning. I'm tired. What have you been up to?"]},
+ nora:{jobbest:["It's my first day, so everything is hard! I spilled one cup already. Sorry! Do you have a job?"],today:["It's my first day! I'm so nervous. Sorry. How's your day?"]},
+ marcus:{live:["Take the 7 bus. Always late. You live close?"],afterwork:["Closing shift tonight. Late night. You?"],jobbest:["Best part? The rush. Worst part? No rush. You work?"]},
+ dana:{jobbest:["Best part: my team. Worst part: paperwork. You work?"],live:["Nearby. Short walk. You?"],dreamjob:["Running this shop is the dream. Five years now. Yours?"]},
+ kai:{sport:["Surfing. Every morning. You surf?"],hobby:["Surf. Then nap. You?"],weekendplan:["Beach. Big waves. You?"],morning:["Surfed at six. Good waves. You?"],season:["Summer. Warm water. You?"]},
+ mo:{talent:["Magic! Well, card tricks. The cards keep falling. What are you good at?"],hobby:["Magic tricks! I'm doing a show on Friday. What do you do for fun?"],weekendplan:["My magic show is on Friday! Then I practice all weekend. Any plans?"],dreamjob:["A real magician with a real stage. And a rabbit. What's your dream?"]},
+ lucy:{season:["Spring! Flowers, and no more winter. Fun fact: bees love spring too. What's your favorite season?"],animal:["Octopuses! They have three hearts. What's your favorite animal?"],talent:["Fun facts! Ask me anything. Well, almost anything. What are you good at?"]},
+ frank:{family:["I'm a dad of three, so I make bad jokes professionally. Do you have any siblings?"],cook:["I make pancakes for my kids every Sunday. They're flipping good. Get it? Can you cook?"],talent:["Dad jokes. I'm a professional. What are you good at?"]},
+ walter:{hobby:["I enjoy reading and fishing. Very slowly, both of them. What do you do for fun?"],jobbest:["I'm a retired English teacher, dear. I work here two days a week, for fun. Do you have a job?"],subject:["English, of course. I taught it for many years. What's your favorite subject?"],school:["Oh, I'm a retired English teacher now. Are you a student?"],book:["Oh, old novels, dear. I read them slowly, like fishing. Do you like to read?"]},
+ rosa:{cook:["Oh, I love cooking, my dear! Tamales and soup. Do you like to cook?"],favfood:["Tamales, my dear! I made them last night. What's your favorite food?"],family:["My daughter lives two blocks away, my dear. Do you have family here?"],live:["Oh, thirty years on this street, my dear. Do you live close?"],yesterday:["I made tamales last night, my dear! The whole street smelled amazing. What did you do?"]},
+ grace:{sleep:["I sleep eight hours, dear. I was a nurse for thirty years, so I know! Did you sleep well?"],jobbest:["I was a nurse for thirty years, dear. Now I make coffee. Much calmer! Do you have a job?"],relax:["A long walk every morning, dear, and my garden. And water! How do you relax?"],morning:["I took a long walk this morning, dear. Did you have breakfast?"]}};
+/* 15명용 '설정 없는' 기본 대답(성격 유형별). 자기 설정 대답(TALK_X)이 없고, 기본 5명 대답이 모두 걸러질 때 씁니다 */
+const TALK_GEN={
+ pets:["No pets yet, but I really want a puppy! Do you have any pets?","Um, no pets. My apartment is too small. Do you have one?","No pets. You?","No pets. My plants are my pets. They don't listen either. Do you have a pet?","Oh, not anymore, dear, but I love animals. Do you have a pet, honey?"],
+ family:["I have a big, loud family! I love them. What about your family?","Um, my family lives far away. I miss them. Do you have siblings?","Small family. You?","My family thinks I'm funny. They're wrong. Do you have siblings?","Oh, family is everything, dear. Tell me about yours, honey."],
+ fromwhere:["Not far from here! What about you? Where are you from?","Um, a small town. Not very exciting. Where are you from?","Not far. You?","From a place with worse coffee than this. Where are you from?","Oh, not far from here, dear. And where are you from, honey?"],
+ live:["Pretty close! Do you live nearby?","Um, not too far. Do you live around here?","Close. You?","Close enough to be late every day. Do you live nearby?","Oh, just a short walk, dear. Do you live close by?"],
+ school:["I'm done with school for now! Are you a student?","Um, I take some classes. Are you a student?","Not now. You in school?","I graduated from the school of life. Are you a student?","Oh, my school days were long ago, dear. Are you a student, honey?"],
+ catsdogs:["Dogs! I want to pet every dog I see. What about you?","Um, cats, I think. They're quiet. You?","Dogs. You?","Both. I'm very fair. Cats or dogs for you?","Oh, I love them both, dear. Which do you like, honey?"],
+ morning:["I had a big breakfast and came here! What did you do this morning?","Um, I just had toast. Did you eat breakfast?","Woke up. Came here. You?","I had coffee. Then more coffee. What did you have?","Oh, a cup of tea and some toast, dear. Did you have breakfast, honey?"],
+ lastweekend:["It was so fun! I hung out with my friends. How was your weekend?","Um, quiet. I stayed home. How was yours?","Worked. Rested. Yours?","I slept for twelve hours. Best weekend ever. How was yours?","Oh, a lovely quiet weekend, dear. And yours, honey?"],
+ weekendplan:["I'm going to see my friends! What are you doing this weekend?","Um, nothing big. Just resting. Do you have plans?","Working, mostly. You?","Big plans. Very big. I'm going to nap. What about you?","Oh, a quiet weekend at home, dear. Any plans, honey?"],
+ yesterday:["I watched a movie with friends! What did you do yesterday?","Um, I stayed home. What did you do?","Worked. You?","I did nothing, and I did it very well. What about you?","Oh, a quiet evening with a book, dear. And you?"]};
+const BASE_FACT=/Mochi|Biscuit|corgi|\bBob\b|goldfish|Salt|Pepper|Captain|parrot|Harold|grand(kid|son|daughter|children)|Texas|Ohio|Paper Kites|Taylor Swift|\bart\b|paint|sketch|skateboard|college|computer science|coding|soccer|cactus|open mic|comed|joke|my (brother|sister|mom|daughters|husband|neighbors|teacher|friends|best friend)|brothers|\bcats?\b|church|forty years|fifty years|aerobics|book club|Ella|webtoon|game|leaf|bear|chili|pecan|Mexico|Italy|Chicago|New York|Grand Canyon|library|bingo|ukulele|kazoo|piano|recipe|apple pie|taco|roses|garden|tomato|Kyoto|Paris|Spain|Barcelona|Ireland|Halloween|Thanksgiving|Christmas|April|October|March|July|December|\bMay\b|class|dog|bike|bus|car\b|walk here|minutes away|street|corner|grew up|born|Roman Holiday|Ghibli|Studio|shift|five thirty|at five|up at|Instagram|TikTok|Facebook|cart|gallery|cookbook|crossword|Rubik/;
+function talkPool(t,pi){const x=(TALK_X[S.pid]||{})[t.id];if(x)return x;if(!P[S.pid]||!P[S.pid].base)return t.r[pi];const ok=t.r[pi].filter(r=>!BASE_FACT.test(r));return ok.length?ok:TALK_GEN[t.id]?[TALK_GEN[t.id][pi]]:null}
+function talkOf(q,st){if(!q)return null;const pi=pidx(S.pid);for(const t of TALK){if(t.svc&&st==='order')continue;if(t.re.test(q)){if(!talkPool(t,pi))return null;return t}}return null}
+function talkQ(n,isQ,qt){if(qt)return qt;if(isQ||/^((so|and|okay|ok|well|hey|oh),? )?tell me (a little |more )?about your/.test(n))return n;return ''}
+function talkAns(t){const parts=(t.match(/[^.!?]+[.!?]*/g)||[]).map(x=>x.trim()).filter(Boolean);if(parts.length>1&&/\?$/.test(parts[parts.length-1]))parts.pop();return parts.join(' ')}
+const ASKED_FIRST=["Ha, I asked you first! ","Um, I asked first… ","You first. ","Nice try! You first. ","Oh, you first, dear. "];
+/* 대답하고(되묻기 포함이면 true를 돌려주고 사용자의 대답을 기다림) */
+async function talkSay(tk,st,pi,withQ){
+  S.talkSaid=S.talkSaid||{};S.talkLog=(S.talkLog||[]).concat(tk.id);
+  const prev=S.talkSaid[tk.id];
+  if(prev){await say(SAID_PRE[pi]+lc(talkAns(prev).replace(/^(Um, |Oh, )/,'')));S.selfSt='talk:'+tk.id;S.selfFresh=true;return false}
+  const r=pickNew(talkPool(tk,pi)||tk.r[pi]);S.talkSaid[tk.id]=r;
+  if(!withQ||!/\?$/.test(r)){await say(talkAns(r));S.selfSt='talk:'+tk.id;S.selfFresh=true;return false}
+  S.tq={id:tk.id,st,prevQ:S.q};await askQ(r);S.selfSt='talk:'+tk.id;S.selfFresh=true;return true}
+/* 바리스타가 되물은 질문에 사용자가 대답했을 때: 반응 → 원래 대화로 돌아감 */
+async function talkResolve(st,raw,n,isQ,fresh){
+  const t=S.tq;if(!t)return false;if(t.st!==st){S.tq=null;return false}
+  const pi=pidx(S.pid);const fu=fuOf(n);
+  if(fu==='back'||fu==='youfirst'){flag('talk:first');await say(ASKED_FIRST[pi]+lc(qPart(S.q.t)),S.q.t);return true}
+  if(fu&&!(fu==='react'&&/\b(me too|same)\b/.test(n))){if(await followUp(fu,st,raw,n,isQ,fresh))return true}
+  if(isQ&&!segsOf(raw).some(x=>!isQSeg(x))){S.tq=null;S.q=t.prevQ;return false}
+  S.tq=null;S.q=t.prevQ;flag('talk:ans');
+  const wc=wordsOf(n).length;
+  const r=DUNNO.test(n)&&wc<=7?pickNew(DUNNO_R[pi]):NEGANS.test(n)?REACT_NO[pi]:(statementReact(n)||pickNew(TALK_OK[pi]));
+  await say(fill(r));
+  const qt=isQ?qText(raw):'';const tk=qt?talkOf(qt,st):null;if(tk&&tk.id!==t.id)await talkSay(tk,st,pi,false);
+  if(st==='free'){await nextTopic();return true}
+  if(S.best[st])await advance();else await reask(st,raw);
+  return true}
 /* ---------- 무료 AI 도우미(규칙이 못 알아들은 질문에만) ----------
    · 규칙 대답이 먼저, 모르는 질문(unsureR 자리)에서만 Cloudflare Worker에 물어봅니다.
    · 점수·단계 판단에는 쓰지 않습니다. 느리거나 실패하거나 한도가 차면 원래 규칙 대답을 씁니다. */
@@ -1995,10 +2355,13 @@ async function handleFree(raw){
   const p=P[S.pid],pi=pidx(S.pid);const n=norm(raw);if(!n)return;
   const fresh=S.selfFresh;S.selfFresh=false;
   S.log.push({who:'u',text:raw,st:'free'});markExpr();S.freeTurns++;koAttach(null);render();
-  if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){await endChat();return}
+  if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){S.tq=null;await endChat();return}
   const isQ=isQuestion(raw,n);const qt=qText(raw);const intent=matchIntent(qt||n);
+  if(S.tq&&await talkResolve('free',raw,n,isQ,fresh))return;
   {const fu=fuOf(n);if(fu&&await followUp(fu,'free',raw,n,isQ,fresh))return}
   if(isQ&&onlyQ(raw)&&(await detailQ('free',raw,n,qt,fresh)||await topicBack('free',raw,n,qt,isQ)))return;
+  const tk=!(intent&&intent.id==='howareyou')?talkOf(talkQ(n,isQ,qt),'free'):null;
+  if(tk){flag('talk:'+tk.id);if(await talkSay(tk,'free',pi,true))return;await nextTopic();return}
   const st=statementReact(n);
   if(BACK.test(n)&&!(intent&&intent.r)){await say(st||pick(p.react.chat1.concat(p.react.chat2)));await selfTell('free',pi)}
   else if(isCompli(n)&&!isQ)await say(COMPLI_R[pi]);
@@ -2019,6 +2382,7 @@ async function handle(raw){
   const wc=wordsOf(n).length;
   const isQ=isQuestion(raw,n);
   if(REPEAT.test(n)&&wc<=6){flag('repeat');const lq=[...S.log].reverse().find(m=>m.who==='b'&&/\?$/.test(m.text));await say("Sure! "+(lq?lq.text:fill(p.lines[st])));return}
+  if(S.tq&&await talkResolve(st,raw,n,isQ,fresh))return;
   if(st!=='close'){const fu=fuOf(n);if(fu&&await followUp(fu,st,raw,n,isQ,fresh))return;
     const qt0=qText(raw);if(CHAT.has(st)&&isQ&&onlyQ(raw)&&(await detailQ(st,raw,n,qt0,fresh)||await topicBack(st,raw,n,qt0,isQ)))return}
   const ok=stageMatch(st,n,raw,isQ);
@@ -2033,7 +2397,9 @@ async function handle(raw){
     record(st,S.asked[st]?S.asked[st]+' / '+raw:raw,sc);
     captureSlots(st,n);
     if(st==='close'){
-      if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='thanks'){await say(irText(qIntent,pi,qt));await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
+      const tkC=talkOf(talkQ(n,isQ,qt),st);
+      if(tkC){await talkSay(tkC,st,pi,false);await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
+      else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='thanks'){await say(irText(qIntent,pi,qt));await say(pick(["Anyway, enjoy your drink!","Enjoy!","Have a good one!"]))}
       else await say(isCompli(n)?COMPLI_R[pi]:LUCK.test(n)?LUCK_R[pi]:GOODLUCK.test(n)?GOODLUCK_R[pi]:COMEBACK.test(n)?COMEBACK_R[pi]:back||/you (too|2|to)$|have a|take care|good one|hope|cheers|\bta\b|stay (warm|dry|safe)/.test(n)?p.back.close:pick(["Of course!","Anytime!","You're welcome!"]));
       await advance();return;
     }
@@ -2049,12 +2415,16 @@ async function handle(raw){
     await say(fill(r));
     if(st==='order'&&S.slots.drinks)await say(pick(["So that's "+listJoin(S.slots.drinks.map(aOf))+". Got it!","Okay, "+['','one','two','three','four'][S.slots.drinks.length]+" drinks: "+listJoin(S.slots.drinks.map(aOf))+"."]));
     if(st==='order'&&S.food)await say("And a "+S.food+", got it!");
-    if(back){if(S.saidBack[st]){const m=moreOf(st);if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m)}}else await say(p.back[st]||p.back.greet)}
+    const tkO=!(qIntent&&qIntent.id==='howareyou')?talkOf(talkQ(n,isQ,qt),st):null;
+    if(tkO){S.okTalk=tkO.id;if(await talkSay(tkO,st,pi,CHAT.has(st)))return}
+    else if(back){if(S.saidBack[st]){const m=moreOf(st);if(m&&!S.moreSaid[st]){S.moreSaid[st]=true;await say(m)}}else await say(p.back[st]||p.back.greet)}
     else if(isQ&&qIntent&&qIntent.r&&qIntent.id!=='howsay')await say(saidPre(irText(qIntent,pi,qt)));
     else if(isQ&&qt&&genQ(qt))await say(saidPre(genQ(qt)));
     else if(isQ&&qt&&wordsOf(qt).length>=3&&!RHET.test(qt)&&!(qIntent&&qIntent.id==='howsay')){flag('ok-unsure');await say(await aiOr(qt,pi))}
     await advance();return;
   }
+  {const tk=!(intent&&intent.id==='howareyou')?talkOf(talkQ(n,isQ,qt),st):null;
+   if(tk&&!(st==='order'&&findDrink(n))){S.asked[st]=raw;flag('talk:'+tk.id);if(await talkSay(tk,st,pi,CHAT.has(st)))return;await reask(st,raw);return}}
   if(st==='order'&&!findDrink(n)&&!(S.offer&&YES.test(n))){const ar=attrRec(n);if(ar){S.asked[st]=raw;flag('intent:attr');S.offer=ar.d;S.lastRec=ar.d;await say(ar.text);await say(pick(['Want to try it?','Should I make you one?','Want one?']));return}}
   if(st==='order'&&S.offer&&REJECT.test(n)&&!findDrink(n)){S.offer=null;S.asked[st]=raw;flag('intent:reject');await say(pick(['No problem! ','Sure! ','Okay! '])+AVAIL_NONE[pi]);return}
   if(st==='order'&&UNDECIDED.test(n)&&!findDrink(n)){
