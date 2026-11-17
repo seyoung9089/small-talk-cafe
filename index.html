@@ -1516,6 +1516,7 @@ const actSay=(pi,t)=>INTERJ.test(t)?t:pick(ACT_PRE[pi]||ACT_PRE[0])+t;
 const PLACE_Q={library:"Did you get a lot of studying done?",gym:"Nice! Do you go often?",mall:"Find anything good?",park:"Nice! Was the weather good?",cafe:"Oh, a different cafe? Is it any good?",church:"Oh, a nice community, huh?",hospital:"Oh, I hope everything is okay.",museum:"Oh cool! Anything interesting?",zoo:"Ooh, what was your favorite animal?",market:"Ooh, get anything good?",club:"Nice! What do you do there?"};
 const ACT_NEG=/\b(not|never|didn'?t|don'?t|haven'?t|can'?t|couldn'?t|nothing|nope|no)\b/;
 function actFollow(raw,n,pi){
+  if(/^((oh|well|yeah|so) )*(i (live|grew up|stay)|i'?m from|i am from|im from)\b/.test(n))return null;
   if(ACT_NEG.test(n.replace(/\bnot bad\b/,'')))return null;
   if(!/\b(i|i'?m|i'?ve|we|my|me|just|today|yesterday|last|this|tonight|tomorrow|gonna|going)\b/.test(n))return null;
   const fut=FUT.test(n);
@@ -1757,7 +1758,7 @@ const GENQ=[
  {re:/do you have (a |an |any )?([a-z' -]{2,20}?)\??$/,r:["Hmm, no {x}, sadly! Do you?","Um, no, I don't. Do you?","Nope. You?","No {x}. Just jokes. Lots of jokes.","Oh, no, dear. Do you?"]},
  {re:/are you (a |an )?([a-z' -]{2,20}?)\??$/,r:["Ha, kind of! Why?","Um, maybe a little?","Kind of.","Depends who's asking. Kidding, kind of!","Oh, maybe a little, honey."]}
 ];
-function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\s+(too|also|as well)$/,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
+function genQ(q){if(!q)return null;const pi=pidx(S.pid);for(const g of GENQ){const m=q.match(g.re);if(m){let x=(m[m.length-1]||'').trim().replace(/^(the|a|an) /,'').replace(/\s+(too|also|as well)$/,'').replace(/\byour\b/g,'my');if(!x&&!/favou?rite|how|did|were|was|can you|do you|why/.test(g.re.source))continue;if(!x)x='that';x=caseFix(x,'');const X=x.replace(/\bk-?pop\b/g,'K-pop').replace(/\bk-?dramas?\b/g,'K-dramas');return g.r[pi].replace('{be}',/[a-z]s$/.test(X)&&!/(ss|us|is)$/.test(X)?'are':'is').replace('{x}',X).replace('{X}',cap(X))||g.r[pi].replace('{x}',x).replace('{X}',cap(x))}}return null}
 const isNeg=n=>NEG.test(n.replace(/not (too |that |so |really |very )?(bad|busy|tired|stressed|sleepy)/g,''));
 const NEUTRAL=["Oh, nice!","Oh, cool.","Nice.","Ha! Fair enough.","Oh, how nice, dear."];
 const REJECT=/no thanks|something else|not that|anything else|other options?|i'?ll pass|not really feeling/;
@@ -1804,6 +1805,9 @@ function attrRec(n){
 }
 const BYE=/\b(bye|gotta go|got to go|have to go|need to go|should go|see you|see ya|leave now|i'?m done|that'?s all)\b/;
 async function nextTopic(){
+  S.ntN=(S.ntN||0)+1;
+  if(S.ntN===2||S.ntN===5){const cb=memCallback();if(cb){await askQ(preJoin(CB_PRE[pidx(S.pid)],cb));return}}
+  while(S.topics.length>1&&(S.covered||[]).includes(topicOf(S.topics[0])))S.topics.shift();
   if(!S.topics.length){await say("Oh! My manager's looking at me. I'd better get back to work!");await endChat();return}
   await askQ(S.topics.shift());
 }
@@ -2244,11 +2248,11 @@ async function talkResolve(st,raw,n,isQ,fresh){
   if(plain&&(t.n||0)<TALK_FUN[pi]&&!isQ&&wc>=1&&wc<=14){
     const af=actFollow(raw,n,pi)||pickNew(TALK_MORE[pi]);
     S.tq={...t,n:(t.n||0)+1};
-    await say(fill(statementReact(n)||pickNew(TALK_OK[pi])));
+    await say(fill(statementReact(n)||reflect(raw,n,pi,'s')||pickNew(TALK_OK[pi])));
     await askQ(af);return true}
   S.tq=null;S.q=t.prevQ;
   const inv=plain&&!t.n&&pi===2&&!isQ?pick(ASK_ME):'';
-  const r=DUNNO.test(n)&&wc<=7?pickNew(DUNNO_R[pi]):NEGANS.test(n)?REACT_NO[pi]:(statementReact(n)||pickNew(TALK_OK[pi]));
+  const r=DUNNO.test(n)&&wc<=7?pickNew(DUNNO_R[pi]):NEGANS.test(n)?REACT_NO[pi]:(statementReact(n)||reflect(raw,n,pi,'s')||pickNew(TALK_OK[pi]));
   await say(fill(r)+(inv?' '+inv:''));
   const qt=isQ?qText(raw):'';const tk=qt?talkOf(qt,st):null;if(tk&&tk.id!==t.id)await talkSay(tk,st,pi,false);
   if(st==='free'){await nextTopic();return true}
@@ -2266,8 +2270,8 @@ function aiTrim(t){/* 마지막 질문 문장은 떼어 냅니다(바로 뒤에 
   const parts=(t.match(/[^.!?]+[.!?]*/g)||[]).map(x=>x.trim()).filter(Boolean);
   if(parts.length>1&&/\?$/.test(parts[parts.length-1]))parts.pop();
   return parts.join(' ').trim()}
-async function aiOr(text,pi){
-  const fallback=()=>unsureR(pi);
+async function aiOr(text,pi,fb){
+  const fallback=fb||(()=>unsureR(pi));
   try{
     const li=S.log.map(m=>m.who).lastIndexOf('u');
     const msg=String(li>=0?S.log[li].text:text||'').trim();
@@ -2377,14 +2381,268 @@ async function topicBack(st,raw,n,qt,isQ){
   S.fuN=S.fuN||{};if((S.fuN[st]||0)>=3)return false;S.fuN[st]=(S.fuN[st]||0)+1;flag('fu:topicq');
   const pi=pidx(S.pid);await selfTell(st,pi);await giveTurn(st,pi);return true;
 }
+/* ---------- 되묻기(ELIZA식)와 기억 슬롯 (AI 없이 규칙으로) ----------
+   우선순위(이유: 규칙 대답이 가장 정확하고, AI는 하루 한도가 있으며, 되묻기는 언제나 쓸 수 있는 마지막 안전망이기 때문)
+   · 기억 질문("내 이름 기억해?" "내가 어디 산다고 했지?"): 기억이 있으면 다른 모든 대답보다 먼저.
+   · 내 이야기(평서문): 규칙 대답(statementReact·actFollow·주제 대답) → 되묻기 → 일반 맞장구.
+     평서문에는 원래 AI를 쓰지 않으므로, 되묻기가 "That sounds so fun!" 같은 일반 맞장구 자리를 대신합니다.
+   · 모르는 질문: 규칙 대답 → 무료 AI → 되묻기("AI? 음, 너는 어떻게 생각해?") → "잘 모르겠어요".
+     AI는 실제로 대답을 할 수 있으므로 AI가 먼저이고, AI 한도가 차거나 실패했을 때 되묻기가 받습니다.
+   · 점수에는 쓰지 않습니다. 되묻기 질문이 두 번 연달아 나오지 않게 막습니다(심문처럼 느껴지지 않게). */
+const NEGW=/\b(sick|ill|tired|exhausted|sleepy|sad|upset|stressed|stressful|worried|nervous|scared|scary|afraid|bored|boring|lonely|homesick|angry|mad|annoyed|hurt|hurts|broke|broken|lost|failed|fail|bad|terrible|awful|horrible|hard|difficult|sucks?|hate|died|dead|cried|crying|miss|injured|grounded|rough|worst|dumped|fought|sore|cancel(l)?ed|rejected)\b|\b(don'?t|do not|didn'?t|can'?t|cannot|couldn'?t) (like|enjoy|sleep|find|understand|go|stand)\b/;
+const POSW=/\b(happy|excited|great|awesome|amazing|fun|love|glad|good|nice|cool|best|won|beautiful|pretty|delicious|yummy|perfect|proud|relaxed|lucky|favou?rite)\b/;
+function moodOf(n){n=n.replace(/\bnot (so |too |very |that )?(bad|hard|difficult|boring)\b/g,'fine');if(NEGW.test(n))return 'neg';if(POSW.test(n))return 'pos';return ''}
+const RFL={i:'you',me:'you',my:'your',mine:'yours',myself:'yourself',"i'm":"you're",im:"you're","i've":"you've","i'll":"you'll","i'd":"you'd",am:'are',we:'you',us:'you',our:'your',ours:'yours',"we're":"you're","we've":"you've",ourselves:'yourselves',your:'my',yours:'mine',yourself:'myself',"you're":"I'm","you've":"I've","you'll":"I'll","you'd":"I'd",wanna:'want to',gonna:'going to'};
+/* 대명사 바꾸기: I→you, my→your, you→I/me, I was→you were */
+function reflWords(s){const w=s.split(' ').filter(Boolean),o=[];
+  for(let k=0;k<w.length;k++){const t=w[k],nx=w[k+1]||'',pv=w[k-1]||'';
+    if(t==='you'){if(nx==='are'){o.push("I'm");k++;continue}if(nx==='were'){o.push('I','was');k++;continue}o.push(!pv||/^(that|and|but|because|if|when|think|know|hope|guess|wish|so)$/.test(pv)?'I':'me');continue}
+    if(t==='was'&&/^(i|we)$/.test(pv)){o.push('were');continue}
+    if((t==='are'||t==='were')&&pv==='we'){o.push(t);continue}
+    o.push(RFL[t]!==undefined?RFL[t]:t)}
+  return o.join(' ')}
+const FILL_END=/\s+(too|also|as well|a lot|so much|very much|actually|though|really|lol|haha+|right|you know|i guess|i think|and stuff|or something|or so|anyway|honestly|now|yet)$/;
+/* 되물을 조각: 첫 마디(but/because/so 앞)만, 군말 빼고, 6단어 이하만 */
+/* 너무 길면 끝의 전치사구(with my friends, after school…)부터 떼어 냄 */
+function shorten(x,max){let w=x.split(/\s+/).filter(Boolean);for(let i=0;i<4&&w.length>max;i++){let j=-1;for(let k=w.length-1;k>1;k--)if(/^(with|after|before|at|on|in|for|every|since|from|near|to|about|because|when|last|this|next|all)$/.test(w[k])){j=k;break}if(j<0)break;w=w.slice(0,j)}return w.join(' ')}
+function frag(x,max){x=(x||'').replace(/\?/g,'').split(/\s+(?:but|because|cause|cuz|so that|so(?= (?:i|we|it|my|that|now)\b)|and then|lol|haha+|which|who)\s+|[,;.!]/)[0].trim();
+  for(let i=0;i<3;i++)x=x.replace(FILL_END,'').trim();
+  x=shorten(x,max||6);for(let i=0;i<3;i++)x=x.replace(FILL_END,'').trim();
+  const wc=x.split(/\s+/).filter(Boolean).length;if(!wc||wc>(max||6))return null;return x}
+/* 되받을 때는 오타 고치기(fixWord) 전의 사용자 낱말을 그대로 씀(cookies→cookie 같은 변형 방지) */
+const normLite=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’‘`]/g,"'").replace(/[^a-z0-9'?\s-]/g,' ').replace(/([a-z])\1{2,}/g,'$1$1').replace(/\s+/g,' ').trim().split(' ').map(w=>w.length<=4&&SLANG[w]||w).join(' ');
+const PROPER={korea:'Korea',korean:'Korean',seoul:'Seoul',busan:'Busan',incheon:'Incheon',daegu:'Daegu',jeju:'Jeju','k-pop':'K-pop',kpop:'K-pop','k-drama':'K-drama','k-dramas':'K-dramas',english:'English',america:'America',american:'American',japan:'Japan',japanese:'Japanese',china:'China',chinese:'Chinese',canada:'Canada',bts:'BTS',ai:'AI',i:'I',minecraft:'Minecraft',roblox:'Roblox',netflix:'Netflix',youtube:'YouTube',tiktok:'TikTok',instagram:'Instagram',christmas:'Christmas',halloween:'Halloween',monday:'Monday',tuesday:'Tuesday',wednesday:'Wednesday',thursday:'Thursday',friday:'Friday',saturday:'Saturday',sunday:'Sunday',math:'math',french:'French',spanish:'Spanish',la:'LA',nyc:'NYC',us:'us'};
+function caseFix(x,raw){const rw=String(raw||'').replace(/[’‘`]/g,"'").split(/[^A-Za-z0-9'-]+/).filter(Boolean);
+  return x.split(' ').map(t=>{if(PROPER[t]&&t!=='us')return PROPER[t];const h=rw.find((r,i)=>i>0&&r.toLowerCase()===t&&/[A-Z]/.test(r)&&!/^(I|I'm|I've|I'll|I'd)$/.test(r));return h||t}).join(' ')}
+const LEADF=/^((oh|well|um+|uh+|yeah|yes|yep|haha+|lol|honestly|actually|so|and|but|ok|okay|hmm+|wow|ah|also|anyway|no|nah|not really|kind of|sort of|i mean)\s+)+/;
+function clauseOf(raw,lite){/* 질문이 아닌 첫 번째 '나/우리' 문장 */
+  const segs=segsOf(raw).filter(x=>!isQSeg(x)).map(x=>(lite?normLite:norm)(x).replace(/\?/g,'').replace(LEADF,'').trim()).filter(Boolean);
+  return segs.find(x=>/^(i|i'?m|i'?ve|i'?ll|i'?d|im|my|we|we'?re|our)\b/.test(x))||segs[0]||''}
+const PETS=/^(dog|cat|puppy|kitten|hamster|rabbit|bunny|parrot|bird|fish|goldfish|turtle|snake|lizard|guinea pig|dogs|cats)$/;
+/* r[pi]: [maya, leo, sam, rico, dottie]. {f}=되받은 문장 전체, {x}=대상, {v}=동사. q=되묻는 형태, s=짧은 맞장구 */
+const RF={
+ feelNeg:{q:["Oh no, {f}? What happened?","Oh, um, {f}? Why? Are you okay?","{F}? What's going on?","{F}? Oh no. Is it school, or is it life?","Oh, you poor thing. {F}, dear? What happened?"],
+          s:["Aw, {f}? I hope it gets better!","Oh, um, sorry {f}.","{F}? Hang in there.","{F}? Okay, extra shot of courage for you.","Oh, sorry {f}, dear."]},
+ feelPos:{q:["Ooh, {f}? Tell me more!","Oh, {f}? That's, um, really nice. How come?","{F}? Nice. How come?","{F}? Love that. What's the secret?","Oh, {f}? How lovely, dear. Tell me more."],
+          s:["Yay, {f}? Love that!","Oh, {f}? That's nice.","{F}? Nice.","{F}? Love that energy.","Oh, {f}? How lovely, dear."]},
+ likeN:{q:["Ooh, {x}? What do you {v} about it?","Oh, {x}? Um, cool. What do you {v} about it?","{X}? Nice. Why?","{X}? Bold choice. What's the best part?","Oh, {x}, dear? What do you {v} about it?"],
+        s:["Ooh, {x}! Nice.","Oh, {x}. Cool.","{X}. Nice.","{X}? Respect.","Oh, {x}! How lovely, dear."]},
+ likeV:{q:["Ooh, {f}? How often do you do that?","Oh, {f}? That's cool. How often?","{F}? How often?","{F}? Respect. How often?","Oh, {f}, dear? How often do you do that?"],
+        s:["Ooh, {f}? Fun!","Oh, {f}? Cool.","{F}? Nice.","{F}? Respect.","Oh, {f}? How lovely, dear."]},
+ dislike:{q:["Aw, {f}? How come?","Oh, um, {f}? How come?","{F}? Why?","{F}? Bold. Tell me why.","Oh, {f}, dear? How come?"],
+          s:["Ha, fair enough!","Um, that's fair.","Fair.","Fair. I respect a strong opinion.","Oh, that's alright, dear."]},
+ think:{q:["Ooh, {f}? Why's that?","Um, {f}? Why do you think so?","{F}? Why?","{F}? Interesting. Explain yourself.","Oh, {f}, dear? Why's that?"],
+        s:["Hmm, I can see that!","Um, yeah, I get that.","Fair point.","Hmm. You might be onto something.","Oh, you might be right, dear."]},
+ wantBe:{q:["Wait, {x}? That's amazing! Why {x}?","Oh, {x}? That's, um, really cool. Why?","{X}? Nice. Why?","{X}? I can see it. Why {x}, though?","Oh, {x}! How wonderful, dear. Why {x}?"],
+         s:["{X}? That's amazing!","Oh, {x}. That's really cool.","{X}. Nice.","{X}? I can see it.","Oh, {x}! How wonderful, dear."]},
+ want:{q:["Ooh, {f}? Why?","Um, {f}? That's cool. Why?","{F}? Why?","{F}? I support this. Why, though?","Oh, {f}, dear? Why's that?"],
+       s:["Ooh, {f}? I hope you do!","Oh, {f}? Cool.","{F}? Nice.","{F}? I support this.","Oh, {f}? I hope you do, dear."]},
+ must:{q:["Oh, {f}? When?","Oh, um, {f}? When?","{F}? When?","{F}? Ugh, responsibilities. When?","Oh, {f}, dear? When?"],
+       s:["Oh, {f}? You've got this!","Oh, {f}? Good luck.","{F}? Good luck.","{F}? Ugh, responsibilities.","Oh, {f}? Good luck, dear."]},
+ learn:{q:["Ooh, {f}? How's it going?","Oh, {f}? Um, is it hard?","{F}? How's it going?","{F}? Respect. Is it hard?","Oh, {f}, dear? How's it going?"],
+        s:["Ooh, {f}? That's so cool!","Oh, {f}? Cool.","{F}? Nice.","{F}? Respect.","Oh, {f}? Good for you, dear."]},
+ did:{q:["Ooh, {f}? How was it?","Oh, {f}? Um, how was it?","{F}? How was it?","{F}? Give me a review. One to ten.","Oh, {f}, dear? How was it?"],
+      s:["Ooh, {f}? Nice!","Oh, {f}? Cool.","{F}? Nice.","{F}? Nice.","Oh, {f}? How nice, dear."]},
+ got:{q:["Ooh, {f}? Tell me more!","Oh, {f}? Cool. What's it like?","{F}? Nice. What's it like?","{F}? Show-off. What's it like?","Oh, {f}, dear? Tell me more."],
+      s:["Ooh, {f}? Nice!","Oh, {f}? Cool.","{F}? Nice.","{F}? Show-off. Kidding!","Oh, {f}? How nice, dear."]},
+ win:{q:["Wait, {f}? That's awesome! How do you feel?","Oh, {f}? That's, um, really great.","{F}? Nice.","{F}? Legend. How do you feel?","Oh, {f}? Good for you, dear!"],
+      s:["Wait, {f}? That's awesome!","Oh, {f}? That's great.","{F}? Nice.","{F}? Legend.","Oh, {f}? Good for you, dear!"]},
+ pet:{q:["Aww, {f}? What's its name?","Oh, {f}? Um, what's its name?","{F}? Name?","{F}? Important question: what's its name?","Oh, {f}, dear? What's its name?"],
+      s:["Aww, {f}? Cute!","Oh, {f}? Cute.","{F}? Nice.","{F}? Love that.","Oh, {f}? How sweet, dear."]},
+ have:{q:["Ooh, {f}? Tell me more!","Oh, {f}? Um, tell me more?","{F}? Tell me more.","{F}? Okay, I need details.","Oh, {f}, dear? Tell me more."],
+       s:["Ooh, {f}? Nice!","Oh, {f}? Cool.","{F}? Nice.","{F}? Interesting.","Oh, {f}? How nice, dear."]},
+ planT:{q:["Ooh, {f}? Are you excited?","Oh, {f}? Um, are you excited?","{F}? Excited?","{F}? Big plans. Are you excited?","Oh, {f}, dear? Are you excited?"],
+        s:["Ooh, {f}? Have fun!","Oh, {f}? Have fun.","{F}? Have fun.","{F}? Have fun. Report back.","Oh, {f}? Have fun, dear."]},
+ plan:{q:["Ooh, {f}? Fun! When?","Oh, {f}? Um, when?","{F}? When?","{F}? Big plans. When?","Oh, {f}, dear? When?"],
+       s:["Ooh, {f}? Have fun!","Oh, {f}? Have fun.","{F}? Have fun.","{F}? Have fun. Report back.","Oh, {f}? Have fun, dear."]},
+ cant:{q:["Aw, {f}? Why not?","Oh, um, {f}? Why not?","{F}? Why not?","{F}? Why not? Who's stopping you?","Oh, {f}, dear? Why not?"],
+       s:["Aw, that's okay!","Oh, um, that's okay.","That's fine.","That's fine. I can't either. Probably.","Oh, that's alright, dear."]},
+ can:{q:["Wait, {f}? That's so cool! How did you learn?","Oh, {f}? Wow. How did you learn?","{F}? Nice. How'd you learn?","{F}? Prove it. Kidding! How'd you learn?","Oh, {f}, dear? How did you learn?"],
+      s:["Wait, {f}? That's so cool!","Oh, {f}? Wow.","{F}? Nice.","{F}? Impressive.","Oh, {f}? How wonderful, dear."]},
+ myNeg:{q:["Oh no, {f}? I'm so sorry. Is everything okay?","Oh, um, {f}? I'm sorry. Are you okay?","{F}? That's rough. You okay?","{F}? Oh no. That's not funny at all. Are you okay?","Oh dear, {f}? I'm so sorry, honey. Is everything alright?"],
+        s:["Oh no, {f}? I'm so sorry.","Oh, um, {f}? I'm sorry.","{F}? That's rough.","{F}? Oh no. Sorry.","Oh dear, {f}? I'm so sorry, honey."]},
+ my:{q:["Ooh, {f}? Tell me more!","Oh, {f}? Um, tell me more?","{F}? Tell me more.","{F}? Okay, I need details.","Oh, {f}, dear? Tell me more."],
+     s:["Oh, {f}? Interesting!","Oh, {f}? Huh.","{F}? Huh.","{F}? Noted. For my novel.","Oh, {f}? Is that so, dear?"]},
+ gen:{q:["Oh, {f}? Tell me more!","Oh, um, {f}? Tell me more?","{F}? Tell me more.","{F}? Okay, I need details.","Oh, {f}, dear? Tell me more."],
+      s:["Oh, {f}? Nice!","Oh, {f}? Cool.","{F}? Nice.","{F}? Interesting.","Oh, {f}? How nice, dear."]},
+ chore:{q:["Oh, {f}? Good luck! Are you ready?","Oh, um, {f}? Good luck. Are you ready?","{F}? Good luck. Ready?","{F}? Ugh. Are you ready, or are you, like me, never ready?","Oh, {f}, dear? Good luck. Are you ready?"],
+        s:["Oh, {f}? Good luck! You've got this!","Oh, um, {f}? Good luck.","{F}? Good luck.","{F}? Good luck. I believe in you. Mostly.","Oh, {f}? Good luck, dear."]},
+ badThing:{q:["Oh no, {f}? That's the worst! What happened?","Oh, um, {f}? That's really bad. What happened?","{F}? Ugh. What happened?","{F}? Rude. The universe owes you one. What happened?","Oh dear, {f}? What a shame, honey. What happened?"],
+        s:["Oh no, {f}? That's the worst!","Oh, um, {f}? That's really bad.","{F}? Ugh.","{F}? Rude. The universe owes you one.","Oh dear, {f}? What a shame, honey."]},
+ negAny:{q:null,s:["Aw, that's too bad.","Oh, um, that's rough. Sorry.","That's rough.","Oof. That's rough.","Oh, I'm sorry, dear."]}
+};
+const FEELN='tired|exhausted|sleepy|sad|stressed|stressed out|nervous|worried|bored|sick|lonely|homesick|upset|scared|angry|mad|annoyed|confused|busy|cold|sore|broke';
+const FEELP='happy|excited|glad|proud|relaxed|pumped|thrilled|so happy|in love';
+const ADV='(?:so |really |very |super |kind of |kinda |a little |a bit |pretty |too |quite |feeling |a little bit |just |also )*';
+/* 되묻기 규칙: 위에서부터 처음 맞는 것 하나 */
+const RRULES=[
+ ['feelNeg',new RegExp(`^(?:i'?m|i am|im|i feel|i'?ve been|i was) (${ADV}(?:${FEELN}))\\b`),m=>m[0]],
+ ['feelPos',new RegExp(`^(?:i'?m|i am|im|i feel) (${ADV}(?:${FEELP}))\\b`),m=>m.input],
+ ['wantBe',/^i (?:really )?(?:want to|wanna|would like to|'?d like to|hope to|plan to|am going to|'?m going to|will) (?:be|become) (an? .+)/,m=>null],
+ ['dislike',/^i (?:really |just |kind of )*(?:don'?t (?:really )?(?:like|enjoy|love)|do not like|hate|can'?t stand|dislike) (.+)/,m=>m.input],
+ ['like',/^i (?:really |also |kind of |kinda |just |totally |do |still |absolutely )*(like|love|enjoy|adore) (.+)/,m=>m.input],
+ ['think',/^i (?:really |kind of |just |also )*(?:think|believe|feel like) (?:that )?(.+)/,m=>m[1]],
+ ['want',/^i (?:really |also |kind of |just )*(?:want to|wanna|would like to|'?d like to|hope to|wish i could) (.+)/,m=>m.input],
+ ['must',/^i (?:really |also |still )*(?:need to|have to|gotta|must) (.+)/,m=>m.input],
+ ['plan',/^(?:i'?m|i am|im|we'?re|we are) (?:going to|gonna|planning to|about to) (.+)|^(?:i|we)(?:'ll| will) (.+)/,m=>m.input],
+ ['learn',/^(?:i'?m|i am|im) (?:learning|studying|practicing|taking) (.+)|^i (?:started|began) (?:learning|studying|taking|to learn|to play|playing) (.+)/,m=>m.input],
+ ['plan',/^(?:i'?m|i am|im|we'?re) (?:\w+ing) .*\b(tomorrow|tonight|this weekend|next (?:week|month|year|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|later|soon|this summer|this winter)\b/,m=>m.input],
+ ['cant',/^i (?:just |really )?(?:can'?t|cannot|couldn'?t) (.+)/,m=>m.input],
+ ['can',/^i can (.+)/,m=>m.input],
+ ['pet',/^(?:i|we) (?:have|'ve got|got) (?:a |an |two |three |a new )?(dog|cat|puppy|kitten|hamster|rabbit|bunny|parrot|bird|fish|goldfish|turtle|snake|lizard|guinea pig|dogs|cats)\b/,m=>m.input],
+ ['win',/^(?:i|we) (?:just |finally |actually )?(?:won|passed|finished|got (?:a |an |the |my )?(?:\w+ )?(?:job|offer|award|prize|license|a\+|an a))\b/,m=>m.input],
+ ['did',/^(?:i|we) (?:just |finally |already |also |actually )?(?:watched|saw|read|played|tried|ate|had|visited|went|took|heard|did|met|finished|started|joined|cooked|baked|drew|painted|wrote|built|learned)\b/,m=>m.input],
+ ['got',/^(?:i|we) (?:just |finally |also )?(?:got|bought|made|found)\b/,m=>m.input],
+ ['have',/^(?:i|we) (?:have|'ve got) (?:a |an |two |three |some |lots of |a lot of |a big |a new )(.+)/,m=>m.input],
+ ['my',/^(?:my|our) (?:[a-z']+ ){1,3}?(?:is|are|was|were|has|have|had|got|gets|likes?|loves?|makes?|made|said|told|wants?|lives?|works?|plays?|broke|died|left|moved|cooked|bought|gave|took|came|went|[a-z]+ed)\b/,m=>m.input],
+ ['gen',/^(?:i|we) (?!guess|mean|know|see|think|dunno|do\b|did\b|don'?t|didn'?t|am\b|was\b|agree|understand|forgot|hope|bet|swear|told|said|ask|asked|would|could|should|might|may|wonder)[a-z']+ .+/,m=>m.input]
+];
+/* 대답 문장을 만든다. mode 'q' = 되묻기(끝이 질문), 's' = 짧은 맞장구. 못 만들면 null */
+function reflect(raw,n,pi,mode){
+  const c=clauseOf(raw);if(!c)return null;const wc=wordsOf(c).length;
+  if(DUNNO.test(c)||/^(i'?m |im |i am )?(good|fine|ok|okay|alright|great|not bad)\b/.test(c))return null;
+  const mood=moodOf(c);
+  {const nm=c.match(/^(?:my name is|my name'?s|call me|you can call me)\s+([a-z][a-z'-]+)$/);if(nm&&!STOPNAME.has(nm[1])){const N=cap(nm[1]);if(S.slots)S.slots.name=N;return NAME_R[pi].replace('{x}',N)}}
+  let k=null,m=null;for(const[id,re] of RRULES){m=c.match(re);if(m){k=id;break}}
+  if(!k){if(mood==='neg'&&wc>=2)return pickRF('negAny','s',pi,{});return null}
+  if(k==='gen'&&(wc<3||wc>9))return mood==='neg'?pickRF('negAny','s',pi,{}):null;
+  const put=s=>caseFix(reflWords(s),raw);
+  const cl=clauseOf(raw,true);let re0=null;for(const[id,re] of RRULES)if(id===k&&re.test(c)){re0=re;break}
+  const m2=re0&&cl.match(re0);const C=m2?cl:c;if(m2)m=m2;
+  let v={};
+  if(k==='wantBe'){const x=frag(m[1],5);if(!x)return null;v.x=put(x)}
+  else if(k==='like'){const verb=m[1],obj=m[2];if(/^(it|that|this|them|those|these|you|u|her|him)\b/.test(obj))return null;
+    const x=frag(obj,5);if(!x)return null;
+    if(/^(to |going |playing |watching |listening |reading |\w+ing\b)/.test(x)){k='likeV';const f=frag(C,7);if(!f)return null;v.f=put(f)}
+    else{k='likeN';v.x=put(x);v.v=verb==='enjoy'||verb==='adore'?'like':verb}}
+  else if(k==='think'){if(/^(so|not|about it|of it)$/.test(m[1]))return null;const f=frag(m[1],7);if(!f||wordsOf(f).length<2)return null;v.f=put(f);if(mode==='q'&&!/^you /.test(v.f))v.f='you think '+v.f}
+  else{let f=frag(C,k==='feelNeg'?6:7);if(!f&&/^feel/.test(k))f=frag(m[0],6);if(!f)return mood==='neg'?pickRF('negAny','s',pi,{}):null;v.f=put(f)}
+  const strong=/\b(lost|broke|broken|failed|fail|hurt|injured|sick|ill|died|dead|bad|terrible|awful|horrible|worst|cried|dumped|fought|rejected|cancel(l)?ed|miss|missed|stolen|crashed)\b/.test(c);
+  const who=/\b(mom|mother|dad|father|sister|brother|grandma|grandmother|grandpa|grandfather|friend|friends|cousin|aunt|uncle|family|teacher|cat|dog|puppy|kitten|hamster|rabbit|bird|parrot|fish|pet|day|week)\b/.test(c);
+  if(['did','got','have','gen','my'].includes(k)&&strong)k=who?'myNeg':'badThing';
+  else if(['like','likeN','likeV','can'].includes(k)&&strong)k='negAny';
+  else if(['have','gen','my','plan','planT','did'].includes(k)&&/\b(test|exam|exams|homework|quiz|finals|midterms?|presentation|essay|deadline|dentist|interview|audition)\b/.test(c))k='chore';
+  if(k==='plan'&&/\b(tomorrow|tonight|this weekend|next \w+|later|soon|this summer|this winter|on (monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b/.test(c))k='planT';
+  if(k==='negAny')return pickRF(k,'s',pi,{});
+  let out=pickRF(k,mode,pi,v);
+  if(out&&k==='pet'&&/\b(two|three|four|dogs|cats|fish|birds|rabbits|hamsters)\b/.test(c))out=out.replace(/what's its name\?/i,m=>(m[0]==='W'?'W':'w')+'hat are their names?').replace('Name?','Names?');
+  return out;
+}
+const REF_INVITE=/(\?|tell me more[.!]?|need details\.|tell me why\.|explain yourself\.)$/i;
+const NAME_R=["Oh, {x}! Nice to meet you!","Oh, um, nice to meet you, {x}.","{x}. Got it.","{x}! Great name. I'll remember it. Probably.","Oh, {x}, what a lovely name, dear."];
+function pickRF(k,mode,pi,v){const set=RF[k];const a=(mode==='q'&&set.q)?set.q:set.s;let t=a[pi];
+  const cp=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+  if(/\{[fF]\}/.test(t)&&!v.f||/\{[xX]\}/.test(t)&&!v.x)return null;
+  return t.replace(/\{f\}/g,v.f||'').replace(/\{F\}/g,cp(v.f||'')).replace(/\{x\}/g,v.x||'').replace(/\{X\}/g,cp(v.x||'')).replace(/\{v\}/g,v.v||'like')}
+/* 모르는 질문 되묻기(AI가 대답하지 못했을 때, 자유 대화에서만) */
+const RQ=[["Ooh, {x}? Hmm, I've never really thought about it. What do you think?","Hmm, good question! What do you think?"],["Um, {x}? I don't really know. What do you think?","Um, I'm not sure. What do you think?"],["{X}? No idea. You?","Hm. Don't know. You?"],["{X}? Big question. I need coffee first. What do you think?","Great question. I'm turning it back to you. What do you think?"],["Oh, {x}, dear? I've never thought about it. What do you think?","Oh, you've got me there, dear. What do you think?"]];
+function reflectQ(q,raw,pi){q=norm(q||'').replace(/\?/g,'').trim();
+  const m=q.match(/(?:what do you think|how do you feel|what'?s your (?:opinion|take)|what are your thoughts|do you (?:like|believe in|care about)|have you (?:ever )?(?:heard of|tried|seen))\s+(?:about |of |on )?(.+)/);
+  const x=m?frag(m[1],4):null;
+  if(x&&!/^(it|that|this|me|you)$/.test(x))return RQ[pi][0].replace(/\{x\}/g,caseFix(reflWords(x),raw)).replace(/\{X\}/g,cap(caseFix(reflWords(x),raw)));
+  return RQ[pi][1]}
+
+/* ---------- 기억 슬롯: 이름·사는 곳·고향·하는 운동/악기·좋아하는 것·반려동물·학교·배우는 것·계획 ----------
+   localStorage 'stc.mem'.slots = {key:{v, at}}. 다음 방문에도 남고, 구글 로그인 동기화에도 함께 갑니다. */
+const STOPX=/\s+(now|right now|with .*|and .*|but .*|near .*|because .*|for .*|since .*|these days|currently|too|also|every .*|on .*|at .*|after .*|in the .*|a lot|lol|haha)$/;
+function slotVal(x,max){x=(x||'').replace(/\?/g,'').trim();for(let i=0;i<3;i++)x=x.replace(STOPX,'').trim();const w=x.split(' ').filter(Boolean);if(!w.length||w.length>(max||3))return null;if(/^(it|that|this|them|you|here|there|home)$/.test(x))return null;return x}
+function memSlots(){const m=memGet();return m.slots||{}}
+function slotPut(k,v,raw){if(!v)return;const m=memGet();m.slots=m.slots||{};m.slots[k]={v:caseFix(v,raw),at:Date.now()};memSet(m);S.msAt=S.msAt||{};S.msAt[k]=S.log.length}
+function memCapture(raw){
+  if(!S||!raw)return;
+  for(const seg of segsOf(raw)){if(isQSeg(seg))continue;const c=norm(seg).replace(/\?/g,'').replace(LEADF,'').trim();if(!c)continue;let m;
+    if((m=c.match(/\b(?:my name is|my name'?s|call me)\s+([a-z][a-z'-]+)/))&&!STOPNAME.has(m[1])){slotPut('name',m[1],raw);const mm=memGet();mm.name=cap(m[1]);memSet(mm)}
+    if((m=c.match(/^i (?:live|'?m living|am living|stay) in (?:the )?(.+)/))&&!/^(a |an |my )/.test(m[1]))slotPut('live',slotVal(m[1]),raw);
+    if((m=c.match(/^(?:i'?m|i am|im|i come) (?:originally )?from (?:the )?(.+)/)))slotPut('from',slotVal(m[1]),raw);
+    if((m=c.match(/^i (?:also |usually |often |sometimes )?play (?:the )?([a-z' -]+)/))&&!/^(with|a lot|games? with|outside|online)\b/.test(m[1]))slotPut('play',slotVal(m[1],2),raw);
+    if((m=c.match(/^my (?:hobby is|hobbies are|favou?rite hobby is) (.+)/)))slotPut('hobby',slotVal(m[1],3),raw);
+    if((m=c.match(/^my favou?rite ([a-z]+) is (.+)/))&&m[1]!=='hobby'){const v=slotVal(m[2],3);if(v)slotPut('fav:'+m[1],v,raw)}
+    if((m=c.match(/^i (?:really |also |just |kind of )*(?:like|love|enjoy) (.+)/))&&!/^(it|that|this|them|you|to be)\b/.test(m[1])){const v=slotVal(m[1],3);if(v){if(/^(to |\w+ing\b)/.test(v))slotPut('hobby',v,raw);else slotPut('like',v,raw)}}
+    if((m=c.match(/^(?:i|we) (?:have|'ve got|got) (?:a |an |two |a new )?(dog|cat|puppy|kitten|hamster|rabbit|bunny|parrot|bird|fish|goldfish|turtle|snake|lizard|guinea pig|dogs|cats)\b/)))slotPut('pet',m[1],raw);
+    if((m=c.match(/\b(?:named|called|(?:his|her|its|my (?:dog|cat|puppy|kitten|hamster|rabbit|bunny|parrot|bird|fish|turtle)'?s?) name is)\s+([a-z][a-z'-]+)/))&&(memSlots().pet||/\b(dog|cat|puppy|kitten|hamster|rabbit|bunny|parrot|bird|fish|turtle|pet)\b/.test(c)||topicOf(S.q&&S.q.t)==='pets')&&!STOPNAME.has(m[1]))slotPut('petname',cap(m[1]),raw);
+    if((m=c.match(/^(?:i'?m|i am|im) (?:a |an )((?:high school |middle school |college |university |exchange )?(?:student|freshman|sophomore|junior|senior|nurse|teacher|doctor|designer|programmer|developer|engineer|artist|cook|chef|writer|barista))\b/)))slotPut('job',m[1],raw);
+    if((m=c.match(/^(?:i'?m|i am|im) in (?:the )?(\w+(?:th|st|nd|rd)?) grade/)))slotPut('grade',m[1],raw);
+    if((m=c.match(/^(?:i'?m|i am|im) (?:learning|studying|practicing) (?!for )(.+)/)))slotPut('learn',slotVal(m[1],3),raw);
+    if((m=c.match(/^(?:i'?m|i am|im|i'?ll|i will) (?:going to |gonna |planning to )?(.+?)\s+(tomorrow|tonight|this weekend|next week|next weekend|this summer|later this week|on (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b/))){let vp=m[1].replace(/^(going to|gonna|planning to)\s+/,'');const ing=/^\w+ing\b/.test(vp)&&!/^(going|bring|sing)$/.test(vp.split(' ')[0]);if(wordsOf(vp).length<=6&&!/^(be |so |really )/.test(vp))slotPut('plan',(ing?'ing:':'to:')+reflWords(vp),raw)}
+  }
+  /* 사용자가 이미 말한 주제는 자유 대화 질문에서 건너뜀 */
+  S.covered=S.covered||[];const nr=norm(raw);const tps=[topicOf(nr)];
+  if(/\b(jazz|rock|pop|hip hop|hip-hop|rap|k-pop|kpop|classical|edm|r&b|country|indie|metal|ballads?)\b/.test(nr))tps.push('music');
+  if(/\b(soccer|basketball|baseball|tennis|volleyball|badminton|swimming|golf|hockey|football|table tennis|taekwondo|running|cycling|skiing)\b/.test(nr))tps.push('sports');
+  if(/\b(dog|cat|puppy|kitten|hamster|rabbit|bunny|parrot|goldfish|turtle|pets?)\b/.test(nr))tps.push('pets');
+  if(/\b(movies?|films?|netflix|cinema)\b/.test(nr))tps.push('movies');
+  for(const tp of tps)if(tp&&!S.covered.includes(tp))S.covered.push(tp);
+}
+/* 기억 문장 조각 (2인칭, "right?"를 붙여 확인) */
+function slotPhrase(k,sl){const s=sl[k];if(!s)return null;const v=s.v;
+  if(k==='live')return 'you live in '+v;if(k==='from')return "you're from "+v;if(k==='play')return 'you play '+v;
+  if(k==='hobby')return 'you like '+v;if(k==='like')return 'you like '+v;if(k==='learn')return "you're learning "+v;
+  if(k==='pet')return 'you have '+(/s$/.test(v)?v:aOf(v))+(sl.petname?' named '+sl.petname.v:'');if(k==='petname')return null;
+  if(k==='job')return "you're "+aOf(v);if(k==='grade')return "you're in "+v+' grade';
+  if(k.startsWith('fav:'))return 'your favorite '+k.slice(4)+' is '+v;return null}
+const MEMQ=[
+ ['name',/\b(do you (still )?(remember|know) my name|what'?s my name|what is my name|who am i|remember me|do you know me|do you know who i am|remember who i am)\b/],
+ ['live',/\b(where do i live|(remember|know) where i live|where did i say i live)\b/],
+ ['from',/\b(where am i from|(remember|know) where i'?m from|where did i say i'?m from)\b/],
+ ['pet',/\b(what'?s my (dog|cat|pet|puppy|kitten)'?s? name|what pet do i have|do i have a pet|what is my (dog|cat|pet)'?s? name|what'?s the name of my (dog|cat|pet))\b/],
+ ['play',/\bwhat (sports?|instrument|games?) do i play\b/],
+ ['fav',/\bwhat'?s my favou?rite ([a-z]+)\b|\bwhat is my favou?rite ([a-z]+)\b/],
+ ['job',/\b(what grade am i in|what do i do for (a living|work)|what'?s my job|where do i go to school)\b/],
+ ['any',/\b(what do i (like|love|enjoy)|what'?s my hobby|what are my hobbies|do you remember (what i (said|told you|like)|anything about me)|what do you (know|remember) about me|what did i (say|tell you)( about me)?)\b/]];
+const MEM_PRE=["Of course! ","Um, I think ","","Easy. ","Oh, I remember, dear. "];
+const MEM_NO=["Hmm, I don't think you told me yet! ","Um, I don't think you told me. ","You didn't say. ","Hmm, you never told me! I'm good, but I'm not psychic. ","Oh, I don't think you told me, dear. "];
+const MEM_NAME=["Of course, {n}! How could I forget?","Um, yes. You're {n}, right?","{n}. Right?","{n}! I never forget a great customer.","Of course, {n}, dear. I never forget a sweet face."];
+const MEM_ASK={name:"What's your name?",live:'Where do you live?',from:'Where are you from?',pet:'Do you have a pet?',play:'Do you play any sports?',fav:'What is it?',job:'Are you a student?',any:'Tell me something about you!'};
+/* 기억 질문에 대답. 대답했으면 true, 되물었으면 'ask', 해당 없으면 false */
+async function memAnswer(raw,n,pi,canAsk){
+  const q=(qText(raw)||n);let k=null,mm=null;for(const[id,re] of MEMQ){mm=q.match(re);if(mm){k=id;break}}if(!k)return false;
+  const sl=memSlots(),M=memGet();const nm=(S.slots&&S.slots.name&&S.slots.name!=='friend')?S.slots.name:(M.name||(sl.name&&cap(sl.name.v))||'');
+  let t=null;
+  if(k==='name'){if(nm){t=MEM_NAME[pi].replace('{n}',nm);const extra=['play','live','learn','like','pet','hobby'].map(x=>slotPhrase(x,sl)).find(Boolean);if(extra&&/remember me|know me|who i am/.test(q))t+=' And '+extra+', right?'}}
+  else if(k==='fav'){const w=mm[1]||mm[2];const p=slotPhrase('fav:'+w,sl);if(p)t=MEM_PRE[pi]+cap(p)+', right?'}
+  else if(k==='job'){const p=slotPhrase('grade',sl)||slotPhrase('job',sl);if(p)t=MEM_PRE[pi]+cap(p)+', right?'}
+  else if(k==='any'){const ps=['play','hobby','like','learn','live','pet','from'].map(x=>slotPhrase(x,sl)).filter(Boolean).slice(0,2);if(ps.length)t=MEM_PRE[pi]+cap(ps.join(', and '))+', right?'}
+  else{const p=slotPhrase(k,sl);if(p)t=MEM_PRE[pi]+cap(p)+', right?'}
+  if(t||canAsk||k!=='name')flag('mem:'+k);
+  if(t){await say(t);return true}
+  if(canAsk){await askQ(MEM_NO[pi]+MEM_ASK[k]);return 'ask'}
+  if(k==='name')return false;
+  await say(MEM_NO[pi].trim());return true}
+/* 기억 꺼내기: 자유 대화 중간이나 다음 방문 첫 잡담에서 "지난번에 축구 한다고 했죠? 이번 주에도 했어요?" */
+function cbText(k,sl){const s=sl[k];if(!s)return null;const v=s.v;
+  if(k==='plan'){const [form,vp]=v.split(/:(.*)/);return form==='ing'?'you said you were '+vp+'. How did it go?':'you said you were going to '+vp+'. How did it go?'}
+  if(k==='play')return 'you play '+v+', right? Did you play this week?';
+  if(k==='learn')return "how's learning "+v+' going?';
+  if(k==='pet')return sl.petname?"how's "+sl.petname.v+' doing?':"how's your "+v.replace(/s$/,'')+' doing?';
+  if(k==='like')return 'you said you like '+v+'. How did you get into it?';
+  if(k==='hobby')return 'you said you like '+v+'. Did you do that this week?';
+  if(k==='live')return "what's your favorite thing about "+v+'?';
+  if(k==='from')return 'what do you miss most about '+v+'?';
+  if(k==='grade'||k==='job')return "how's school going these days?";
+  return null}
+function dayOld(at){return at&&dkey(new Date(at))!==dkey()}
+function memCallback(onlyOld){
+  const sl=memSlots();S.cbUsed=S.cbUsed||[];S.msAt=S.msAt||{};
+  const order=['plan','play','learn','pet','like','hobby','live','from','grade'];
+  for(const k of order){const s=sl[k];if(!s||S.cbUsed.includes(k))continue;
+    if(k==='plan'&&(!dayOld(s.at)||Date.now()-s.at>14*864e5))continue;
+    const fresh=S.msAt[k]!==undefined;if(onlyOld&&(fresh||!dayOld(s.at)))continue;
+    if(fresh&&S.log.length-S.msAt[k]<8)continue;
+    if(k==='grade'&&!/^(\d|ninth|tenth|eleventh|twelfth|seventh|eighth)/.test(s.v))continue;
+    const t=cbText(k,sl);if(!t)continue;S.cbUsed.push(k);if(k==='pet')S.cbUsed.push('petname');return t}
+  return null}
+function preJoin(pre,t){return pre+(/[.!?]\s*$/.test(pre)||!pre.trim()?cap(t):t)}
+const CB_PRE=["Oh wait, ","Um, ","Hey. ","Wait, I remember something! ","Oh, now I remember, dear. "];
 const PREF_Q={music:["Ooh, who's your favorite?","Nice! Any song I should check out?","Oh cool, since when?"],movie:["Ooh, what's your favorite one?","Nice! Any you'd recommend?"],game:["Ooh, what's your favorite game?","Nice! Are you any good?"],book:["Ooh, what's your favorite?","Any you'd recommend?"],eat:["Ooh, where's the best place for that?","Nice! How often do you have it?"],sport:["Nice! How often do you do that?","Oh cool, who do you usually go with?"],cook:["Ooh, what's your best dish?","Nice! What do you like to make?"],art:["Ooh, what do you like to make?","Nice! How long have you done that?"],pet:["Aw, do you have one?","Aw, me too! Do you have one?"]};
 function onlyQ(raw){return segsOf(raw).filter(x=>!isQSeg(x)).every(x=>fuOf(norm(x))||wordsOf(norm(x)).length<=1)}
 async function handleFree(raw){
   const p=P[S.pid],pi=pidx(S.pid);const n=norm(raw);if(!n)return;
-  const fresh=S.selfFresh;S.selfFresh=false;
+  const fresh=S.selfFresh;S.selfFresh=false;const lr=S.lastRefl||S.lastAct;S.lastRefl=false;
   S.log.push({who:'u',text:raw,st:'free'});markExpr();S.freeTurns++;koAttach(null);render();
   if(BYE.test(n)&&!(isQuestion(raw,n)&&qText(raw))){S.tq=null;await endChat();return}
   const isQ=isQuestion(raw,n);const qt=qText(raw);const intent=matchIntent(qt||n);
+  memCapture(raw);
+  if(isQ&&onlyQ(raw)){const ma=await memAnswer(raw,n,pi,true);if(ma==='ask')return;if(ma){await nextTopic();return}}
   if(S.tq&&await talkResolve('free',raw,n,isQ,fresh))return;
   {const fu=fuOf(n);if(fu&&await followUp(fu,'free',raw,n,isQ,fresh))return}
   if(isQ&&onlyQ(raw)&&(await detailQ('free',raw,n,qt,fresh)||await topicBack('free',raw,n,qt,isQ)))return;
@@ -2395,9 +2653,13 @@ async function handleFree(raw){
   else if(isCompli(n)&&!isQ)await say(COMPLI_R[pi]);
   else if(isQ&&intent&&intent.r)await say(saidPre(irText(intent,pi,qt||n)));
   else if(isQ&&genQ(qt))await say(saidPre(genQ(qt)));
-  else if(isQ){flag('unsure');await say(await aiOr(qt||raw,pi))}
+  else if(isQ){flag('unsure');let miss=false;const a=await aiOr(qt||raw,pi,()=>{miss=true;return ''});
+    if(!miss&&a)await say(a);else{const rq=!lr?reflectQ(qt||raw,raw,pi):null;if(rq){flag('reflectQ');S.lastRefl=true;await askQ(rq);return}await say(unsureR(pi))}}
   else if(DUNNO.test(n)&&wordsOf(n).length<=7)await say(pickNew(DUNNO_R[pi]));
-  else{const af=!st&&!S.lastAct&&wordsOf(n).length<14?actFollow(raw,n,pi):null;if(af){S.lastAct=true;await askQ(af);return}S.lastAct=false;await say(fill(st||pick(p.react.chat1.concat(p.react.chat2))))}
+  else{const af=!st&&!S.lastAct&&wordsOf(n).length<14?actFollow(raw,n,pi):null;if(af){S.lastAct=true;await askQ(af);return}S.lastAct=false;
+    const rf=!st?reflect(raw,n,pi,lr?'s':'q'):null;
+    if(rf){flag('reflect');if(!lr&&REF_INVITE.test(rf)){S.lastRefl=true;await askQ(rf);return}}
+    await say(fill(st||rf||pick(p.react.chat1.concat(p.react.chat2))))}
   await nextTopic();
 }
 async function handle(raw){
@@ -2409,6 +2671,8 @@ async function handle(raw){
   S.log.push({who:'u',text:raw,st});markExpr();S.hintNote=false;koAttach(st);render();
   const wc=wordsOf(n).length;
   const isQ=isQuestion(raw,n);
+  if(CHAT.has(st))memCapture(raw);
+  if(CHAT.has(st)&&isQ&&onlyQ(raw)&&await memAnswer(raw,n,pi,false)){S.asked[st]=raw;await reask(st,raw);return}
   if(REPEAT.test(n)&&wc<=6){flag('repeat');const lq=[...S.log].reverse().find(m=>m.who==='b'&&/\?$/.test(m.text));await say("Sure! "+(lq?lq.text:fill(p.lines[st])));return}
   if(S.tq&&await talkResolve(st,raw,n,isQ,fresh))return;
   if(st!=='close'){const fu=fuOf(n);if(fu&&await followUp(fu,st,raw,n,isQ,fresh))return;
@@ -2438,6 +2702,7 @@ async function handle(raw){
     if(!r&&CHAT.has(st)&&!isQ&&!S.followed[st]&&!S.rush&&wc<14&&!(st==='greet'&&isNeg(n))){const af=actFollow(raw,n,pi);if(af){S.followed[st]=true;flag('topic');await askQ(af);return}}
     if(!r&&offScript&&!NEGANS.test(n))r=NEUTRAL[pi];
     if(sc===10&&CHAT.has(st)&&!S.followed[st]&&!S.rush&&!offScript&&!(st==='greet'&&isNeg(n))&&!(st==='greet'&&isNeg(n))){S.followed[st]=true;await sayQ(r||(st!=='greet'&&NEGANS.test(n)?FOLLOW_NEG[pi]:p.follow[st]));return}
+    if((!r||r===NEUTRAL[pi])&&st!=='greet'&&CHAT.has(st)&&!isQ&&!NEGANS.test(n)){const rf=reflect(raw,n,pi,'s');if(rf)r=rf}
     if(!r&&st!=='greet'&&CHAT.has(st)&&NEGANS.test(n))r=REACT_NO[pi];
     if(!r)r=st==='greet'?pick(isNeg(n)?p.react.greetNeg:p.react.greetPos):pick(p.react[st]);
     await say(fill(r));
@@ -2882,7 +3147,9 @@ function applyDaily(pid){
   const vis=(m.visits||{})[pid]||0,tot=Object.values(m.visits||{}).reduce((a,b)=>a+b,0),nm=m.name||'friend';
   if(m.name&&tot>0){S.welcome=WELCOME[pi][tierOf(vis||Math.floor(tot/3))].replace('{n}',nm)}
   const keys=Object.keys(m.facts||{}).filter(k=>m.facts[k]&&m.facts[k].raw&&!/\?/.test(m.facts[k].raw)&&m.facts[k].raw.split(/\s+/).length>=2);
-  if(tot>0&&keys.length){const k=keys[Math.floor(rng(n+99)()*keys.length)],f=m.facts[k];
+  const mcb=tot>0?memCallback():null;
+  if(mcb){p.lines.chat2=preJoin(RECALL_PRE[pi],mcb);p.back.chat2=RECALL_BACK[pi];p.expect.chat2=/./;S.moreRot.chat2=null;S.recallOn=true}
+  else if(tot>0&&keys.length){const k=keys[Math.floor(rng(n+99)()*keys.length)],f=m.facts[k];
     p.lines.chat2=RECALL_PRE[pi]+(pi===2?'last':'Last')+' time you said "'+shortFact(f.raw)+'". How is that going?';
     p.back.chat2=RECALL_BACK[pi];p.expect.chat2=/./;S.moreRot.chat2=null;S.recallOn=true}else S.recallOn=false;
   /* 3) 날짜·시간대 이야기 */
@@ -3149,7 +3416,7 @@ const AUTH={on:!!FIREBASE_CONFIG,ready:false,user:null,busy:false,err:'',sync:''
 let FB=null;   // {signIn, signOut, load(uid), save(uid,data)}
 function mergeGames(a,b){const m=new Map();[...(a||[]),...(b||[])].forEach(g=>{if(g&&g.at&&!m.has(g.at))m.set(g.at,g)});return [...m.values()].sort((x,y)=>x.at-y.at)}
 function mergeMem(a,b){a=a||{};b=b||{};const facts={};for(const k of new Set([...Object.keys(a.facts||{}),...Object.keys(b.facts||{})])){const x=(a.facts||{})[k],y=(b.facts||{})[k];facts[k]=!x?y:!y?x:(x.at||0)>=(y.at||0)?x:y}
-  const visits={};for(const k of new Set([...Object.keys(a.visits||{}),...Object.keys(b.visits||{})]))visits[k]=Math.max((a.visits||{})[k]||0,(b.visits||{})[k]||0);return {name:a.name||b.name||'',facts,visits}}
+  const visits={};for(const k of new Set([...Object.keys(a.visits||{}),...Object.keys(b.visits||{})]))visits[k]=Math.max((a.visits||{})[k]||0,(b.visits||{})[k]||0);const slots={};for(const k of new Set([...Object.keys(a.slots||{}),...Object.keys(b.slots||{})])){const x=(a.slots||{})[k],y=(b.slots||{})[k];slots[k]=!x?y:!y?x:(x.at||0)>=(y.at||0)?x:y}return {name:a.name||b.name||'',facts,visits,slots}}
 function mergeDays(a,b){const o=Object.assign({},a||{});for(const k in (b||{}))o[k]=Math.max(o[k]||0,b[k]);return o}
 function syncData(extra){return Object.assign({name:AUTH.user.name||'',photo:AUTH.user.photo||'',talkLv:store.get('stc.talkLv',null),mem:store.get('stc.mem',null),days:store.get('stc.days',{}),rotN:store.get('stc.rotN',0),updated:Date.now()},extra)}
 function mergeSaved(a,b){const out=[];[...(a||[]),...(b||[])].forEach(x=>{if(x&&x.en&&!out.some(y=>y.en===x.en))out.push(x)});return out.sort((x,y)=>(y.at||0)-(x.at||0))}
